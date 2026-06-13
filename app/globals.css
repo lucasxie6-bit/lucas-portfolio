@@ -39,3 +39,12 @@ body {
   to   { transform: scaleX(1); }
 }
 
+@keyframes statusPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
+
+.animate-status-pulse {
+  animation: statusPulse 2.75s ease-in-out infinite;
+}
+

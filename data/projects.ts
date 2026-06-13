@@ -31,10 +31,36 @@ export interface LiveProduct {
   title?: string;
 }
 
+export interface VisualProofImage {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+export interface VisualProofGallery {
+  kind: "gallery";
+  images: VisualProofImage[];
+}
+
+export interface VisualProofDirection {
+  label: string;
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+export interface VisualProofDirections {
+  kind: "directions";
+  directions: VisualProofDirection[];
+}
+
+export type VisualProof = VisualProofGallery | VisualProofDirections;
+
 export interface ProjectSection {
   id: string;
   title: string;
   content: string;
+  visualProof?: VisualProof;
   gallery?: {
     liveProduct?: LiveProduct;
     items?: GalleryItem[];
@@ -159,7 +185,84 @@ export const projects: Project[] = [
     year: "2024",
     image: "/3.png",
     tagline: "A refined brand and product experience for a growing venture.",
-    sections: defaultSections("Alvarez"),
+    sections: [
+      {
+        id: "overview",
+        title: "Overview",
+        content:
+          "Alvarez was an apparel brand project focused on turning an early-stage fashion concept into a more concrete ecommerce direction. The work included market research, brand positioning, visual design exploration, and planning a Shopify website that could support a future online clothing store.",
+      },
+      {
+        id: "problem",
+        title: "Problem",
+        content:
+          "The project started with a broad apparel concept but needed clearer direction around the target customer, product positioning, and how the brand should show up online. Before moving closer to launch, the team needed to understand the competitive fashion landscape, define the brand's visual identity, and create an ecommerce experience that felt credible to potential customers.",
+      },
+      {
+        id: "solution",
+        title: "Solution",
+        content:
+          "I developed two design directions for the apparel brand and helped shape the structure of a Shopify ecommerce website. I also conducted market research to understand competitor brands, customer expectations, pricing, product presentation, and positioning opportunities. The work focused on making the brand feel more polished, testable, and ready for an online retail experience.",
+      },
+      {
+        id: "product-mockups",
+        title: "Product Mockups",
+        content:
+          "Early hoodie mockups explored garment colour, graphic placement, front/back views, and how the Alvarez identity could appear on a real product.",
+        visualProof: {
+          kind: "gallery",
+          images: [
+            {
+              src: "/alvarez1.png",
+              alt: "Alvarez hoodie front and back mockup",
+              caption: "Front and back hoodie mockup",
+            },
+            {
+              src: "/alvarez2.jpg",
+              alt: "Alvarez graphic placement exploration",
+              caption: "Graphic placement exploration",
+            },
+          ],
+        },
+      },
+      {
+        id: "design-directions",
+        title: "Design Directions",
+        content:
+          "Two visual directions were developed to test different ways the apparel brand could feel online, from darker streetwear styling to a cleaner ecommerce presentation.",
+        visualProof: {
+          kind: "directions",
+          directions: [
+            {
+              label: "Direction 01",
+              src: "/alvarez/direction-01-dark-streetwear.png",
+              alt: "Alvarez dark graphic streetwear direction",
+              caption:
+                "Focused on washed black tones, oversized silhouettes, and bold front graphics.",
+            },
+            {
+              label: "Direction 02",
+              src: "/alvarez/direction-02-clean-ecommerce.png",
+              alt: "Alvarez cleaner ecommerce direction",
+              caption:
+                "Explored a simpler product presentation with broader online retail appeal.",
+            },
+          ],
+        },
+      },
+      {
+        id: "role",
+        title: "Role",
+        content:
+          "Led market research, ecommerce planning, and design direction for the project. My work included competitor review, Shopify site structure, visual concept development, apparel brand positioning, and translating the business idea into two possible website and brand directions.",
+      },
+      {
+        id: "outcome",
+        title: "Outcome",
+        content:
+          "The project resulted in two distinct design concepts, a clearer apparel brand direction, and a stronger foundation for building a Shopify storefront. The work helped define how the brand could present its clothing, communicate value to customers, and move from a loose fashion concept toward a more launch-ready online shopping experience.",
+      },
+    ],
   },
   {
     slug: "grove",

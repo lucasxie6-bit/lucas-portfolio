@@ -43,10 +43,14 @@ export default function About() {
             {/* Thin left-border accent — quiet visual anchor on the text block */}
             <div className="space-y-4 text-stone-500 text-sm md:text-base leading-relaxed mb-10 max-w-[360px] border-l border-stone-200 pl-5">
               <p>
-                Founder, creative, student. I have an appetite for growth — building it, chasing it, helping early-stage startups find it.
+                Founder, creative, student. I have an appetite for growth: building it, chasing it, helping early-stage startups find it.
               </p>
-              <p>
-                Studying Commerce at Queen&apos;s University. Looking to join a startup.
+              <p className="flex items-center gap-2.5">
+                <span
+                  className="inline-block size-[7px] shrink-0 rounded-full bg-emerald-500/75 animate-status-pulse"
+                  aria-hidden="true"
+                />
+                Open to new opportunities
               </p>
             </div>
 

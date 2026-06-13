@@ -5,6 +5,7 @@ import type { GalleryItem, Project } from "@/data/projects";
 import { projectHasTikTokEmbeds } from "@/data/projects";
 import LiveProductPreview from "@/components/LiveProductPreview";
 import TikTokEmbed from "@/components/TikTokEmbed";
+import VisualProof from "@/components/VisualProof";
 
 function isTikTokItem(item: GalleryItem): item is Extract<GalleryItem, { type: "tiktok" }> {
   return item.type === "tiktok";
@@ -120,7 +121,16 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                     {section.title}
                   </h2>
 
-                  {section.gallery ? (
+                  {section.visualProof ? (
+                    <div className="space-y-8">
+                      {section.content && (
+                        <p className="text-sm text-stone-500 leading-relaxed tracking-wide">
+                          {section.content}
+                        </p>
+                      )}
+                      <VisualProof proof={section.visualProof} />
+                    </div>
+                  ) : section.gallery ? (
                     <div className="space-y-10">
                       {/* Live Product subheading */}
                       {section.gallery.liveProduct && (
