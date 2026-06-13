@@ -14,7 +14,7 @@ export default function Contact() {
   };
 
   return (
-    <footer className="pt-16 pb-20 border-t border-stone-100">
+    <footer className="pt-16 pb-20">
       <div className="max-w-5xl mx-auto px-8 md:px-16 lg:px-24">
 
         {/* Heading + tagline */}

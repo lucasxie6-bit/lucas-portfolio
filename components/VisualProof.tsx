@@ -11,12 +11,12 @@ export default function VisualProof({ proof }: VisualProofProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {proof.images.map((image, i) => (
           <figure key={i}>
-            <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-stone-50 ring-1 ring-stone-200/60">
+            <div className="relative rounded-xl overflow-hidden aspect-square bg-stone-50 ring-1 ring-stone-200/60">
               <Image
                 src={image.src}
                 alt={image.alt}
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 640px) 100vw, 50vw"
               />
             </div>
@@ -41,7 +41,7 @@ export default function VisualProof({ proof }: VisualProofProps) {
               src={direction.src}
               alt={direction.alt}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>

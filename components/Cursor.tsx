@@ -29,10 +29,12 @@ export default function Cursor() {
         style={{ willChange: "transform" }}
       >
         <div
-          className="w-[48px] h-[48px] rounded-full"
+          className="w-[34px] h-[34px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(156,123,90,0.10) 0%, rgba(210,160,120,0.04) 50%, transparent 70%)",
-            boxShadow: "0 0 0 1px rgba(156,123,90,0.6), 0 0 6px rgba(156,123,90,0.15)",
+            background:
+              "radial-gradient(circle, rgba(156,123,90,0.08) 0%, rgba(210,160,120,0.03) 45%, transparent 62%)",
+            boxShadow:
+              "0 0 0 1px rgba(156,123,90,0.5), 0 0 2.8px rgba(156,123,90,0.08)",
           }}
         />
       </div>

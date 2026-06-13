@@ -235,14 +235,14 @@ export const projects: Project[] = [
           directions: [
             {
               label: "Direction 01",
-              src: "/alvarez/direction-01-dark-streetwear.png",
+              src: "/moodboard1.png",
               alt: "Alvarez dark graphic streetwear direction",
               caption:
                 "Focused on washed black tones, oversized silhouettes, and bold front graphics.",
             },
             {
               label: "Direction 02",
-              src: "/alvarez/direction-02-clean-ecommerce.png",
+              src: "/moodboard2.png",
               alt: "Alvarez cleaner ecommerce direction",
               caption:
                 "Explored a simpler product presentation with broader online retail appeal.",

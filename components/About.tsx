@@ -47,9 +47,16 @@ export default function About() {
               </p>
               <p className="flex items-center gap-2.5">
                 <span
-                  className="inline-block size-[7px] shrink-0 rounded-full bg-emerald-500/75 animate-status-pulse"
+                  className="relative inline-flex size-[8px] shrink-0"
                   aria-hidden="true"
-                />
+                >
+                  <span className="absolute inset-0 rounded-full bg-emerald-400/55 animate-status-ping" />
+                  <span
+                    className="absolute inset-0 rounded-full bg-emerald-400/35 animate-status-ping"
+                    style={{ animationDelay: "0.875s" }}
+                  />
+                  <span className="relative block size-full rounded-full bg-emerald-500 shadow-[0_0_0_1px_rgba(16,185,129,0.25),0_0_3px_rgba(16,185,129,0.3)]" />
+                </span>
                 Open to new opportunities
               </p>
             </div>
