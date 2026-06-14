@@ -63,9 +63,6 @@ export default function Contact() {
             <ExternalLink href="https://www.linkedin.com/in/lucas-xie-630238244">
               LinkedIn
             </ExternalLink>
-            <ExternalLink href="/resume.pdf" download>
-              Resume ↓
-            </ExternalLink>
             <ExternalLink href="https://github.com/lucasxie6-bit">
               GitHub
             </ExternalLink>
