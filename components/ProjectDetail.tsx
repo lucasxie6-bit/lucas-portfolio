@@ -104,6 +104,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                   className="object-contain"
                   sizes="(max-width: 1280px) 100vw, 900px"
                   priority
+                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
               </div>
@@ -124,6 +125,22 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
 
                   {section.proofs ? (
                     <ProofsSection proofs={section.proofs} />
+                  ) : section.decisions ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {section.decisions.map((decision, i) => (
+                        <div
+                          key={i}
+                          className="rounded-2xl bg-gradient-to-br from-pink-50 to-purple-50 ring-1 ring-purple-100 p-6"
+                        >
+                          <h3 className="text-sm font-medium text-stone-800 tracking-wide mb-2">
+                            {decision.title}
+                          </h3>
+                          <p className="text-sm text-stone-500 leading-relaxed tracking-wide">
+                            {decision.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   ) : section.visualProof ? (
                     <div className="space-y-8">
                       {section.content && (

@@ -60,13 +60,13 @@ export default function Contact() {
         {/* Links — simple pill row with quiet right-side note */}
         <div className="flex flex-wrap items-center justify-between gap-y-4 mb-16">
           <div className="flex flex-wrap gap-3">
-            <ExternalLink href="https://linkedin.com/in/lucasxie">
+            <ExternalLink href="https://www.linkedin.com/in/lucas-xie-630238244">
               LinkedIn
             </ExternalLink>
             <ExternalLink href="/resume.pdf" download>
               Resume ↓
             </ExternalLink>
-            <ExternalLink href="https://github.com/lucasxie">
+            <ExternalLink href="https://github.com/lucasxie6-bit">
               GitHub
             </ExternalLink>
           </div>

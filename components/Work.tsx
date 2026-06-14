@@ -17,7 +17,13 @@ export default function Work() {
                     fill
                     className="object-contain transition-transform duration-700 group-hover:scale-[1.04]"
                     sizes="(max-width: 640px) 100vw, 50vw"
+                    unoptimized
                   />
+                ) : card.comingSoon ? (
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute inset-0 animate-platinum" />
+                    <div className="absolute inset-0 animate-platinum-shine" />
+                  </div>
                 ) : (
                   <div
                     className="absolute inset-0"

@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
 import Cursor from "@/components/Cursor";
+import SettingsPanel from "@/components/SettingsPanel";
 import { Inter, Cormorant_Garamond, Nunito, Fraunces } from "next/font/google";
 import "./globals.css";
+
+const themeInitScript = `(function () {
+  try {
+    var stored = JSON.parse(localStorage.getItem("site-settings") || "{}");
+    var theme = stored.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var reducedMotion = stored.reducedMotion ?? matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var root = document.documentElement;
+    if (theme === "dark") root.classList.add("dark");
+    if (reducedMotion) root.classList.add("reduce-motion");
+    if (stored.textSize) root.setAttribute("data-text-size", stored.textSize);
+  } catch (e) {}
+})();`;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -45,6 +58,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${cormorant.variable} ${fraunces.variable} ${nunito.variable} h-full`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col">
         {/* Page-wide ambient gradient — bleeds through all sections */}
         <div className="pointer-events-none absolute inset-0 -z-10">
@@ -65,6 +81,7 @@ export default function RootLayout({
         </div>
         <Cursor />
         {children}
+        <SettingsPanel />
       </body>
     </html>
   );

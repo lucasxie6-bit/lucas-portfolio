@@ -29,13 +29,14 @@ export default function ProofsSection({ proofs }: ProofsSectionProps) {
                 key={i}
                 className="shrink-0 w-[75%] sm:w-[340px] snap-start"
               >
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-stone-50 ring-1 ring-stone-200/60">
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-stone-50 ring-1 ring-stone-200/60">
                   <Image
                     src={slide.src}
                     alt={slide.alt}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 640px) 75vw, 340px"
+                    unoptimized
                   />
                 </div>
                 <figcaption className="mt-2.5 text-xs text-stone-400 tracking-wide">

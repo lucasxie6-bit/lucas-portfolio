@@ -75,6 +75,11 @@ export interface Proofs {
   process?: ProcessSlide[];
 }
 
+export interface DesignDecision {
+  title: string;
+  description: string;
+}
+
 export interface ProjectSection {
   id: string;
   title: string;
@@ -85,6 +90,7 @@ export interface ProjectSection {
     items?: GalleryItem[];
   };
   proofs?: Proofs;
+  decisions?: DesignDecision[];
 }
 
 export interface Project {
@@ -99,44 +105,12 @@ export interface Project {
   sections: ProjectSection[];
 }
 
-const defaultSections = (name: string): ProjectSection[] => [
-  {
-    id: "overview",
-    title: "Overview",
-    content: `${name} is a project focused on helping early-stage ideas find traction. This case study walks through the context, challenges, and outcomes of the work.`,
-  },
-  {
-    id: "problem",
-    title: "Problem",
-    content:
-      "Early-stage teams often struggle to validate ideas quickly, align on priorities, and communicate value to users. The core challenge was identifying where friction existed and what would meaningfully move the needle.",
-  },
-  {
-    id: "solution",
-    title: "Solution",
-    content:
-      "We shaped a focused product direction, refined the experience around key user flows, and iterated based on feedback. The approach prioritized clarity, speed, and measurable learning over feature breadth.",
-  },
-  {
-    id: "role",
-    title: "Role",
-    content:
-      "Led product strategy and execution — from discovery and positioning through design direction, prototyping, and go-to-market support alongside the founding team.",
-  },
-  {
-    id: "outcome",
-    title: "Outcome",
-    content:
-      "The project established a clearer product narrative, improved core flows, and created a stronger foundation for growth. Momentum and user engagement improved as the team shipped with more confidence.",
-  },
-];
-
 export const projects: Project[] = [
   {
     slug: "useno",
     name: "Useno",
     year: "2026",
-    image: "/2.png",
+    image: "/cards/1.svg",
     tagline: "Helping creators and teams turn ideas into momentum.",
     sections: [
       {
@@ -203,7 +177,7 @@ export const projects: Project[] = [
     slug: "alvarez",
     name: "Alvarez",
     year: "2024",
-    image: "/3.png",
+    image: "/cards/2.svg",
     tagline: "A refined brand and product experience for a growing venture.",
     sections: [
       {
@@ -288,7 +262,7 @@ export const projects: Project[] = [
     slug: "grove",
     name: "Grove",
     year: "2026",
-    image: "/4.png",
+    image: "/cards/3.svg",
     tagline: "Turning everyday receipts into small, doable steps toward less waste.",
     sections: [
       {
@@ -351,12 +325,9 @@ export const projects: Project[] = [
             ],
           },
           process: [
-            { src: "/grove-process-1.png", alt: "Grove process slide 1", caption: "Research & insights" },
-            { src: "/grove-process-2.png", alt: "Grove process slide 2", caption: "Mapping the scan-to-action flow" },
-            { src: "/grove-process-3.png", alt: "Grove process slide 3", caption: "Early wireframes" },
-            { src: "/grove-process-4.png", alt: "Grove process slide 4", caption: "Visual design exploration" },
-            { src: "/grove-process-5.png", alt: "Grove process slide 5", caption: "Final UI" },
-            { src: "/grove-process-6.png", alt: "Grove process slide 6", caption: "Prototype walkthrough" },
+            { src: "/research-insights.svg", alt: "Research & insights", caption: "Research & insights" },
+            { src: "/mappingthescan-to-actionflow.svg", alt: "Mapping the scan-to-action flow", caption: "Mapping the scan-to-action flow" },
+            { src: "/visualdesignexploration.svg", alt: "Visual design exploration", caption: "Visual design exploration" },
           ],
         },
       },
@@ -366,17 +337,168 @@ export const projects: Project[] = [
     slug: "sponty",
     name: "Sponty",
     year: "2026",
-    image: "/5.png",
+    image: "/cards/4.svg",
     tagline: "Making spontaneous connection feel effortless and fun.",
-    sections: defaultSections("Sponty"),
+    sections: [
+      {
+        id: "overview",
+        title: "Overview",
+        content:
+          'Sponty ("No Plans. Just Vibes.") is a mobile app that turns "I\'m bored" into "let\'s hang out" in three taps. Instead of planning days ahead, you post what you\'re doing right now, grabbing coffee, heading to the park, and nearby friends can join on the spot. This case study covers the design decisions behind making spontaneity feel simple, low-pressure, and safe.',
+      },
+      {
+        id: "problem",
+        title: "Problem",
+        content:
+          "Making plans usually means a slow back-and-forth of texts, typing out where, when, and who's coming, and committing to something that might fall through. That friction kills spontaneity, so most people just stay home. The challenge: capture the carefree, in-person energy of early Snapchat and Houseparty without becoming another curated feed, and without ignoring real privacy and safety concerns around sharing location.",
+      },
+      {
+        id: "solution",
+        title: "Solution",
+        content:
+          "Sponty strips hangouts down to a 3-tap flow: pick a pre-built activity (coffee, park, study, food), choose who sees it (friends, close friends, or specific people), and post. Hangouts show on a map with approximate, not exact, location by default, and auto-expire after 30 minutes, 1 hour, or 2 hours. Edge cases were designed up front: posts quietly expire if no one joins, an optional cap keeps groups manageable, and canceling removes the pin instantly.",
+      },
+      {
+        id: "role",
+        title: "Role",
+        content:
+          "Owned end-to-end product design, from concept and competitive analysis (what made early Snapchat and Houseparty feel fun) to defining the core interaction model, wireframing the post flow and map/feed views, and designing for privacy and safety edge cases.",
+      },
+      {
+        id: "outcome",
+        title: "Outcome",
+        content:
+          "A focused, single-purpose app: one primary screen (map-first), one core action (post a hangout), one clear lifecycle (post, join, expire). Cutting features like chat and stories keeps Sponty true to its premise, real spontaneity, not another feed to scroll.",
+      },
+      {
+        id: "design-decisions",
+        title: "Design Decisions",
+        content: "",
+        decisions: [
+          {
+            title: "Spontaneity over planning",
+            description:
+              "Removing scheduling friction so hangouts happen in the moment, not days later.",
+          },
+          {
+            title: "Buttons over typing",
+            description:
+              "Pre-built activity buttons (coffee, park, study, food) instead of free text, for speed and consistency.",
+          },
+          {
+            title: "Expiration by design",
+            description:
+              "Every post auto-expires (30 min / 1 hr / 2 hr) to reinforce spontaneity and prevent clutter.",
+          },
+          {
+            title: "Map-first, not feed-and-map",
+            description:
+              "One primary interface (map with pins) to avoid clutter and confusion.",
+          },
+        ],
+      },
+      {
+        id: "proofs",
+        title: "Proofs",
+        content: "",
+        proofs: {
+          tryIt: {
+            slides: [
+              {
+                src: "/sponty-screen-01-map.svg",
+                alt: "Map home screen showing active hangouts as pins",
+                caption: "Map home — see where your friends are right now",
+              },
+              {
+                src: "/sponty-screen-02-create.svg",
+                alt: "Create a hangout screen with vibe, time limit, and group size options",
+                caption: "Create a hangout — set the vibe, time limit, and group size",
+              },
+              {
+                src: "/sponty-screen-03-capture.svg",
+                alt: "Built-in camera screen for capturing the moment",
+                caption: "Capture the moment — built-in camera to share with friends",
+              },
+              {
+                src: "/sponty-screen-04-memories.svg",
+                alt: "Memories screen showing saved and recapped hangouts",
+                caption: "Your Memories — every hangout, saved and recapped",
+              },
+            ],
+          },
+        },
+      },
+    ],
   },
   {
     slug: "spark",
     name: "Spark",
     year: "2026",
-    image: "/6.png",
-    tagline: "Igniting early traction for ambitious founders.",
-    sections: defaultSections("Spark"),
+    image: "/cards/5.svg",
+    tagline: "Earn the answer. Build the thinking.",
+    sections: [
+      {
+        id: "overview",
+        title: "Overview",
+        content:
+          "Spark is an app designed to break the habit of defaulting to AI for instant answers. This case study walks through the idea, the design tension it tackles, and how the interaction model was shaped.",
+      },
+      {
+        id: "problem",
+        title: "Problem",
+        content:
+          "When AI can answer anything instantly, people stop forming their own opinions first, skipping the struggle that builds critical thinking. The challenge was designing friction that feels motivating, not punishing, so users engage their own reasoning before reaching for AI.",
+      },
+      {
+        id: "solution",
+        title: "Solution",
+        content:
+          'Spark locks AI-generated answers behind a short "unlock" step: before getting help, users must first attempt their own answer or give constructive feedback on someone else\'s. This reframes AI as a reward for effort rather than a shortcut, building a habit of thinking first.',
+      },
+      {
+        id: "role",
+        title: "Role",
+        content:
+          'Led product design, from defining the core "think first, unlock after" mechanic to designing the unlock flow, feedback prompts, and the balance between friction and reward.',
+      },
+      {
+        id: "outcome",
+        title: "Outcome",
+        content:
+          "The result is a clear, repeatable interaction model that nudges users toward reflection without feeling like a punishment, turning AI into a second opinion instead of a first resort.",
+      },
+      {
+        id: "proofs",
+        title: "Proofs",
+        content: "",
+        proofs: {
+          tryIt: {
+            slides: [
+              {
+                src: "/spark-screen-01-home.svg",
+                alt: "Home screen showing Spark Score and progress toward Thinker status",
+                caption: "Home — track your Spark Score and progress toward 'Thinker' status",
+              },
+              {
+                src: "/spark-screen-02-tiered.svg",
+                alt: "Tiered help screen with hints and guiding questions",
+                caption: "Tiered help — hints and guiding questions earn points; full explanations stay locked",
+              },
+              {
+                src: "/spark-screen-03-redirect.svg",
+                alt: "Spark redirecting a do-it-for-me request into guided help",
+                caption: "Spark redirects 'do it for me' requests into guided, point-earning help",
+              },
+              {
+                src: "/spark-screen-04-status.svg",
+                alt: "Spark Status screen showing level breakdown from Assisted to Thinker",
+                caption: "Spark Status — level breakdown from Assisted to Thinker",
+              },
+            ],
+          },
+        },
+      },
+    ],
   },
   {
     name: "Coming soon",

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: #ffffff;
   --color-foreground: #1C1917;
@@ -17,11 +19,50 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Night mode: invert the neutral "stone" scale so existing bg-stone and
+   text-stone utilities flip across the whole site without per-component changes. */
+.dark {
+  color-scheme: dark;
+  --color-background: #1c1917;
+  --color-foreground: #f5f5f4;
+
+  --color-stone-50: oklch(21.6% 0.006 56.043);
+  --color-stone-100: oklch(26.8% 0.007 34.298);
+  --color-stone-200: oklch(37.4% 0.01 67.558);
+  --color-stone-300: oklch(44.4% 0.011 73.639);
+  --color-stone-400: oklch(55.3% 0.013 58.071);
+  --color-stone-500: oklch(70.9% 0.01 56.259);
+  --color-stone-600: oklch(86.9% 0.005 56.366);
+  --color-stone-700: oklch(92.3% 0.003 48.717);
+  --color-stone-800: oklch(97% 0.001 106.424);
+  --color-stone-900: oklch(98.5% 0.001 106.423);
+}
+
 body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Accessibility: text size */
+html[data-text-size="lg"] {
+  font-size: 18px;
+}
+
+html[data-text-size="xl"] {
+  font-size: 20px;
+}
+
+/* Accessibility: reduced motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }
 
 ::selection {
@@ -52,5 +93,27 @@ body {
 
 .animate-status-ping {
   animation: statusPing 1.75s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes platinumDrift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes platinumShine {
+  0%, 100% { transform: translate(-15%, -10%) rotate(0deg); }
+  50% { transform: translate(12%, 12%) rotate(8deg); }
+}
+
+.animate-platinum {
+  background-image: linear-gradient(115deg, #e7e5e4 0%, #f6f5f3 18%, #d6d3d1 35%, #fbfafa 52%, #ddd9d6 70%, #f1efed 88%, #e7e5e4 100%);
+  background-size: 260% 260%;
+  animation: platinumDrift 16s ease-in-out infinite;
+}
+
+.animate-platinum-shine {
+  background: radial-gradient(45% 35% at 50% 50%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+  mix-blend-mode: soft-light;
+  animation: platinumShine 11s ease-in-out infinite;
 }
 
