@@ -4,6 +4,7 @@ import Script from "next/script";
 import type { GalleryItem, Project } from "@/data/projects";
 import { projectHasTikTokEmbeds } from "@/data/projects";
 import LiveProductPreview from "@/components/LiveProductPreview";
+import ProofsSection from "@/components/ProofsSection";
 import TikTokEmbed from "@/components/TikTokEmbed";
 import VisualProof from "@/components/VisualProof";
 
@@ -121,7 +122,9 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                     {section.title}
                   </h2>
 
-                  {section.visualProof ? (
+                  {section.proofs ? (
+                    <ProofsSection proofs={section.proofs} />
+                  ) : section.visualProof ? (
                     <div className="space-y-8">
                       {section.content && (
                         <p className="text-sm text-stone-500 leading-relaxed tracking-wide">

@@ -56,6 +56,25 @@ export interface VisualProofDirections {
 
 export type VisualProof = VisualProofGallery | VisualProofDirections;
 
+export interface ProcessSlide {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+export interface CarouselSlide {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+export interface Proofs {
+  tryIt?: {
+    slides: CarouselSlide[];
+  };
+  process?: ProcessSlide[];
+}
+
 export interface ProjectSection {
   id: string;
   title: string;
@@ -65,6 +84,7 @@ export interface ProjectSection {
     liveProduct?: LiveProduct;
     items?: GalleryItem[];
   };
+  proofs?: Proofs;
 }
 
 export interface Project {
@@ -269,8 +289,78 @@ export const projects: Project[] = [
     name: "Grove",
     year: "2026",
     image: "/4.png",
-    tagline: "Building community-driven growth from the ground up.",
-    sections: defaultSections("Grove"),
+    tagline: "Turning everyday receipts into small, doable steps toward less waste.",
+    sections: [
+      {
+        id: "overview",
+        title: "Overview",
+        content:
+          "Grove turns everyday receipts into a personal sustainability tracker. Scan a receipt and see the carbon and water cost behind what you bought, in numbers you can picture. Then Grove gives you one simple swap to try next time.",
+      },
+      {
+        id: "problem",
+        title: "Problem",
+        content:
+          "46% of consumers say they want to reduce their environmental impact through what they buy (PwC, 2024), but most have no easy way to connect everyday spending to its footprint. Existing sustainability apps bury people in data, or guilt-trip them without giving them anything to do about it.",
+      },
+      {
+        id: "solution",
+        title: "Solution",
+        content:
+          'Scan a receipt, see its impact, get one simple action to improve. Grove turns raw numbers, like 5.4kg of CO2 or 20,000 liters of water, into comparisons that click, like "that\'s about 45 minutes of leaving your car running." Then it suggests one small swap, like trading beef for lentils once a week. Each swap you complete adds to a visual grove that keeps growing.',
+      },
+      {
+        id: "role",
+        title: "Role",
+        content:
+          "Led design end to end: research into consumer sustainability behavior, mapping the scan-to-action user flow, and designing and prototyping the full UI in Figma.",
+      },
+      {
+        id: "outcome",
+        title: "Outcome",
+        content:
+          "The result is a lightweight, encouraging tool that makes sustainability feel doable. Large, readable numbers. One suggestion at a time. A clean layout that doesn't ask much of you.",
+      },
+      {
+        id: "proofs",
+        title: "Proofs",
+        content: "",
+        proofs: {
+          tryIt: {
+            slides: [
+              {
+                src: "/grove-screen-01-scan.svg",
+                alt: "Scan receipt screen — Plant a Receipt",
+                caption: "Scan a receipt to plant it",
+              },
+              {
+                src: "/grove-screen-02-impact.svg",
+                alt: "Impact results screen showing 5.4kg CO2 and 20K liters of water with relatable comparisons",
+                caption: "See its impact, translated into terms you can picture",
+              },
+              {
+                src: "/grove-screen-03-seeds.svg",
+                alt: "Seeds and progress tracking screen showing completed swaps",
+                caption: "Every completed swap grows your grove",
+              },
+              {
+                src: "/grove-screen-04-action.svg",
+                alt: "Completed seed screen with congratulations and cleared footprint",
+                caption: "One small swap, one less thing to worry about",
+              },
+            ],
+          },
+          process: [
+            { src: "/grove-process-1.png", alt: "Grove process slide 1", caption: "Research & insights" },
+            { src: "/grove-process-2.png", alt: "Grove process slide 2", caption: "Mapping the scan-to-action flow" },
+            { src: "/grove-process-3.png", alt: "Grove process slide 3", caption: "Early wireframes" },
+            { src: "/grove-process-4.png", alt: "Grove process slide 4", caption: "Visual design exploration" },
+            { src: "/grove-process-5.png", alt: "Grove process slide 5", caption: "Final UI" },
+            { src: "/grove-process-6.png", alt: "Grove process slide 6", caption: "Prototype walkthrough" },
+          ],
+        },
+      },
+    ],
   },
   {
     slug: "sponty",
