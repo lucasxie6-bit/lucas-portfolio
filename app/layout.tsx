@@ -44,8 +44,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "[YOUR NAME] — Portfolio",
-  description: "[YOUR TAGLINE]",
+  title: "Lucas Xie — Portfolio",
+  description: "Helping early-stage ideas find traction and grow.",
 };
 
 export default function RootLayout({
