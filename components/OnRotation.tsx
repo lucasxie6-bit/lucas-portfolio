@@ -177,8 +177,8 @@ export default function OnRotation() {
   const activeLine = Math.floor(elapsed / LINE_SECS) % LYRICS.length;
 
   return (
-    <div className="rot bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] lg:h-screen lg:overflow-hidden lg:flex">
-      <aside className="box-border flex flex-col px-6 pt-8 pb-10 lg:w-[600px] lg:shrink-0 lg:h-full lg:p-12">
+    <div className="rot min-h-screen bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] lg:flex lg:items-start">
+      <aside className="box-border flex flex-col px-6 pt-8 pb-10 lg:w-[600px] lg:shrink-0 lg:sticky lg:top-0 lg:h-screen lg:p-12">
         <TopBar />
 
         <div className="my-16 lg:my-auto">
@@ -200,8 +200,8 @@ export default function OnRotation() {
         />
       </aside>
 
-      <main className="relative px-6 pb-16 lg:px-0 lg:pb-0 lg:ml-6 lg:mr-10 lg:flex-1 lg:min-w-0 lg:h-full">
-        <div className="lg:h-full lg:overflow-y-auto lg:py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <main className="relative px-6 pb-16 lg:px-0 lg:pb-0 lg:ml-6 lg:mr-10 lg:flex-1 lg:min-w-0">
+        <div className="lg:py-8">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {SLOTS.map((slot, pos) => {
               if (slot === null) {
