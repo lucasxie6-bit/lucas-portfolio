@@ -82,6 +82,21 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
   const n = RECORDS.length;
   const rec = RECORDS[sel];
   const coverRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // On arrival the covers start stacked in the middle, then fan out to their slots one after another.
+  const [phase, setPhase] = useState<"stacked" | "fanning" | "idle">("stacked");
+  useEffect(() => {
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setPhase("fanning"));
+    });
+    const done = window.setTimeout(() => setPhase("idle"), DURATION + 400);
+    return () => {
+      cancelAnimationFrame(outer);
+      cancelAnimationFrame(inner);
+      window.clearTimeout(done);
+    };
+  }, []);
   const wrapAnims = useRef<Animation[]>([]);
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -211,7 +226,8 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
           >
             {RECORDS.map((r, i) => {
               const off = offsetOf(i, sel, n);
-              const s = slots[String(off)];
+              const slot = slots[String(off)];
+              const s = phase === "stacked" ? { ...slots["0"], size: base * 0.82, op: 0, dim: 0, z: slot.z } : slot;
               const size = `min(${base}cqw, ${MAX_PX}px)`;
               return (
                 <button
@@ -230,6 +246,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                     height: size,
                     transform: transformFor(s, base),
                     transition: wrapped(i) ? "none" : undefined,
+                    transitionDelay: phase === "fanning" ? `${Math.abs(off) * 90}ms` : undefined,
                     opacity: s.op,
                     zIndex: s.z,
                     background: r.item.bg,

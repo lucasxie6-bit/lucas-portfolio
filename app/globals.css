@@ -144,6 +144,32 @@ html[data-text-size="xl"] {
   .rot .cd-spin { animation: none; }
 }
 
+/* About page: faded album covers drifting in the side margins, full colour on hover */
+@keyframes coverFloat {
+  from { transform: translateY(-6px) rotate(var(--tilt)); }
+  to   { transform: translateY(6px) rotate(var(--tilt)); }
+}
+.side-cover {
+  pointer-events: auto;
+  overflow: hidden;
+  border-radius: 3px;
+  opacity: 0.3;
+  filter: grayscale(0.75);
+  transform: rotate(var(--tilt));
+  box-shadow: 0 10px 24px -14px rgba(28, 25, 27, 0.45);
+  animation: coverFloat 10s ease-in-out infinite alternate;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+.side-cover:hover { opacity: 0.95; filter: none; }
+@keyframes galleryFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.gallery-fade { animation: galleryFade 0.5s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .side-cover, .gallery-fade { animation: none; }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }

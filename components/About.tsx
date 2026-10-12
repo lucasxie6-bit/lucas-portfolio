@@ -1,38 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
-import PhotoStrip, { type Photo } from "@/components/PhotoStrip";
+import PhotoGallery, { type Photo } from "@/components/PhotoGallery";
 import PlayerFooter from "@/components/PlayerFooter";
+import SideCovers, { type Cover } from "@/components/SideCovers";
 
-// Photos live in /public/photos. `ratio` is width / height so the strip reserves the right space.
+// Photos live in /public/photos, shown in this order. Set `size` to "big" (full row), "wide" (half) or "small" (a
+// quarter) to choose which ones stand out; rows always fill out, so any mix works. Big photos use their `ratio`, capped at 3:2.
 const photos: Photo[] = [
-  { src: "/photos/photo-01.jpg", alt: "Lucas with friends on a red armchair", ratio: 1600 / 1200 },
-  { src: "/photos/photo-03.jpg", alt: "Lucas and a friend in a dorm room", ratio: 1600 / 1200 },
-  { src: "/photos/photo-04.jpg", alt: "Lucas with friends under fireworks", ratio: 1080 / 607 },
-  { src: "/photos/photo-05.jpg", alt: "Lucas and a friend at a restaurant", ratio: 1170 / 878 },
-  { src: "/photos/photo-06.jpg", alt: "Lucas and a friend in a dorm hallway", ratio: 1600 / 900 },
-  { src: "/photos/photo-07.jpg", alt: "Lucas and a friend in a dorm room", ratio: 1600 / 900 },
-  { src: "/photos/photo-09.jpg", alt: "Lucas with friends by a window", ratio: 1600 / 1573 },
-  { src: "/photos/photo-10.jpg", alt: "Mirror selfie", ratio: 890 / 1081 },
-  { src: "/photos/photo-11.jpg", alt: "Lucas and a friend on a couch", ratio: 844 / 684 },
-  { src: "/photos/photo-12.jpg", alt: "Selfie with a friend", ratio: 1080 / 806 },
-  { src: "/photos/photo-13.jpg", alt: "Lucas with a group of friends", ratio: 1076 / 580 },
-  { src: "/photos/photo-20.jpg", alt: "Black-and-white portrait holding an apple", ratio: 1 },
-  { src: "/photos/photo-21.jpg", alt: "BLACKPINK logo", ratio: 1 },
-  { src: "/photos/photo-22.jpg", alt: "GREENGREEN band photo under a bridge", ratio: 1 },
-  { src: "/photos/photo-23.jpg", alt: "Lana Del Rey, Ultraviolence", ratio: 1 },
-  { src: "/photos/photo-24.jpg", alt: "Chappell Roan at a vanity mirror", ratio: 637 / 639 },
-  { src: "/photos/photo-25.jpg", alt: "The Weeknd in a red suit", ratio: 736 / 883 },
-  { src: "/photos/photo-26.jpg", alt: "ILLIT, Super Real Me", ratio: 1 },
-  { src: "/photos/photo-27.jpg", alt: "Pink-haired figure against a wall at night", ratio: 1 },
-  { src: "/photos/photo-28.jpg", alt: "The baddest b!tches are in Toronto", ratio: 521 / 383 },
-  { src: "/photos/photo-29.jpg", alt: "Lana Del Rey, Norman Fucking Rockwell!", ratio: 723 / 725 },
-  { src: "/photos/photo-30.jpg", alt: "NewJeans bunny artwork", ratio: 736 / 729 },
-  { src: "/photos/photo-31.jpg", alt: "Adéla, Prima on CD", ratio: 1 },
-  { src: "/photos/photo-32.jpg", alt: "Red dollar-sign logo", ratio: 736 / 740 },
-  { src: "/photos/photo-33.jpg", alt: "Portrait in front of fireworks", ratio: 736 / 1104 },
-  { src: "/photos/photo-34.jpg", alt: "Taylor Swift, 1989", ratio: 1 },
-  { src: "/photos/photo-35.jpg", alt: "Figure lounging on a throne in a cluttered room", ratio: 735 / 490 },
+  { src: "/photos/photo-05.jpg", alt: "Lucas and a friend at a restaurant", size: "big", ratio: 1170 / 878 },
+  { src: "/photos/photo-04.jpg", alt: "Lucas with friends under fireworks", size: "wide" },
+  { src: "/photos/photo-01.jpg", alt: "Lucas with friends on a red armchair", size: "wide" },
+  { src: "/photos/photo-03.jpg", alt: "Lucas and a friend in a dorm room", size: "small" },
+  { src: "/photos/photo-09.jpg", alt: "Lucas with friends by a window", size: "small" },
+  { src: "/photos/photo-10.jpg", alt: "Mirror selfie", size: "small" },
+  { src: "/photos/photo-11.jpg", alt: "Lucas and a friend on a couch", size: "small" },
+  { src: "/photos/photo-06.jpg", alt: "Lucas and a friend in a dorm hallway", size: "wide" },
+  { src: "/photos/photo-07.jpg", alt: "Lucas and a friend in a dorm room", size: "wide" },
+  { src: "/photos/photo-13.jpg", alt: "Lucas with a group of friends", size: "big", ratio: 1076 / 580 },
 ];
+
+// Album covers and references that hang faded in the side margins on wide screens.
+const covers: Cover[] = [
+  "photo-23", "photo-29", "photo-34", "photo-31", "photo-26", "photo-30", "photo-22", "photo-20", "photo-24", "photo-27",
+  "photo-21", "photo-32", "photo-25", "photo-28", "photo-33", "photo-35",
+].map((name) => ({ src: `/photos/${name}.jpg` }));
 
 // Listening stats on the card at the top.
 const wrapped = {
@@ -62,7 +53,8 @@ const links = [
 
 export default function About() {
   return (
-    <section className="pt-6 pb-2">
+    <section className="relative overflow-x-clip pt-6 pb-2">
+      <SideCovers covers={covers} />
       <div className="max-w-[800px] mx-auto px-6">
         {/* Wrapped-style card: the cover on the left, listening stats on the right */}
         <h1 className="sr-only">hi, i&apos;m lucas.</h1>
@@ -181,12 +173,10 @@ export default function About() {
         </section>
       </div>
 
-      {/* Photos — one short strip that runs edge to edge and keeps drifting */}
-      <section aria-label="Photos" className="mt-20">
-        <p className="max-w-[800px] mx-auto px-6 text-[11px] text-stone-400 tracking-widest font-light select-none mb-5">
-          photos
-        </p>
-        <PhotoStrip photos={photos} />
+      {/* Photos — packed rows; sizes are set in the list above */}
+      <section aria-label="Photos" className="max-w-[800px] mx-auto px-6 mt-20">
+        <p className="text-[11px] text-stone-400 tracking-widest font-light select-none mb-5">photos</p>
+        <PhotoGallery photos={photos} />
       </section>
 
       {/* Links on phones, where the player bar is too narrow for them */}
@@ -219,7 +209,7 @@ function StatList({ label, items }: { label: string; items: string[] }) {
         {items.map((item, i) => (
           <li key={i} className="flex items-baseline gap-3">
             <span className="w-2 text-[11px] text-[#1C191B]/55">{i + 1}</span>
-            <span className="text-[15px] font-bold leading-tight whitespace-nowrap">{item}</span>
+            <span className="text-[15px] font-bold leading-tight md:whitespace-nowrap">{item}</span>
           </li>
         ))}
       </ol>
