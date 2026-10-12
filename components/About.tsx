@@ -16,7 +16,7 @@ const photos: Photo[] = [
   { src: "/photos/photo-10.jpg", alt: "Mirror selfie", size: "small" },
   { src: "/photos/photo-11.jpg", alt: "Lucas and a friend on a couch", size: "small" },
   { src: "/photos/photo-06.jpg", alt: "Lucas and a friend in a dorm hallway", size: "wide" },
-  { src: "/photos/photo-07.jpg", alt: "Lucas and a friend in a dorm room", size: "wide" },
+  { src: "/photos/photo-36.jpg", alt: "Lucas with Sydney and friends", size: "wide" },
   { src: "/photos/photo-13.jpg", alt: "Lucas with a group of friends", size: "big", ratio: 1076 / 580 },
 ];
 
