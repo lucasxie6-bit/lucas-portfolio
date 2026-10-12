@@ -70,6 +70,55 @@ html[data-text-size="xl"] {
   color: var(--color-foreground);
 }
 
+/* Listening room + CD rack */
+@keyframes pullOut {
+  from { opacity: 0; transform: translateY(60px) rotate(-6deg) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) rotate(-3deg) scale(1); }
+}
+@keyframes tracksIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes platterSpin {
+  to { transform: rotate(360deg); }
+}
+.rack-case { animation: pullOut 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+.rack-tracks { animation: tracksIn 0.5s 0.1s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+.rack-spine { transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), margin-bottom 0.2s; }
+.rack-spine:hover { transform: translateY(-14px); }
+.rack-spine:focus-visible { outline: 3px solid #D9263D; outline-offset: 3px; }
+.room-disc { animation: platterSpin 3s linear infinite; }
+/* Records sit slightly tilted and sagged; pulling one out overshoots like a spring. */
+.room-sleeve {
+  transform: translateY(calc(var(--lift) + var(--sag))) rotate(var(--tilt));
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 0 rgba(28, 25, 27, 0.18);
+}
+.room-sleeve:hover { transform: translateY(calc(var(--lift) + var(--sag) - 5px)) rotate(var(--tilt)); }
+.room-sleeve[aria-pressed="true"] { box-shadow: 0 10px 14px -8px rgba(28, 25, 27, 0.5); }
+.room-sleeve:focus-visible { outline: 3px solid #D9263D; outline-offset: 4px; }
+.rot a:hover { color: #D9263D; }
+.rot .sq { transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s; }
+.rot .sq:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -16px rgba(28, 25, 27, 0.5); }
+.rot .sq:focus-visible { outline: 3px solid #D9263D; outline-offset: 3px; }
+.rot .chip { transition: background 0.2s, color 0.2s; }
+/* CD tucked behind each sleeve; on hover it slides out sideways and spins. */
+.rot .cd-slot:hover, .rot .cd-slot:focus-within { z-index: 10; }
+.rot .cd {
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 6px 16px -6px rgba(28, 25, 27, 0.45);
+}
+.rot .cd-slot:hover .cd, .rot .cd-slot:focus-within .cd { transform: translateX(46%); }
+.rot .cd-left:hover .cd, .rot .cd-left:focus-within .cd { transform: translateX(-46%); }
+.rot .cd-spin { animation: platterSpin 4s linear infinite; animation-play-state: paused; }
+.rot .cd-slot:hover .cd-spin { animation-play-state: running; }
+.rot .sq:hover .chip { background: #F4F1EA !important; color: #1C191B !important; }
+@media (prefers-reduced-motion: reduce) {
+  .rack-case, .rack-tracks, .room-disc { animation: none; }
+  .rack-spine, .room-sleeve, .rot .sq, .rot .cd { transition: none; }
+  .rot .cd-spin { animation: none; }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }

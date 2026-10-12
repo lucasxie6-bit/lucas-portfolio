@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
-import Cursor from "@/components/Cursor";
 import SettingsPanel from "@/components/SettingsPanel";
-import { Inter, Cormorant_Garamond, Nunito, Fraunces } from "next/font/google";
+import {
+  Inter,
+  Cormorant_Garamond,
+  Nunito,
+  Fraunces,
+  Archivo_Black,
+  Bungee,
+  DM_Mono,
+  DM_Sans,
+  Instrument_Serif,
+  Courier_Prime,
+  Archivo,
+  Fredoka,
+} from "next/font/google";
 import "./globals.css";
 
 const themeInitScript = `(function () {
@@ -43,9 +55,65 @@ const nunito = Nunito({
   display: "swap",
 });
 
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const bungee = Bungee({
+  variable: "--font-bungee",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const archivoVar = Archivo({
+  variable: "--font-archivo-var",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
+});
+
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
+});
+
+const courierPrime = Courier_Prime({
+  variable: "--font-courier",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Lucas Xie — Portfolio",
-  description: "Helping early-stage ideas find traction and grow.",
+  title: "Lucas Xie",
+  description: "Lucas Xie designs apps and websites. Case studies from useno, sponty, spark, grove and alvarez.",
 };
 
 export default function RootLayout({
@@ -56,14 +124,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorant.variable} ${fraunces.variable} ${nunito.variable} h-full`}
+      suppressHydrationWarning
+      className={`${inter.variable} ${cormorant.variable} ${fraunces.variable} ${nunito.variable} ${archivoBlack.variable} ${bungee.variable} ${dmMono.variable} ${dmSans.variable} ${instrumentSerif.variable} ${courierPrime.variable} ${archivoVar.variable} ${fredoka.variable} h-full`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="min-h-full flex flex-col">
         {/* Page-wide ambient gradient — bleeds through all sections */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div
             className="absolute top-0 right-0 w-[120vw] h-[120vh]"
             style={{
@@ -79,7 +148,6 @@ export default function RootLayout({
             }}
           />
         </div>
-        <Cursor />
         {children}
         <SettingsPanel />
       </body>

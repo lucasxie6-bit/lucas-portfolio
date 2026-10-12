@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   applySettings,
   defaultSettings,
@@ -19,6 +20,7 @@ export default function SettingsPanel() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     setSettings(loadSettings());
@@ -43,8 +45,10 @@ export default function SettingsPanel() {
     applySettings(merged);
   };
 
+  if (pathname === "/") return null;
+
   return (
-    <div ref={panelRef} className="fixed bottom-6 right-6 z-[60]" data-cursor="sm">
+    <div ref={panelRef} className="fixed bottom-6 right-6 z-[60]">
       {open && (
         <div className="absolute bottom-full right-0 mb-3 w-64 rounded-2xl bg-white/95 dark:bg-stone-50/95 backdrop-blur-sm ring-1 ring-stone-200/70 shadow-lg p-4 space-y-4">
           <div>
