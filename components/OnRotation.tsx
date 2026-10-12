@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
 import { CoverArt, discBackground, items } from "@/components/records";
@@ -35,16 +35,27 @@ const LINE_SECS = 1.5;
 const lyricColor = (offset: number) =>
   offset === 0 ? "#1C191B" : Math.abs(offset) === 1 ? "#C9C2B6" : Math.abs(offset) === 2 ? "#DDD7CC" : "#E6E1D7";
 
-function Lyrics({ active, onSeek }: { active: number; onSeek: (line: number) => void }) {
+// Pointing at a line (or tapping it) holds the lyrics there; letting go carries on from the line below.
+function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: number) => void; onRelease: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
   return (
-    <div className="flex flex-col gap-6 lg:gap-8 text-[30px] lg:text-[36px] font-bold leading-[1.12] tracking-[-0.03em]">
+    <div
+      ref={ref}
+      onPointerLeave={(e) => e.pointerType === "mouse" && onRelease()}
+      onBlur={(e) => !ref.current?.contains(e.relatedTarget as Node | null) && onRelease()}
+      className="flex flex-col gap-6 lg:gap-8 text-[30px] lg:text-[36px] font-bold leading-[1.12] tracking-[-0.03em]"
+    >
       {LYRICS.map((line, i) => (
         <button
           key={line}
           type="button"
-          onClick={() => onSeek(i)}
+          data-lyric
+          onPointerEnter={(e) => e.pointerType === "mouse" && onHold(i)}
+          onClick={() => onHold(i)}
+          // Only keyboard focus holds a line; a focus left behind by a click must not re-freeze it later.
+          onFocus={(e) => e.currentTarget.matches(":focus-visible") && onHold(i)}
           aria-current={i === active ? "true" : undefined}
-          className="text-left whitespace-pre-line cursor-pointer transition-colors duration-500 hover:!text-[#1C191B]"
+          className="text-left whitespace-pre-line cursor-pointer transition-colors duration-500"
           style={{ color: lyricColor(i - active) }}
         >
           {i === 0 ? <h1 className="m-0 font-[inherit] text-[length:inherit]">{line}</h1> : line}
@@ -167,13 +178,39 @@ export default function OnRotation() {
     setSel(SHOWN[(SHOWN.indexOf(sel) + 1) % SHOWN.length]);
   }
 
+  // The lyric line being pointed at or tapped; while set, the lyrics wait on it.
+  const [held, setHeld] = useState<number | null>(null);
+
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || held !== null) return;
     const id = setInterval(() => setElapsed((e) => e + 0.5), 500);
     return () => clearInterval(id);
-  }, [playing]);
+  }, [playing, held]);
 
-  const activeLine = Math.floor(elapsed / LINE_SECS) % LYRICS.length;
+  const activeLine = held ?? Math.floor(elapsed / LINE_SECS) % LYRICS.length;
+
+  // Let go: pick up from the line after the held one, keeping the song's position in its lyric loop.
+  const release = () => {
+    if (held === null) return;
+    const loop = LINE_SECS * LYRICS.length;
+    const start = elapsed - (elapsed % loop);
+    setElapsed(Math.min(start + (held + 1) * LINE_SECS, duration - 0.5));
+    setHeld(null);
+  };
+
+  // On touch screens a tap holds a line; the next tap anywhere outside the lyrics lets go.
+  const releaseRef = useRef(release);
+  useEffect(() => {
+    releaseRef.current = release;
+  });
+  useEffect(() => {
+    if (held === null) return;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse" && !(e.target as Element).closest?.("[data-lyric]")) releaseRef.current();
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [held]);
 
   return (
     <div className="rot min-h-screen bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] lg:flex lg:items-start">
@@ -183,10 +220,11 @@ export default function OnRotation() {
         <div className="my-16 lg:my-auto">
           <Lyrics
             active={activeLine}
-            onSeek={(line) => {
-              setElapsed(line * LINE_SECS);
+            onHold={(line) => {
+              setHeld(line);
               setUserPlaying(true);
             }}
+            onRelease={release}
           />
         </div>
 
