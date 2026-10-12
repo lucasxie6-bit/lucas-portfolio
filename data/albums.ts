@@ -191,6 +191,7 @@ export const albums: Album[] = [
     sticker: "Bonus",
     tracks: plain(["Who I am", "What I make", "Things I like a little too much", "Currently"]),
     cta: "Play — read the liner notes",
+    href: "/about",
   },
   {
     slug: "say-hi",

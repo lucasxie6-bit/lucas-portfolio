@@ -45,7 +45,8 @@ export default function SettingsPanel() {
     applySettings(merged);
   };
 
-  if (pathname === "/") return null;
+  // Only the case-study pages still follow the light/dark setting.
+  if (!pathname.startsWith("/work")) return null;
 
   return (
     <div ref={panelRef} className="fixed bottom-6 right-6 z-[60]">

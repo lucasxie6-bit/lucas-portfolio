@@ -1,10 +1,13 @@
 import Image from "next/image";
 
+// Drop photos into /public and point these at them.
 const galleryPhotos = [
   { src: "/about-photo-placeholder.svg", alt: "Personal photo 1", rotate: "-rotate-2" },
   { src: "/about-photo-placeholder.svg", alt: "Personal photo 2", rotate: "rotate-1" },
   { src: "/about-photo-placeholder.svg", alt: "Personal photo 3", rotate: "-rotate-1" },
   { src: "/about-photo-placeholder.svg", alt: "Personal photo 4", rotate: "rotate-2" },
+  { src: "/about-photo-placeholder.svg", alt: "Personal photo 5", rotate: "-rotate-1" },
+  { src: "/about-photo-placeholder.svg", alt: "Personal photo 6", rotate: "rotate-1" },
 ];
 
 export default function About() {
@@ -104,14 +107,14 @@ export default function About() {
           </div>
         </div>
 
-        {/* Gallery — a few candid polaroids, horizontal scroll */}
-        <div className="hidden mt-14 md:mt-16">
-          <p className="text-[11px] text-stone-400 tracking-widest font-light select-none mb-5">
-            a few more
+        {/* Photos — candid polaroids */}
+        <section aria-label="Photos" className="mt-20 md:mt-24">
+          <p className="text-[11px] text-stone-400 tracking-widest font-light select-none mb-6">
+            photos
           </p>
-          <div className="flex gap-6 overflow-x-auto pb-2 -mx-1 px-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8">
             {galleryPhotos.map((photo, i) => (
-              <div key={i} className={`shrink-0 w-[140px] sm:w-[160px] ${photo.rotate}`}>
+              <div key={i} className={photo.rotate}>
                 <div className="bg-stone-50 p-2.5 pb-6 ring-1 ring-stone-200/60 shadow-[0_6px_28px_-8px_rgba(28,25,23,0.15)]">
                   <div className="relative overflow-hidden aspect-[4/5]">
                     <Image
@@ -119,7 +122,7 @@ export default function About() {
                       alt={photo.alt}
                       fill
                       className="object-cover brightness-[0.97] saturate-[0.9]"
-                      sizes="160px"
+                      sizes="(max-width: 640px) 50vw, 300px"
                       unoptimized
                     />
                   </div>
@@ -127,7 +130,7 @@ export default function About() {
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </section>
   );
