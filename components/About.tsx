@@ -79,7 +79,7 @@ export default function About() {
             </div>
           </div>
 
-          <div className="flex-1 grid grid-cols-2 gap-x-6 gap-y-8 content-between pt-1">
+          <div className="flex-1 grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-8 content-between pt-1">
             <StatList label="top artists" items={wrapped.artists} />
             <StatList label="top songs" items={wrapped.songs} />
             <BigStat label="year" value={wrapped.year} />
@@ -180,8 +180,8 @@ export default function About() {
       </section>
 
       {/* Links on phones, where the player bar is too narrow for them */}
-      <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex flex-wrap gap-x-6 gap-y-2">
-        <a href={`${EMAIL}?subject=hi`} className="text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors">
+      <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex flex-wrap gap-x-6 gap-y-3">
+        <a href={`${EMAIL}?subject=hi`} className="basis-full py-1 text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors">
           {INBOX}
         </a>
         {links.map((link) => (
@@ -190,7 +190,7 @@ export default function About() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors"
+            className="py-1 text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors"
           >
             {link.label} ↗
           </a>
@@ -210,9 +210,9 @@ function StatList({ label, items }: { label: string; items: string[] }) {
       <p className="text-[12px] text-[#1C191B]/75">{label}</p>
       <ol className="mt-2.5 space-y-1">
         {items.map((item, i) => (
-          <li key={i} className="flex items-baseline gap-3">
+          <li key={i} className="flex items-baseline gap-2 sm:gap-3">
             <span className="w-2 text-[11px] text-[#1C191B]/55">{i + 1}</span>
-            <span className="text-[15px] font-bold leading-tight md:whitespace-nowrap">{item}</span>
+            <span className="text-[13px] min-[380px]:text-[14px] sm:text-[15px] font-bold leading-tight whitespace-nowrap">{item}</span>
           </li>
         ))}
       </ol>

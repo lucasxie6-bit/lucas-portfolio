@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import SayHi from "@/components/SayHi";
 import SettingsPanel from "@/components/SettingsPanel";
 import {
@@ -161,6 +162,7 @@ export default function RootLayout({
         {children}
         <SettingsPanel />
         <SayHi />
+        <Analytics />
       </body>
     </html>
   );

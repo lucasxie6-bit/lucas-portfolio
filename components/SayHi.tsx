@@ -6,7 +6,7 @@ import { EMAIL, INBOX } from "@/components/records";
 type Status = "idle" | "sending" | "sent" | "error";
 
 const field =
-  "w-full rounded-xl bg-[#E5E1DA] px-4 text-[15px] text-[#1C191B] placeholder:text-[#8A847A] border-[1.5px] border-transparent outline-none transition-colors focus:bg-[#F7F5F0] focus:border-[#1C191B]";
+  "w-full rounded-xl bg-[#E5E1DA] px-4 text-[16px] text-[#1C191B] placeholder:text-[#8A847A] border-[1.5px] border-transparent outline-none transition-colors focus:bg-[#F7F5F0] focus:border-[#1C191B]";
 
 // Every message is delivered to INBOX by FormSubmit (https://formsubmit.co). The very first message triggers a one-time
 // "activate form" email to that inbox; nothing arrives until that link is clicked.
@@ -124,6 +124,8 @@ export default function SayHi() {
                 <input
                   name="email"
                   type="email"
+                  inputMode="email"
+                  autoCapitalize="off"
                   required
                   maxLength={200}
                   autoComplete="email"

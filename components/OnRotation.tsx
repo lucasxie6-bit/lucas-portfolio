@@ -128,12 +128,12 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           aria-valuenow={elapsed}
           aria-valuetext={`${shown} of ${clock(duration)}`}
           onClick={seek}
-          className="flex items-center gap-[2px] h-6 cursor-pointer"
+          className="flex items-center gap-px sm:gap-[2px] h-6 overflow-hidden cursor-pointer"
         >
           {bars.map((h, i) => (
             <span
               key={i}
-              className="flex-1 min-w-[2px] rounded-full transition-colors duration-300"
+              className="flex-1 min-w-0 rounded-full transition-colors duration-300"
               style={{ height: `${Math.round(h * 100)}%`, background: (i + 0.5) / bars.length <= pct / 100 ? "#1C191B" : "#DDD7CC" }}
             />
           ))}
@@ -242,7 +242,17 @@ export default function OnRotation() {
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {SLOTS.map((slot, pos) => {
               if (slot === null) {
-                return <Blank key={`blank-${pos}`} variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />;
+                const blank = <Blank variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />;
+                // Two columns can't fit nine sleeves evenly, so the last blank only shows in the three-column grid.
+                return pos === SLOTS.lastIndexOf(null) ? (
+                  <div key={`blank-${pos}`} className="hidden lg:contents">
+                    {blank}
+                  </div>
+                ) : (
+                  <div key={`blank-${pos}`} className="contents">
+                    {blank}
+                  </div>
+                );
               }
               const i = slot;
               const it = items[i];
