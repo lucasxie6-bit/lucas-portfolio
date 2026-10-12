@@ -108,7 +108,7 @@ export default async function Image() {
           </div>
         </div>
 
-        {/* Line + address */}
+        {/* Line */}
         <div
           style={{
             position: "absolute",
@@ -135,7 +135,6 @@ export default async function Image() {
             <span>i design apps</span>
             <span>and websites.</span>
           </div>
-          <div style={{ marginTop: 28, fontFamily: "DM Mono", fontSize: 24, color: "#8A847A" }}>lucasxie.me</div>
         </div>
       </div>
     ),

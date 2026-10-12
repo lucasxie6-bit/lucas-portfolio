@@ -16,6 +16,17 @@ const ENDPOINT = `https://formsubmit.co/ajax/${INBOX}`;
 export default function SayHi() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [status, setStatus] = useState<Status>("idle");
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(INBOX);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard blocked: the address is still on screen to select by hand.
+    }
+  };
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -148,6 +159,24 @@ export default function SayHi() {
               </svg>
               {status === "sending" ? "sending…" : "send"}
             </button>
+
+            <p className="mt-4 text-center text-[13px] text-[#8A847A]">
+              or copy my email:{" "}
+              <button
+                type="button"
+                onClick={copyEmail}
+                title="Copy email address"
+                className="inline-flex items-center gap-1.5 font-bold text-[#1C191B] hover:text-[#6B655C] transition-colors cursor-pointer"
+              >
+                <span aria-live="polite">{copied ? "copied ✓" : INBOX}</span>
+                {!copied && (
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                    <rect x="5" y="5" width="9" height="9" rx="2" />
+                    <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" />
+                  </svg>
+                )}
+              </button>
+            </p>
           </form>
         )}
       </div>
