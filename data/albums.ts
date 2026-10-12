@@ -1,5 +1,3 @@
-import { getProjectBySlug } from "@/data/projects";
-
 export type CoverFont = "archivo" | "bungee" | "serif" | "mono";
 
 export interface Track {
@@ -33,10 +31,10 @@ const flash =
 
 const plain = (labels: string[]): Track[] => labels.map((label) => ({ label }));
 
+const CASE_STUDY_SECTIONS = ["overview", "problem", "solution", "role", "outcome"];
+
 function caseStudyTracks(slug: string): Track[] {
-  const project = getProjectBySlug(slug);
-  if (!project) return [];
-  return project.sections.map((s) => ({ label: s.title, href: `/work/${slug}#${s.id}` }));
+  return CASE_STUDY_SECTIONS.map((id) => ({ label: id, href: `/work/${slug}#${id}` }));
 }
 
 export const albums: Album[] = [

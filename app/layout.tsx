@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import SayHi from "@/components/SayHi";
-import SettingsPanel from "@/components/SettingsPanel";
 import {
   Inter,
   Cormorant_Garamond,
@@ -160,7 +159,6 @@ export default function RootLayout({
           />
         </div>
         {children}
-        <SettingsPanel />
         <SayHi />
         <Analytics />
       </body>

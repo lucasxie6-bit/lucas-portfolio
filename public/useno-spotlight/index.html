@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Useno Homepage Spotlight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one fixed 1440x810 frame (the homepage at a 1440x810 browser size),
+   scaled to fit the window and played on a loop.
+   The page itself is a 2x capture of the live useno.app homepage. The only
+   parts drawn live are the ones the real page animates: the rotating word in
+   the headline, the search box's looping example line and its signal bars,
+   the load-in of both, and the frosted menu bar once the page scrolls. Their
+   CSS is copied from the live page value for value. */
+:root{
+  --letterbox:#E4EAF2;
+  --page:#f4f7fb;
+  --title:#123F76;
+  --f:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --ease:cubic-bezier(.22,.8,.3,1);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--letterbox);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow:hidden}
+#viewport{position:fixed;inset:0;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1440px;height:810px;overflow:hidden;background:var(--page);transform-origin:center center;isolation:isolate}
+
+.scene{position:absolute;inset:0;transition:opacity .7s var(--ease)}
+.scene.out{opacity:0}
+
+/* ---------- The page ---------- */
+.vp{position:absolute;overflow:hidden;background:var(--page)}
+.pg{position:absolute;left:0;top:0;width:1440px;transform-origin:0 0;will-change:transform}
+.pg .base{display:block;width:1440px;height:auto}
+.navw{position:absolute;left:0;top:0;width:1440px;height:72px;z-index:3}
+.navw img{position:relative;display:block;width:1440px;height:72px}
+.frost{position:absolute;inset:0;background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(1.5) blur(14px);backdrop-filter:saturate(1.5) blur(14px);box-shadow:0 6px 26px rgba(20,42,80,.1);border-bottom:1px solid #dbe4ef;opacity:0}
+.navw.scrolled .frost{opacity:1}
+
+/* ---------- Hero, copied from the live page ---------- */
+.hero-ov{position:absolute;left:330px;top:238.375px;width:780px;text-align:center;z-index:2}
+.ai-showcase-title{font-size:50px;font-weight:700;color:#123F76;letter-spacing:-.048em;line-height:1.05;text-wrap:balance;margin-bottom:30px;text-shadow:0 1px 0 rgba(255,255,255,.28)}
+.ai-rotator{display:inline-grid;grid-template-columns:minmax(0,1fr);justify-items:center;vertical-align:bottom;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.ai-rotator>span{grid-area:1/1;white-space:nowrap;opacity:0;transform:translateY(.22em);filter:blur(4px);transition:opacity .35s ease,transform .4s cubic-bezier(.22,.8,.3,1),filter .35s ease}
+.ai-rotator>span.is-on{opacity:1;transform:none;filter:none}
+.ai-rotator>span.is-off{transform:translateY(-.18em)}
+.ai-showcase-search{display:block;min-height:112px;text-align:left;background:#fff;border:1px solid rgba(6,31,71,.12);border-radius:22px;padding:18px 16px 13px 20px;box-shadow:0 4px 8px rgba(8,31,67,.06),0 24px 64px rgba(7,42,103,.18)}
+.ai-showcase-query{display:flex;align-items:center;gap:12px;min-width:0;color:#10233E;font-size:15.5px;font-weight:500;line-height:1.5}
+.ai-showcase-signal{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:#1F6CE1;flex-shrink:0}
+.ai-signal-glyph{height:12px;display:flex;align-items:flex-end;gap:2.5px}
+.ai-signal-glyph span{display:block;width:2.5px;border-radius:3px;background:currentColor}
+.ai-signal-glyph span:nth-child(1){height:5px;opacity:.58}
+.ai-signal-glyph span:nth-child(2){height:12px}
+.ai-signal-glyph span:nth-child(3){height:8px;opacity:.78}
+.ai-showcase-query-text{position:relative;display:block;flex:1;min-width:0;color:#8795A9;font-weight:400}
+.ai-input-ghost{display:block;height:1.5em}
+.ai-showcase-query-line{position:absolute;top:0;left:0;display:block;width:max-content;max-width:100%;white-space:nowrap}
+.ai-showcase-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}
+.ai-showcase-tool-left,.ai-showcase-tool-right{display:flex;align-items:center;gap:9px;min-width:0}
+.ai-showcase-plus{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:11px;color:#617086;flex-shrink:0}
+.ai-showcase-tool-label{color:#718097;font-size:12px;font-weight:550;white-space:nowrap}
+.ai-showcase-submit{width:40px;height:40px;border-radius:50%;background:#C2D9F5;color:#2E5C93;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
+.is-animating .ai-showcase-title{animation:aiShowcaseIntro .68s .08s cubic-bezier(.22,.8,.3,1) both}
+.is-animating .ai-showcase-search{animation:aiShowcaseIntro .72s .24s cubic-bezier(.22,.8,.3,1) both}
+.is-animating .ai-showcase-signal{animation:aiSearchSignal 9s ease-in-out infinite}
+.is-animating .ai-query-line-one{animation:aiQueryLineOne 9s steps(46,end) infinite}
+@keyframes aiShowcaseIntro{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes aiSearchSignal{0%,4%,91%,100%{opacity:.42;transform:translateY(1px) scaleY(.7)}8%,24%,70%,87%{opacity:1;transform:translateY(0) scaleY(1)}27%,32%{opacity:1;transform:translateY(-1px) scaleY(1.14)}}
+@keyframes aiQueryLineOne{0%,4%{opacity:0;clip-path:inset(0 100% 0 0)}6%{opacity:1}24%,87%{opacity:1;clip-path:inset(0 0 0 0)}93%,100%{opacity:0;clip-path:inset(0 0 0 0)}}
+
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage" role="img" aria-label="Animated walkthrough of the useno.app homepage"></div></div>
+
+<script>
+(function(){
+'use strict';
+
+/* Two pictures that sit next to this file: the live homepage captured at 2x
+   (menu bar, headline and search box left out, they are drawn live below),
+   and the menu bar on its own. */
+const BASE = 'homepage.jpg';
+const NAV = 'nav.png';
+const PAGE_H = 6220;
+/* Where each section of the live page starts, in page pixels. */
+const SEC = {hero:0, features:810, matches:1830, resume:2635, tour:3445, faq:4772, footer:5617};
+
+const W = 1440, H = 810;
+const stage = document.getElementById('stage');
+const $ = (s, r) => (r || stage).querySelector(s);
+const $$ = (s, r) => Array.from((r || stage).querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ease = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3) / 2;
+
+/* ---------- Timeline on a virtual clock, so pause really pauses ---------- */
+class Timeline{
+  constructor(){this.t=0;this.dur=20000;this.ev=[];this.tracks=[];this.sorted=false}
+  at(s,fn){this.ev.push({t:s*1000,fn:fn,done:false});this.sorted=false}
+  track(fn){this.tracks.push(fn)}
+  step(dt){
+    if(!this.sorted){this.ev.sort((a,b)=>a.t-b.t);this.sorted=true}
+    this.t+=dt;
+    for(let i=0;i<this.ev.length;i++){const e=this.ev[i];if(!e.done&&e.t<=this.t){e.done=true;e.fn()}}
+    const s=this.t/1000;for(const f of this.tracks)f(s);
+  }
+}
+/* Piecewise path through keyframes [t, ...values], eased between each pair. */
+function path(keys){
+  return function(s){
+    if(s<=keys[0][0])return keys[0].slice(1);
+    for(let i=1;i<keys.length;i++){
+      const a=keys[i-1],b=keys[i];
+      if(s<=b[0]){const p=ease((s-a[0])/(b[0]-a[0]||1));return a.slice(1).map((v,j)=>v+(b[j+1]-v)*p)}
+    }
+    return keys[keys.length-1].slice(1);
+  };
+}
+
+/* ---------- The page ---------- */
+const pageHTML = () => `<div class="pg">
+  <img class="base" src="${BASE}" alt="" draggable="false">
+  <div class="hero-ov">
+    <h1 class="ai-showcase-title">Describe your dream<br><span class="ai-rotator"><span class="is-on">internship.</span><span>new grad role.</span><span>co-op.</span></span> We&#39;ll find it.</h1>
+    <div class="ai-showcase-search">
+      <div class="ai-showcase-query">
+        <span class="ai-showcase-signal"><span class="ai-signal-glyph"><span></span><span></span><span></span></span></span>
+        <span class="ai-showcase-query-text"><span class="ai-input-ghost"></span><span class="ai-showcase-query-line ai-query-line-one">Find roles with real ownership and room to grow</span></span>
+      </div>
+      <div class="ai-showcase-tools">
+        <div class="ai-showcase-tool-left"><span class="ai-showcase-plus"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3.5v11M3.5 9h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="ai-showcase-tool-label">Searching 100,000 company career pages</span></div>
+        <div class="ai-showcase-tool-right"><span class="ai-showcase-submit">&#8593;</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="navw"><div class="frost"></div><img src="${NAV}" alt="" draggable="false"></div>
+</div>`;
+
+/* Starts the page the way a visitor's browser does: load-in, the looping
+   example line, and the headline word changing every 1.9 seconds. */
+function bootPage(tl, dur){
+  const pg=$('.pg'), box=$('.ai-rotator'), words=box.children;
+  pg.classList.add('is-animating');
+  box.style.width=words[0].offsetWidth+'px';
+  let i=0;
+  for(let s=1.9;s<dur;s+=1.9){
+    tl.at(s,()=>{
+      const prev=words[i];i=(i+1)%words.length;
+      prev.classList.remove('is-on');prev.classList.add('is-off');
+      tl.at(tl.t/1000+.4,()=>prev.classList.remove('is-off'));
+      words[i].classList.add('is-on');
+      box.style.width=words[i].offsetWidth+'px';
+    });
+  }
+}
+
+/* Camera: centre (cx, cy) of the page, zoom z, inside a viewport vw x vh.
+   The menu bar sits at the top of the browser's scroll position, as on the
+   real page, and frosts once that position passes 6px. */
+function camera(vw, vh){
+  const pg=$('.pg'), nav=$('.navw'), k=vw/1440, viewH=vh/k;
+  return function(cx, cy, z){
+    const s=z*k, hw=vw/2/s, hh=vh/2/s;
+    cx=clamp(cx,hw,1440-hw);cy=clamp(cy,hh,PAGE_H-hh);
+    pg.style.transform=`translate(${vw/2-cx*s}px,${vh/2-cy*s}px) scale(${s})`;
+    const scroll=clamp(cy-viewH/2,0,PAGE_H-viewH);
+    nav.style.transform=`translateY(${scroll}px)`;
+    nav.classList.toggle('scrolled',scroll>6);
+  };
+}
+/* Scroll position y (top of the screen) to camera centre at zoom 1. */
+const at = (y, viewH) => y + (viewH||810)/2;
+const outAt = (tl, s) => tl.at(s, ()=>$('.scene').classList.add('out'));
+
+/* =====================================================================
+   SPOTLIGHT: the camera moves in close on each part of the real page.
+   ===================================================================== */
+const vSpotlight = {
+  id:'spotlight', label:'Spotlight',
+  html:()=>`<div class="scene"><div class="vp" style="left:0;top:0;width:1440px;height:810px">${pageHTML()}</div></div>`,
+  build(tl){
+    const D=33;
+    bootPage(tl,D);
+    const cam=camera(1440,810);
+    //        t      cx    cy    zoom
+    const p=path([
+      [0,     720,  405,  1   ],
+      [1.2,   720,  405,  1   ],
+      [3.2,   720,  368,  1.32],
+      [6.8,   720,  368,  1.32],
+      [8.4,   720,  433,  1.62],
+      [12.2,  720,  433,  1.62],
+      [14.4,  720, 1332,  1.18],
+      [16.8,  720, 1332,  1.18],
+      [18.8, 1038, 2236,  1.36],
+      [21.4, 1038, 2236,  1.36],
+      [23.4, 1016, 3034,  1.32],
+      [26,   1016, 3034,  1.32],
+      [28,    720, 3860,  1   ],
+      [29.4,  720, 3860,  1   ],
+      [31,    720, 4330,  1   ],
+      [32.2,  720, 4330,  1   ]
+    ]);
+    tl.track(s=>{const [cx,cy,z]=p(s);cam(cx,cy,z)});
+    outAt(tl,32.3);
+    tl.dur=D*1000;
+  }
+};
+
+/* ---------- Player: plays Spotlight on a loop, sized to fit its container ---------- */
+const V=vSpotlight;
+let TL=null, last=performance.now();
+function start(){
+  document.getAnimations().forEach(a=>{try{a.cancel()}catch(e){}});
+  stage.innerHTML=V.html();void stage.offsetWidth;
+  TL=new Timeline();V.build(TL);TL.step(0);
+}
+function frame(now){
+  const dt=Math.min(64,now-last);last=now;
+  if(TL&&!document.hidden){TL.step(dt);if(TL.t>=TL.dur)start()}
+  requestAnimationFrame(frame);
+}
+function fit(){
+  const s=Math.min(innerWidth/W,innerHeight/H);
+  stage.style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize',fit);fit();
+const img=new Image();img.src=BASE;
+Promise.all([
+  (document.fonts&&document.fonts.ready)?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]):Promise.resolve(),
+  img.decode?img.decode().catch(()=>{}):Promise.resolve()
+]).then(()=>{start();last=performance.now();requestAnimationFrame(frame)});
+})();
+</script>
+</body>
+</html>

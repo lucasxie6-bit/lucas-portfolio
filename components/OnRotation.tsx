@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
 import { CoverArt, discBackground, items } from "@/components/records";
@@ -31,36 +31,61 @@ const durationOf = (i: number) => 150 + ((i * 47) % 90);
 const clock = (s: number) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 
 const LYRICS = ["hi, i'm lucas.", "i design apps\nand websites.", "from first sketch\nto shipped.", "here are a few.", "♪"];
-const LINE_SECS = 1.5;
-const lyricColor = (offset: number) =>
-  offset === 0 ? "#1C191B" : Math.abs(offset) === 1 ? "#C9C2B6" : Math.abs(offset) === 2 ? "#DDD7CC" : "#E6E1D7";
-
-// Pointing at a line (or tapping it) holds the lyrics there; letting go carries on from the line below.
+const LINE_SECS = 1.4;
+// Lyrics roll upward like a lyrics view: the current line sits in the middle, its neighbours fade out above and below.
+// Pointing at the lyrics holds the current line; clicking a faded one jumps to it. Letting go carries on from the
+// line after whichever one was held.
 function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: number) => void; onRelease: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const lineRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [shift, setShift] = useState(0);
+
+  // Keep the active line centred, and re-centre whenever the box or the text reflows (window resizes, fonts load).
+  useLayoutEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const centre = () => {
+      const line = lineRefs.current[active];
+      if (line) setShift(view.clientHeight / 2 - (line.offsetTop + line.offsetHeight / 2));
+    };
+    centre();
+    const ro = new ResizeObserver(centre);
+    ro.observe(view);
+    lineRefs.current.forEach((el) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, [active]);
+
   return (
     <div
-      ref={ref}
+      ref={viewRef}
+      onPointerEnter={(e) => e.pointerType === "mouse" && onHold(active)}
       onPointerLeave={(e) => e.pointerType === "mouse" && onRelease()}
-      onBlur={(e) => !ref.current?.contains(e.relatedTarget as Node | null) && onRelease()}
-      className="flex flex-col gap-6 lg:gap-8 text-[30px] lg:text-[36px] font-bold leading-[1.12] tracking-[-0.03em]"
+      onBlur={(e) => !viewRef.current?.contains(e.relatedTarget as Node | null) && onRelease()}
+      className="lyrics-view relative h-full overflow-hidden"
     >
-      {LYRICS.map((line, i) => (
-        <button
-          key={line}
-          type="button"
-          data-lyric
-          onPointerEnter={(e) => e.pointerType === "mouse" && onHold(i)}
-          onClick={() => onHold(i)}
-          // Only keyboard focus holds a line; a focus left behind by a click must not re-freeze it later.
-          onFocus={(e) => e.currentTarget.matches(":focus-visible") && onHold(i)}
-          aria-current={i === active ? "true" : undefined}
-          className="text-left whitespace-pre-line cursor-pointer transition-colors duration-500"
-          style={{ color: lyricColor(i - active) }}
-        >
-          {i === 0 ? <h1 className="m-0 font-[inherit] text-[length:inherit]">{line}</h1> : line}
-        </button>
-      ))}
+      <div
+        className="lyrics-track flex flex-col gap-16 side:gap-[clamp(40px,8vh,88px)] font-extrabold leading-[1.04] tracking-[-0.045em] text-[clamp(32px,9.5vw,56px)] side:text-[clamp(28px,9cqw,68px)]"
+        style={{ transform: `translate3d(0, ${shift}px, 0)` }}
+      >
+        {LYRICS.map((line, i) => (
+          <button
+            key={line}
+            ref={(el) => {
+              lineRefs.current[i] = el;
+            }}
+            type="button"
+            data-lyric
+            onClick={() => onHold(i)}
+            // Only keyboard focus holds a line; a focus left behind by a click must not re-freeze it later.
+            onFocus={(e) => e.currentTarget.matches(":focus-visible") && onHold(i)}
+            aria-current={i === active ? "true" : undefined}
+            className="lyric-line text-left whitespace-pre-line cursor-pointer"
+            style={{ color: i === active ? "#1C191B" : "#E4DFD6" }}
+          >
+            {i === 0 ? <h1 className="m-0 font-[inherit] text-[length:inherit]">{line}</h1> : line}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -73,31 +98,121 @@ interface PlayerProps {
   onSeek: (seconds: number) => void;
 }
 
+// A slim now-playing strip: pause, title and artist, length, and a thin progress line underneath.
 function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
   const now = items[sel];
   const duration = durationOf(sel);
   const pct = Math.min(100, (elapsed / duration) * 100);
+  const shown = clock(Math.min(elapsed, duration));
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
     onSeek(Math.round(((e.clientX - r.left) / r.width) * duration));
   };
 
+  return (
+    <section aria-label="Now playing">
+      <div className="flex items-center gap-3 text-[13px]">
+        <button
+          type="button"
+          aria-label={playing ? "Pause" : "Play"}
+          onClick={onToggle}
+          className="grid place-items-center size-8 -ml-2 shrink-0 rounded-full text-[#1C191B] hover:bg-[#E6E1D8] transition-colors cursor-pointer"
+        >
+          {playing ? (
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <rect x="3" y="2" width="3.4" height="12" rx="0.8" />
+              <rect x="9.6" y="2" width="3.4" height="12" rx="0.8" />
+            </svg>
+          ) : (
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" className="translate-x-px">
+              <path d="M4 2.6v10.8a.7.7 0 0 0 1.07.6l8.5-5.4a.7.7 0 0 0 0-1.2l-8.5-5.4A.7.7 0 0 0 4 2.6Z" />
+            </svg>
+          )}
+        </button>
+        <p className="m-0 min-w-0 truncate">
+          <A href={now.href} className="text-[#1C191B]">
+            {now.name}
+          </A>
+          <span className="text-[#8A847A]"> — lucas xie</span>
+        </p>
+        <span className="ml-auto font-[family-name:var(--font-dm-mono)] text-[11px] tabular-nums text-[#8A847A] whitespace-nowrap">
+          {clock(duration)}
+        </span>
+      </div>
+      <div
+        role="slider"
+        aria-label="Seek"
+        aria-valuemin={0}
+        aria-valuemax={duration}
+        aria-valuenow={elapsed}
+        aria-valuetext={`${shown} of ${clock(duration)}`}
+        onClick={seek}
+        className="group relative mt-2 h-3 flex items-center cursor-pointer"
+      >
+        <div className="relative w-full h-[2px] rounded-full bg-[#DDD7CC] group-hover:h-[3px] transition-[height]">
+          <div className="absolute inset-y-0 left-0 rounded-full bg-[#1C191B] transition-[width] duration-500 ease-linear" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// On phones: a dark pill pinned to the bottom of the screen with the cover, title, a waveform and a big pause button.
+function MiniPlayer({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
+  const now = items[sel];
+  const duration = durationOf(sel);
+  const pct = Math.min(100, (elapsed / duration) * 100);
   const bars = waveform(sel);
-  const shown = clock(Math.min(elapsed, duration));
+
+  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    onSeek(Math.round(((e.clientX - r.left) / r.width) * duration));
+  };
 
   return (
-    <section aria-label="Now playing" className="flex items-center gap-4">
+    <section aria-label="Now playing" className="flex items-center gap-3 rounded-full bg-[#1C191B] p-1.5 pr-1.5 text-[#F4F1EA] shadow-[0_14px_34px_-14px_rgba(28,25,27,0.7)]">
+      <A href={now.href} aria-label={`${now.name}, ${now.kind}`} className="relative size-11 shrink-0 overflow-hidden rounded-full" style={{ background: now.bg, color: now.fg, containerType: "inline-size" }}>
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center text-center leading-[0.92] whitespace-pre-line"
+          style={{ fontFamily: now.font, fontSize: `${((now.size / 248) * 100).toFixed(2)}cqw`, fontStyle: now.italic ? "italic" : "normal" }}
+        >
+          <CoverArt it={now} />
+        </span>
+      </A>
+      <div className="min-w-0 shrink-0 max-w-[30%] leading-tight">
+        <p className="m-0 truncate text-[14px] font-bold">{now.name}</p>
+        <p className="m-0 truncate text-[12px] text-[#F4F1EA]/55">lucas xie</p>
+      </div>
+      <div
+        role="slider"
+        aria-label="Seek"
+        aria-valuemin={0}
+        aria-valuemax={duration}
+        aria-valuenow={elapsed}
+        aria-valuetext={`${clock(Math.min(elapsed, duration))} of ${clock(duration)}`}
+        onClick={seek}
+        className="flex-1 min-w-0 flex items-center gap-px h-7 overflow-hidden cursor-pointer"
+      >
+        {bars.map((h, i) => (
+          <span
+            key={i}
+            className="flex-1 min-w-0 rounded-full transition-colors duration-300"
+            style={{ height: `${Math.round(h * 100)}%`, background: (i + 0.5) / bars.length <= pct / 100 ? "#F4F1EA" : "rgba(244,241,234,0.28)" }}
+          />
+        ))}
+      </div>
       <button
         type="button"
         aria-label={playing ? "Pause" : "Play"}
         onClick={onToggle}
-        className="grid place-items-center w-10 h-10 shrink-0 rounded-full bg-[#1C191B] text-white hover:scale-105 transition-transform cursor-pointer"
+        className="grid place-items-center size-11 shrink-0 rounded-full bg-[#F4F1EA] text-[#1C191B] cursor-pointer"
       >
         {playing ? (
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <rect x="3" y="2" width="3.2" height="12" rx="0.8" />
-            <rect x="9.8" y="2" width="3.2" height="12" rx="0.8" />
+            <rect x="3" y="2" width="3.4" height="12" rx="0.8" />
+            <rect x="9.6" y="2" width="3.4" height="12" rx="0.8" />
           </svg>
         ) : (
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" className="translate-x-px">
@@ -105,52 +220,16 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           </svg>
         )}
       </button>
-
-      <div className="flex-1 min-w-0 flex flex-col gap-2">
-        <div className="flex items-baseline gap-2.5">
-          <A
-            href={now.href}
-            className="text-[16px] leading-none truncate"
-            style={{ fontFamily: "var(--font-archivo-var), sans-serif", fontWeight: 600, fontStretch: "68%", letterSpacing: "-0.035em" }}
-          >
-            {now.name}
-          </A>
-          <span className="ml-auto text-[12px] tabular-nums whitespace-nowrap">
-            {shown} <span className="text-[#8A847A]">/ {clock(duration)}</span>
-          </span>
-        </div>
-
-        <div
-          role="slider"
-          aria-label="Seek"
-          aria-valuemin={0}
-          aria-valuemax={duration}
-          aria-valuenow={elapsed}
-          aria-valuetext={`${shown} of ${clock(duration)}`}
-          onClick={seek}
-          className="flex items-center gap-px sm:gap-[2px] h-6 overflow-hidden cursor-pointer"
-        >
-          {bars.map((h, i) => (
-            <span
-              key={i}
-              className="flex-1 min-w-0 rounded-full transition-colors duration-300"
-              style={{ height: `${Math.round(h * 100)}%`, background: (i + 0.5) / bars.length <= pct / 100 ? "#1C191B" : "#DDD7CC" }}
-            />
-          ))}
-        </div>
-      </div>
     </section>
   );
 }
 
 // A made-up but stable waveform per record: a slow swell times a faster ripple.
-const BAR_COUNT = 96;
-function waveform(seed: number) {
-  return Array.from({ length: BAR_COUNT }, (_, i) => {
-    const swell = 0.55 + 0.45 * Math.sin(i * 0.09 + seed * 1.7);
-    const ripple = Math.abs(Math.sin(i * 0.63 + seed * 2.3)) * 0.6 + Math.abs(Math.sin(i * 1.71 + seed)) * 0.4;
-    const fadeIn = Math.min(1, (i + 1) / 6);
-    return Math.max(0.12, Math.min(1, swell * (0.35 + 0.65 * ripple) * fadeIn));
+function waveform(seed: number, count = 56) {
+  return Array.from({ length: count }, (_, i) => {
+    const swell = 0.55 + 0.45 * Math.sin(i * 0.16 + seed * 1.7);
+    const ripple = Math.abs(Math.sin(i * 0.9 + seed * 2.3)) * 0.6 + Math.abs(Math.sin(i * 2.1 + seed)) * 0.4;
+    return Math.max(0.15, Math.min(1, swell * (0.35 + 0.65 * ripple)));
   });
 }
 
@@ -183,7 +262,7 @@ export default function OnRotation() {
 
   useEffect(() => {
     if (!playing || held !== null) return;
-    const id = setInterval(() => setElapsed((e) => e + 0.5), 500);
+    const id = setInterval(() => setElapsed((e) => Math.round((e + 0.2) * 10) / 10), 200);
     return () => clearInterval(id);
   }, [playing, held]);
 
@@ -194,7 +273,7 @@ export default function OnRotation() {
     if (held === null) return;
     const loop = LINE_SECS * LYRICS.length;
     const start = elapsed - (elapsed % loop);
-    setElapsed(Math.min(start + (held + 1) * LINE_SECS, duration - 0.5));
+    setElapsed(Math.min(start + (held + 1) * LINE_SECS, duration - 0.2));
     setHeld(null);
   };
 
@@ -213,11 +292,11 @@ export default function OnRotation() {
   }, [held]);
 
   return (
-    <div className="rot min-h-screen bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] lg:flex lg:items-start">
-      <aside className="box-border flex flex-col px-6 pt-8 pb-10 lg:w-[600px] lg:shrink-0 lg:sticky lg:top-0 lg:h-screen lg:p-12">
+    <div className="rot min-h-screen overflow-x-clip bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] side:flex side:items-start">
+      <aside className="@container box-border flex flex-col px-6 pt-6 pb-8 sm:px-10 side:flex-1 side:min-w-0 side:sticky side:top-0 side:h-screen side:pt-8 side:pb-10 xl:side:px-12 xl:side:pb-12">
         <TopBar />
 
-        <div className="my-16 lg:my-auto">
+        <div className="my-6 h-[clamp(300px,52vh,460px)] side:my-8 side:h-auto side:flex-1 side:min-h-0">
           <Lyrics
             active={activeLine}
             onHold={(line) => {
@@ -228,24 +307,30 @@ export default function OnRotation() {
           />
         </div>
 
-        <Player
-          sel={sel}
-          playing={playing}
-          elapsed={elapsed}
-          onToggle={() => setUserPlaying(!playing)}
-          onSeek={setElapsed}
-        />
+        {/* On phones the player is a dark pill pinned to the bottom of the screen; beside the covers it sits quietly
+            at the foot of the sidebar. */}
+        <div className="fixed inset-x-3 bottom-3 z-30 side:hidden">
+          <MiniPlayer sel={sel} playing={playing} elapsed={elapsed} onToggle={() => setUserPlaying(!playing)} onSeek={setElapsed} />
+        </div>
+        <div className="hidden side:block">
+          <Player sel={sel} playing={playing} elapsed={elapsed} onToggle={() => setUserPlaying(!playing)} onSeek={setElapsed} />
+        </div>
       </aside>
 
-      <main className="relative px-6 pb-16 lg:px-0 lg:pb-0 lg:ml-6 lg:mr-10 lg:flex-1 lg:min-w-0">
-        <div className="lg:py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      {/* Side by side, the covers always take about 62% of the window's width and the sidebar the rest, so both scale
+          together. The covers start level with the header; a short window scrolls past them while the sidebar stays put. */}
+      <main
+        className="relative px-6 pb-28 sm:px-10 side:flex-none side:pb-8 side:py-8 side:pl-0 side:pr-8"
+        style={{ "--tile": "calc((62vw - 32px - 32px) / 3)" } as React.CSSProperties}
+      >
+        <div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 side:[grid-template-columns:repeat(3,var(--tile))]">
             {SLOTS.map((slot, pos) => {
               if (slot === null) {
                 const blank = <Blank variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />;
-                // Two columns can't fit nine sleeves evenly, so the last blank only shows in the three-column grid.
+                // Two columns can't fit nine sleeves evenly, so the last blank only shows when the grid has three.
                 return pos === SLOTS.lastIndexOf(null) ? (
-                  <div key={`blank-${pos}`} className="hidden lg:contents">
+                  <div key={`blank-${pos}`} className="hidden sm:contents">
                     {blank}
                   </div>
                 ) : (

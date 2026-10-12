@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import TopBar from "@/components/TopBar";
-import { CoverArt, PROJECT_SLUGS, itemBySlug, type Item } from "@/components/records";
+import { CoverArt, PROJECT_SLUGS, discBackground, itemBySlug, type Item } from "@/components/records";
 import { getAlbumBySlug, type Album } from "@/data/albums";
 
 interface Rec {
@@ -240,7 +240,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                   aria-label={off === 0 ? `${r.item.name}, now playing` : `Play ${r.item.name}`}
                   aria-current={off === 0 ? "true" : undefined}
                   tabIndex={s.op === 0 ? -1 : 0}
-                  className={`flow-cover absolute left-1/2 top-1/2 border-0 p-0 ${off === 0 ? "cursor-default" : "cursor-pointer"}`}
+                  className={`flow-cover group absolute left-1/2 top-1/2 border-0 bg-transparent p-0 ${off === 0 ? "cursor-default" : "cursor-pointer"}`}
                   style={{
                     width: size,
                     height: size,
@@ -249,12 +249,19 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                     transitionDelay: phase === "fanning" ? `${Math.abs(off) * 40}ms` : undefined,
                     opacity: s.op,
                     zIndex: s.z,
-                    background: r.item.bg,
                     color: r.item.fg,
                     containerType: "inline-size",
                     boxShadow: off === 0 ? "0 34px 60px -30px rgba(28,25,27,0.55)" : Math.abs(off) === 1 ? "0 20px 40px -26px rgba(28,25,27,0.45)" : "none",
                   }}
                 >
+                  {/* The CD tucked behind the sleeve; hovering the cover in the middle slides it out and spins it. */}
+                  <span
+                    aria-hidden="true"
+                    className={`flow-cd absolute inset-[5%] rounded-full ${off === 0 ? "group-hover:translate-x-[46%]" : ""}`}
+                  >
+                    <span className="flow-cd-spin absolute inset-0 rounded-full" style={{ background: discBackground(r.item) }} />
+                  </span>
+                  <span aria-hidden="true" className="absolute inset-0" style={{ background: r.item.bg }} />
                   <span aria-hidden="true" className="absolute left-0 top-0 bottom-0 w-[4%] bg-black/10" />
                   <span
                     aria-hidden="true"

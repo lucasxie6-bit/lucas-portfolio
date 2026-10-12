@@ -12,12 +12,34 @@ const PAGES = [
 export default function TopBar({ className = "" }: { className?: string }) {
   const pathname = usePathname();
 
+  // The homepage sidebar gets a quieter header: the name on the left, plain text links on the right.
+  if (pathname === "/") {
+    return (
+      <header className={`flex items-center justify-between text-[14px] text-[#1C191B] ${className}`}>
+        <Link href="/" className="-my-2 py-2 font-medium hover:!text-[#8A847A] transition-colors">
+          lucas xie
+        </Link>
+        <nav aria-label="Primary" className="flex items-center gap-5">
+          {PAGES.map(({ label, href }) => (
+            <Link key={href} href={href} className="-my-2 py-2 hover:!text-[#8A847A] transition-colors">
+              {label}
+            </Link>
+          ))}
+          <a href={EMAIL} className="-my-2 py-2 hover:!text-[#8A847A] transition-colors">
+            say hi ↗
+          </a>
+        </nav>
+      </header>
+    );
+  }
+
   return (
     <header className={`grid grid-cols-[1fr_auto_1fr] items-center text-[#1C191B] ${className}`}>
       <Link href="/" className="justify-self-start py-2 text-[15px] font-bold hover:!text-[#8A847A] transition-colors">
         lucas xie
       </Link>
 
+      {/* The pill marks which page you're on. */}
       <nav aria-label="Primary" className="flex items-center gap-0.5 p-1 rounded-full bg-[#E6E1D8]">
         {PAGES.map(({ label, href, match }) => {
           const active = match(pathname);
