@@ -83,7 +83,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
   const rec = RECORDS[sel];
   const coverRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // On arrival the covers start stacked in the middle, then fan out to their slots one after another.
+  // On arrival the covers start in their own slots, faded and slightly low, then rise into place together.
   const [phase, setPhase] = useState<"stacked" | "fanning" | "idle">("stacked");
   useEffect(() => {
     let inner = 0;
@@ -227,7 +227,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
             {RECORDS.map((r, i) => {
               const off = offsetOf(i, sel, n);
               const slot = slots[String(off)];
-              const s = phase === "stacked" ? { ...slots["0"], size: base * 0.82, op: 0, dim: 0, z: slot.z } : slot;
+              const s = phase === "stacked" ? { ...slot, op: 0 } : slot;
               const size = `min(${base}cqw, ${MAX_PX}px)`;
               return (
                 <button
@@ -244,9 +244,9 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                   style={{
                     width: size,
                     height: size,
-                    transform: transformFor(s, base),
+                    transform: phase === "stacked" ? `${transformFor(s, base)} translateY(5%)` : transformFor(s, base),
                     transition: wrapped(i) ? "none" : undefined,
-                    transitionDelay: phase === "fanning" ? `${Math.abs(off) * 90}ms` : undefined,
+                    transitionDelay: phase === "fanning" ? `${Math.abs(off) * 40}ms` : undefined,
                     opacity: s.op,
                     zIndex: s.z,
                     background: r.item.bg,

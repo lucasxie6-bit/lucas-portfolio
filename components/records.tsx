@@ -3,7 +3,8 @@
 const ARCHIVO = "var(--font-archivo), sans-serif";
 const SERIF = "var(--font-instrument), serif";
 const MONO = "var(--font-dm-mono), monospace";
-export const EMAIL = "mailto:lucas.xie6@gmail.com";
+export const INBOX = "lucas.xie6@gmail.com";
+export const EMAIL = `mailto:${INBOX}`;
 
 const flash = (x: string, y: string) =>
   `radial-gradient(ellipse 48% 42% at ${x} ${y}, #FFFFFF 0%, #F1DED3 18%, #C38877 44%, #3A2A2C 74%, #0F0B0D 100%)`;

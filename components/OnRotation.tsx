@@ -104,7 +104,6 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           >
             {now.name}
           </A>
-          <span className="text-[13px] text-[#8A847A] truncate">{now.kind}</span>
           <span className="ml-auto text-[12px] tabular-nums whitespace-nowrap">
             {shown} <span className="text-[#8A847A]">/ {clock(duration)}</span>
           </span>

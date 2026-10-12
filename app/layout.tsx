@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SayHi from "@/components/SayHi";
 import SettingsPanel from "@/components/SettingsPanel";
 import {
   Inter,
@@ -112,8 +113,17 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://lucasxie.me"),
   title: "Lucas Xie",
   description: "Lucas Xie designs apps and websites. Case studies from useno, sponty, spark, grove and alvarez.",
+  openGraph: {
+    title: "Lucas Xie",
+    description: "i design apps and websites.",
+    url: "/",
+    siteName: "Lucas Xie",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
@@ -150,6 +160,7 @@ export default function RootLayout({
         </div>
         {children}
         <SettingsPanel />
+        <SayHi />
       </body>
     </html>
   );

@@ -170,6 +170,14 @@ html[data-text-size="xl"] {
   .side-cover, .gallery-fade { animation: none; }
 }
 
+@keyframes sayHiIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog[open] { animation: none !important; }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }

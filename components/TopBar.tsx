@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { EMAIL } from "@/components/records";
 
-// The two sides of the record: work is side a, about is side b.
-const SIDES = [
-  { side: "a", label: "work", href: "/play/useno", match: (p: string) => p.startsWith("/play") || p.startsWith("/work") },
-  { side: "b", label: "about", href: "/about", match: (p: string) => p.startsWith("/about") },
+const PAGES = [
+  { label: "work", href: "/play/useno", match: (p: string) => p.startsWith("/play") || p.startsWith("/work") },
+  { label: "about", href: "/about", match: (p: string) => p.startsWith("/about") },
 ];
 
 export default function TopBar({ className = "" }: { className?: string }) {
@@ -20,22 +19,19 @@ export default function TopBar({ className = "" }: { className?: string }) {
       </Link>
 
       <nav aria-label="Primary" className="flex items-center gap-0.5 p-1 rounded-full bg-[#E6E1D8]">
-        {SIDES.map(({ side, label, href, match }) => {
+        {PAGES.map(({ label, href, match }) => {
           const active = match(pathname);
           return (
             <Link
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
-              className={`inline-flex items-center gap-2 h-7 px-3.5 rounded-full text-[13px] transition-colors ${
+              className={`inline-flex items-center h-7 px-3.5 rounded-full text-[13px] transition-colors ${
                 active
                   ? "bg-[#F7F5F0] shadow-[0_1px_2px_rgba(28,25,27,0.12),0_0_0_1px_rgba(28,25,27,0.04)]"
                   : "hover:bg-[#EEEAE2]"
               }`}
             >
-              <span aria-hidden="true" className="font-[family-name:var(--font-dm-mono)] text-[9px] text-[#8A847A]">
-                {side}
-              </span>
               {label}
             </Link>
           );

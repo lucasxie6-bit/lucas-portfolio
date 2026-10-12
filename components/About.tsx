@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PhotoGallery, { type Photo } from "@/components/PhotoGallery";
 import PlayerFooter from "@/components/PlayerFooter";
+import { EMAIL, INBOX } from "@/components/records";
 import SideCovers, { type Cover } from "@/components/SideCovers";
 
 // Photos live in /public/photos, shown in this order. Set `size` to "big" (full row), "wide" (half) or "small" (a
@@ -46,7 +47,6 @@ const alsoOnRotation = [
 ];
 
 const links = [
-  { label: "twitter", href: "https://x.com/lxie_001" },
   { label: "linkedin", href: "https://www.linkedin.com/in/lucas-xie-630238244" },
   { label: "github", href: "https://github.com/lucasxie6-bit" },
 ];
@@ -180,7 +180,10 @@ export default function About() {
       </section>
 
       {/* Links on phones, where the player bar is too narrow for them */}
-      <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex gap-6">
+      <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex flex-wrap gap-x-6 gap-y-2">
+        <a href={`${EMAIL}?subject=hi`} className="text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors">
+          {INBOX}
+        </a>
         {links.map((link) => (
           <a
             key={link.label}

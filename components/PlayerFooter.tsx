@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { EMAIL } from "@/components/records";
+import { EMAIL, INBOX } from "@/components/records";
 
 export type FooterLink = { label: string; href: string };
 
 // A small now-playing bar pinned to the bottom of the page. The thin line along its bottom edge tracks scroll progress.
 export default function PlayerFooter({ links, className = "" }: { links: FooterLink[]; className?: string }) {
   const [progress, setProgress] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const update = () => {
@@ -24,6 +25,16 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
     };
   }, []);
 
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(INBOX);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      window.location.href = EMAIL;
+    }
+  };
+
   const toTop = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
@@ -31,7 +42,7 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
 
   return (
     <footer className={`sticky bottom-3 z-20 px-3 ${className}`}>
-      <div className="relative max-w-[680px] mx-auto overflow-hidden rounded-lg bg-[#1C191B] text-white pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_12px_28px_-16px_rgba(28,25,27,0.7)]">
+      <div className="relative max-w-[780px] mx-auto overflow-hidden rounded-lg bg-[#1C191B] text-white pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_12px_28px_-16px_rgba(28,25,27,0.7)]">
         {/* Now playing */}
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -72,6 +83,14 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
 
         {/* Links */}
         <div className="hidden md:flex items-center justify-end gap-4 flex-1">
+          <button
+            type="button"
+            onClick={copyEmail}
+            title="Copy email address"
+            className="text-[12px] text-white/70 hover:text-white transition-colors whitespace-nowrap cursor-pointer"
+          >
+            <span aria-live="polite">{copied ? "copied ✓" : INBOX}</span>
+          </button>
           {links.map((link) => (
             <a
               key={link.label}
