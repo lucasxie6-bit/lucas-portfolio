@@ -272,16 +272,6 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                   >
                     <CoverArt it={r.item} />
                   </span>
-                  {r.slug === "useno" && (
-                    <span
-                      aria-hidden="true"
-                      className={`absolute -right-[5%] -top-[5%] w-[19%] aspect-square rounded-full bg-[#EE7A2E] text-[#1C191B] grid place-items-center text-center rotate-[10deg] font-bold leading-[1.05] text-[3cqw] transition-opacity duration-500 ${off === 0 ? "opacity-100" : "opacity-0"}`}
-                    >
-                      lead
-                      <br />
-                      single
-                    </span>
-                  )}
                   <span
                     aria-hidden="true"
                     className="flow-dim absolute inset-0 bg-[#F4F1EA] pointer-events-none"
@@ -319,7 +309,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
           <Crossfade index={sel} className="mt-4">
             {RECORDS.map((r) => (
               <div key={r.slug} className="flex flex-col items-center">
-                <p className="m-0 max-w-[560px] text-[17px] md:text-[19px] leading-[1.45] text-[#4A4541] lowercase">{r.album.line}</p>
+                <p className="m-0 max-w-[560px] md:max-w-none md:whitespace-nowrap text-[17px] md:text-[19px] leading-[1.45] text-[#4A4541] lowercase">{r.album.line}</p>
                 {r.album.href && (
                   <Link
                     href={r.album.href}

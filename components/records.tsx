@@ -88,7 +88,7 @@ function UsenoMark({ className = "" }: { className?: string }) {
 }
 
 export const items: Item[] = [
-  { name: "useno", kind: "case study", href: "/work/useno", bg: "#1F3A5F", fg: "#FFFFFF", title: "useno", font: ARCHIVO, size: 48, chipBg: "#F3F0E8", chipFg: "#1F3A5F", art: "useno" },
+  { name: "useno", kind: "startup", href: "/work/useno", bg: "#1F3A5F", fg: "#FFFFFF", title: "useno", font: ARCHIVO, size: 48, chipBg: "#F3F0E8", chipFg: "#1F3A5F", art: "useno" },
   {
     name: "sponty",
     kind: "case study",

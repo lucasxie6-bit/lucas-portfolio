@@ -43,7 +43,7 @@ export const albums: Album[] = [
   {
     slug: "useno",
     name: "Useno",
-    kind: "Case study",
+    kind: "Startup",
     year: "2026",
     line: "Internship discovery and application tracking, in one place.",
     bg: "#4B4FD8",
@@ -54,7 +54,7 @@ export const albums: Album[] = [
     coverSize: 78,
     sticker: "Lead\nsingle",
     tracks: caseStudyTracks("useno"),
-    cta: "Play — read the case study",
+    cta: "Play — see the project",
     href: "/work/useno",
   },
   {
