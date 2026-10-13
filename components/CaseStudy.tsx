@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { EMAIL } from "@/components/records";
+import SiteHeader from "@/components/SiteHeader";
 import type { CaseStudy as Study } from "@/data/caseStudies";
 
 const WIDE_QUERY = "(min-width: 1024px)";
@@ -519,24 +519,7 @@ export default function CaseStudy({ study }: { study: Study }) {
   return (
     <div className="min-h-screen bg-white font-[family-name:var(--font-dm-sans)]" style={{ color: INK }}>
       {/* Header */}
-      <header>
-        <div className="mx-auto flex h-[60px] max-w-[1146px] items-center justify-between px-6 md:pl-[52px] md:pr-[38px]">
-          <Link href="/" className="text-[14px] font-medium hover:opacity-70 transition-opacity">
-            Lucas Xie
-          </Link>
-          <nav aria-label="Primary" className="flex items-center gap-7 text-[13px]">
-            <Link href={back} aria-current="page" className="hover:opacity-70 transition-opacity">
-              Work
-            </Link>
-            <Link href="/about" className="hover:opacity-70 transition-opacity" style={{ color: MUTED }}>
-              About
-            </Link>
-            <a href={EMAIL} className="hover:opacity-70 transition-opacity" style={{ color: MUTED }}>
-              Contact
-            </a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader workHref={back} className="mx-auto h-[60px] max-w-[1146px] px-6 md:pl-[52px] md:pr-[38px]" />
 
       {/* Smaller screens: a floating pill bar once you're past the title */}
       <nav

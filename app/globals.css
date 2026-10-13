@@ -203,14 +203,14 @@ html[data-text-size="xl"] {
   pointer-events: auto;
   overflow: hidden;
   border-radius: 3px;
-  opacity: 0.3;
-  filter: grayscale(0.75);
+  opacity: 0.82;
+  filter: saturate(0.85);
   transform: rotate(var(--tilt));
-  box-shadow: 0 10px 24px -14px rgba(17, 24, 39, 0.45);
+  box-shadow: 0 14px 30px -16px rgba(17, 24, 39, 0.5);
   animation: coverFloat 10s ease-in-out infinite alternate;
-  transition: opacity 0.4s ease, filter 0.4s ease;
+  transition: opacity 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
 }
-.side-cover:hover { opacity: 0.95; filter: none; }
+.side-cover:hover { opacity: 1; filter: none; box-shadow: 0 20px 40px -18px rgba(17, 24, 39, 0.55); }
 @keyframes galleryFade {
   from { opacity: 0; }
   to   { opacity: 1; }

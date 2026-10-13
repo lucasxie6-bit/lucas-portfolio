@@ -4,6 +4,7 @@ import PhotoGallery, { type Photo } from "@/components/PhotoGallery";
 import PlayerFooter from "@/components/PlayerFooter";
 import { EMAIL, INBOX } from "@/components/records";
 import SideCovers, { type Cover } from "@/components/SideCovers";
+import { albumCovers } from "@/data/covers";
 
 // Photos live in /public/photos, shown in this order. Set `size` to "big" (full row), "wide" (half) or "small" (a
 // quarter) to choose which ones stand out; rows always fill out, so any mix works. Big photos use their `ratio`, capped at 3:2.
@@ -20,11 +21,12 @@ const photos: Photo[] = [
   { src: "/photos/photo-13.jpg", alt: "Lucas with a group of friends", size: "big", ratio: 1076 / 580 },
 ];
 
-// Album covers and references that hang faded in the side margins on wide screens.
-const covers: Cover[] = [
-  "photo-23", "photo-29", "photo-34", "photo-31", "photo-26", "photo-30", "photo-22", "photo-20", "photo-24", "photo-27",
-  "photo-21", "photo-32", "photo-25", "photo-28", "photo-33", "photo-35",
-].map((name) => ({ src: `/photos/${name}.jpg` }));
+// Album covers and a few photos, hanging in the side margins on wide screens.
+const photoCovers = ["photo-23", "photo-29", "photo-34", "photo-31", "photo-26", "photo-30", "photo-22"].map((name) => `/photos/${name}.jpg`);
+// A photo after every seven or so covers.
+const covers: Cover[] = albumCovers
+  .flatMap((src, i) => (i % 7 === 6 && photoCovers[(i - 6) / 7] ? [src, photoCovers[(i - 6) / 7]] : [src]))
+  .map((src) => ({ src }));
 
 // Listening stats on the card at the top.
 const wrapped = {

@@ -1,0 +1,27 @@
+// Official album artwork (from Apple Music) in /public/covers, shuffled so an artist never repeats back to back.
+// Add a cover by dropping a .jpg in that folder and its name here.
+export const albumCovers = [
+  "rihanna-talk-that-talk", "charli-xcx-wuthering-heights", "illit-mamihlapinatapai", "lana-del-rey-blue-banisters",
+  "sabrina-carpenter-man-s-best-friend", "addison-rae-addison", "taylor-swift-red", "lana-del-rey-ultraviolence",
+  "raye-my-21st-century-blues", "charli-xcx-number-1-angel", "illit-i-ll-like-you", "the-weeknd-kiss-land",
+  "lana-del-rey-born-to-die", "ariana-grande-dangerous-woman", "the-weeknd-beauty-behind-the-madness",
+  "rihanna-anti", "ariana-grande-positions", "zara-larsson-venus", "raye-this-music-may-contain-hope",
+  "taylor-swift-fearless", "doja-cat-scarlet", "rihanna-good-girl-gone-bad",
+  "chappell-roan-the-rise-and-fall-of-a-midwest-princess", "gracie-abrams-daughter-from-hell",
+  "rihanna-unapologetic", "charli-xcx-crash", "doja-cat-planet-her", "lana-del-rey-chemtrails-over-the-country-club",
+  "charli-xcx-pop-2", "pinkpantheress-fancy-that", "zara-larsson-midnight-sun", "charli-xcx-music-fashion-film",
+  "the-weeknd-after-hours", "tate-mcrae-i-used-to-think-i-could-fly", "doja-cat-vie", "the-weeknd-starboy",
+  "troye-sivan-she-s-the-best", "rihanna-rated-r", "the-weeknd-dawn-fm", "zara-larsson-poster-girl",
+  "taylor-swift-speak-now", "lana-del-rey-did-you-know-that-there-s-a-tunnel-under-ocean-blvd",
+  "troye-sivan-blue-neighbourhood", "taylor-swift-1989", "gracie-abrams-the-secret-of-us", "charli-xcx-sucker",
+  "taylor-swift-reputation", "lana-del-rey-honeymoon", "ariana-grande-eternal-sunshine", "tate-mcrae-think-later",
+  "taylor-swift-lover", "gracie-abrams-good-riddance", "troye-sivan-bloom", "taylor-swift-evermore",
+  "lana-del-rey-norman-fg-rockwell", "tate-mcrae-so-close-to-what", "taylor-swift-folklore",
+  "pinkpantheress-heaven-knows", "charli-xcx-how-i-m-feeling-now", "the-weeknd-house-of-balloons-original",
+  "lana-del-rey-lust-for-life", "sabrina-carpenter-short-n-sweet", "ariana-grande-my-everything", "slayyyter-sr",
+  "taylor-swift-the-tortured-poets-department", "jennie-ruby", "ariana-grande-yours-truly", "slayyyter-slayyyter",
+  "charli-xcx-brat", "ariana-grande-petal", "slayyyter-troubled-paradise", "illit-bomb", "taylor-swift-midnights",
+  "ariana-grande-thank-u-next", "the-weeknd-hurry-up-tomorrow", "rihanna-loud", "charli-xcx-charli",
+  "taylor-swift-taylor-swift", "audrey-hobert-who-s-the-clown", "ariana-grande-sweetener",
+  "sabrina-carpenter-emails-i-can-t-send", "charli-xcx-true-romance", "pinkpantheress-to-hell-with-it",
+].map((name) => `/covers/${name}.jpg`);
