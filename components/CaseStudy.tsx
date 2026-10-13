@@ -100,8 +100,6 @@ function BoardLogo({ board }: { board: string }) {
 function ListingChart({ chart }: { chart: Chart }) {
   // Every row shares one grid as wide as the longest board, so the rows line up tile for tile.
   const cols = Math.max(...chart.rows.map((r) => r.total));
-  const hits = chart.rows.reduce((sum, r) => sum + r.hits, 0);
-  const total = chart.rows.reduce((sum, r) => sum + r.total, 0);
   return (
     <figure className="m-0 mt-12 rounded-[12px] px-5 py-7 md:px-10 md:py-10" style={{ background: SOFT }}>
       <p className="m-0 text-[20px] md:text-[24px] font-semibold leading-tight tracking-[-0.03em]" style={{ color: INK }}>
@@ -156,13 +154,6 @@ function ListingChart({ chart }: { chart: Chart }) {
           </li>
         ))}
       </ul>
-
-      <p className="m-0 mt-9 pt-6 border-t text-[14px] md:text-[15px]" style={{ borderColor: "#E5E7EB", color: INK }}>
-        <span className="font-semibold" style={{ color: HIT }}>
-          {hits} of {total}
-        </span>{" "}
-        listings said who could apply.
-      </p>
     </figure>
   );
 }
@@ -338,6 +329,132 @@ function DiscoveryLayout({ tint }: { tint: string }) {
         ))}
       </ol>
     </ExploreFigure>
+  );
+}
+
+// Context for useno: a browser full of career-page tabs, then the same hunt as one short useno list.
+const AFTER_JOBS = [
+  { title: "Forward Deployed Engineer Intern", company: "Coinbase", age: "4d", logo: "coinbase" },
+  { title: "Machine Learning Engineer Intern", company: "IMC Trading", age: "5d", logo: "imc" },
+  { title: "Software Engineering Intern", company: "Sigma Computing", age: "1w", logo: "sigma" },
+] as const;
+
+function CompanyMark({ logo, size }: { logo: (typeof AFTER_JOBS)[number]["logo"]; size: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="grid shrink-0 place-items-center rounded-[8px] border bg-white"
+      style={{ width: size, height: size, borderColor: "#E5E7EB" }}
+    >
+      {logo === "coinbase" ? (
+        <svg viewBox="0 0 24 24" style={{ width: size * 0.5, height: size * 0.5 }}>
+          <circle cx="12" cy="12" r="12" fill="#1652F0" />
+          <path d="M15.6 9.6a4.3 4.3 0 1 0 0 4.8" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="butt" />
+        </svg>
+      ) : logo === "imc" ? (
+        <svg viewBox="0 0 24 24" style={{ width: size * 0.56, height: size * 0.56 }}>
+          <circle cx="12" cy="12" r="10.5" fill="#2E55E4" />
+          <circle cx="12" cy="12" r="4.6" fill="#fff" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" style={{ width: size * 0.56, height: size * 0.56 }}>
+          <rect width="24" height="24" rx="3" fill="#111" />
+          <path d="M7 6.5h10l-4.2 5.5L17 17.5H7" fill="none" stroke="#fff" strokeWidth="2.1" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
+function BeforeAfter({ accent, description }: { accent: string; description: string }) {
+  return (
+    <figure className="m-0 mt-10 grid gap-6 sm:grid-cols-2 sm:gap-[22px]">
+      <figcaption className="sr-only">{description}</figcaption>
+
+      {/* Before: tab after tab of career pages, the one that fits lost in the middle */}
+      <div aria-hidden="true">
+        <p className="m-0 text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+          Before
+        </p>
+        <div className="relative mt-3 h-[300px] overflow-hidden rounded-[12px]" style={{ background: "#F1F2F4" }}>
+          <div className="absolute left-[14px] right-0 top-[20px] flex gap-[2px]">
+            {["Jobs | Sage", "Careers – Auctor", "Search (99+)"].map((tab, i) => (
+              <span
+                key={tab}
+                className="h-[26px] min-w-0 shrink-0 basis-[34%] truncate rounded-t-[6px] px-2.5 text-[11px] leading-[26px]"
+                style={i === 2 ? { background: "#fff", color: "#374151" } : { background: "#E5E7EB", color: "#6B7280" }}
+              >
+                {tab}
+              </span>
+            ))}
+          </div>
+          <div className="absolute bottom-0 left-[14px] right-0 top-[46px] bg-white px-5 pt-5">
+            {[
+              ["78%", "#EAECEF"],
+              ["58%", "#EAECEF"],
+              ["84%", "#F3D7CE"],
+              ["50%", "#EAECEF"],
+            ].map(([w, c], i) => (
+              <span key={i} className="mb-[15px] block h-[7px] rounded-full" style={{ width: w, background: c }} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* After: a few internships you can actually apply to */}
+      <div aria-hidden="true">
+        <p className="m-0 text-[13px] font-semibold" style={{ color: accent }}>
+          After
+        </p>
+        <div className="mt-3 h-[300px] overflow-hidden rounded-[12px] px-5 pt-[22px]" style={{ background: SOFT }}>
+          <p className="m-0 flex items-center gap-2 text-[11.5px] font-semibold" style={{ color: INK }}>
+            <span className="grid size-[14px] place-items-center rounded-[3px]" style={{ background: accent }}>
+              <svg viewBox="0 0 100 100" className="size-[10px]" fill="none" stroke="#fff" strokeWidth={11} strokeLinecap="round">
+                <path d="M37.9 30.5V55C37.9 66 39.6 69.4 44.3 69.4" />
+                <path d="M62.1 30.5V55C62.1 66 60.4 69.4 55.7 69.4" />
+              </svg>
+            </span>
+            useno
+          </p>
+          <ul className="m-0 mt-[14px] p-0 list-none space-y-[7px]">
+            {AFTER_JOBS.map((job, i) =>
+              i === 0 ? (
+                <li
+                  key={job.title}
+                  className="flex items-center gap-3 rounded-[10px] border bg-white p-3 shadow-[0_10px_24px_-14px_rgba(17,24,39,0.25)]"
+                  style={{ borderColor: "#E5E7EB" }}
+                >
+                  <CompanyMark logo={job.logo} size={38} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[13.5px] font-semibold leading-[1.25]" style={{ color: INK }}>
+                      {job.title}
+                    </span>
+                    <span className="mt-1 block text-[11.5px]" style={{ color: MUTED }}>
+                      {job.company} · {job.age}
+                    </span>
+                  </span>
+                  <span className="shrink-0 rounded-[6px] px-3 py-[7px] text-[12px] font-semibold text-white" style={{ background: accent }}>
+                    Apply
+                  </span>
+                </li>
+              ) : (
+                <li key={job.title} className="flex items-center gap-2.5 rounded-[10px] border bg-white px-3 py-2.5" style={{ borderColor: "#E5E7EB" }}>
+                  <CompanyMark logo={job.logo} size={28} />
+                  <span className="min-w-0">
+                    <span className="block truncate text-[12.5px] font-semibold" style={{ color: INK }}>
+                      {job.title}
+                    </span>
+                    <span className="mt-0.5 block text-[11px]" style={{ color: MUTED }}>
+                      {job.company} · {job.age}
+                    </span>
+                  </span>
+                </li>
+              ),
+            )}
+          </ul>
+        </div>
+      </div>
+    </figure>
   );
 }
 
@@ -548,7 +665,12 @@ export default function CaseStudy({ study }: { study: Study }) {
             <section id="overview" aria-labelledby="overview-title" className="scroll-mt-24">
               <Label id="overview" tint={tint} n={sections.indexOf("overview")} />
               {study.overviewLead && <Lead tint={tint}>{study.overviewLead}</Lead>}
-              {typeof study.overview === "string" ? (
+              {study.overviewVisual === "before-after" ? (
+                <BeforeAfter
+                  accent={study.accent}
+                  description={typeof study.overview === "string" ? study.overview : study.overview.map((c) => `${c.label}: ${c.text}`).join(" ")}
+                />
+              ) : typeof study.overview === "string" ? (
                 <Prose>{study.overview}</Prose>
               ) : (
                 <div className="mt-10 grid gap-y-10 gap-x-10 sm:grid-cols-2">

@@ -22,6 +22,8 @@ export interface CaseStudy {
   overviewLead?: string;
   /** One paragraph, or a pair of short labelled cards (the problem, then what was built). */
   overview: string | { label: string; text: string }[];
+  /** Show a drawn before/after in place of the overview text (the text stays as its description for screen readers). */
+  overviewVisual?: "before-after";
   /** The question the project answers, shown in a callout at the end of the context. Wrap words in **double
    *  asterisks** to pick them out; the overview paragraph supports the same. */
   problem: string;
@@ -65,6 +67,7 @@ export const caseStudies: CaseStudy[] = [
     meta: { role: "Founder, designer, developer", timeline: "June 2026 – present", platform: "Responsive web app" },
     heroEmbed: { src: "/useno-spotlight/index.html", title: "Animated walkthrough of the useno.app homepage" },
     overviewLead: "The right roles were buried in **the wrong ones.**",
+    overviewVisual: "before-after",
     overview: [
       { label: "The problem", text: "Job boards gave me hundreds of listings, but finding ones I actually qualified for was another story." },
       {
