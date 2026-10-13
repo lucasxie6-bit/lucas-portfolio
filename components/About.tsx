@@ -184,30 +184,31 @@ export default function About() {
         <PhotoGallery photos={photos} />
       </section>
 
-      {/* Contact on phones, where the player bar is too narrow for the links */}
+      {/* Contact on phones, where the player bar is too narrow for the links: a bonus-track listing, styled like the
+          favourites card above */}
       <section aria-labelledby="contact-heading" className="md:hidden max-w-[800px] mx-auto px-6 mt-16">
-        <h2 id="contact-heading" className="text-[13px] font-normal text-[#8B919C]">
-          get in touch
+        <h2 id="contact-heading" className="mb-4 text-[17px] font-bold text-[#111827]">
+          bonus tracks
         </h2>
-        <ul className="mt-3 border-t border-[#E5E7EB]">
-          {[{ label: "email", href: `${EMAIL}?subject=hi`, detail: INBOX, external: false }, ...links.map((l) => ({ ...l, detail: "", external: true }))].map(
-            (row) => (
-              <li key={row.label} className="border-b border-[#E5E7EB]">
+        <div className="rounded-lg bg-gradient-to-br from-[#2A3558] to-[#1F2945] p-5 text-white">
+          <p className="font-[family-name:var(--font-archivo)] text-[30px] leading-none tracking-[-0.03em]">say hi.</p>
+          <p className="mt-2 text-[14px] text-white/85">it goes straight to my inbox</p>
+          <ol className="mt-5 border-t border-white/10">
+            {[{ label: INBOX, href: `${EMAIL}?subject=hi`, external: false }, ...links.map((l) => ({ ...l, external: true }))].map((row, i) => (
+              <li key={row.label} className="border-b border-white/10 last:border-b-0">
                 <a
                   href={row.href}
                   {...(row.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="flex items-center justify-between gap-4 py-4 text-[16px] text-[#111827]"
+                  className="flex items-center py-3 hover:text-white/80"
                 >
-                  {row.label}
-                  <span className="flex min-w-0 items-center gap-2 text-[14px] text-[#6B7280]">
-                    <span className="truncate">{row.detail}</span>
-                    <span aria-hidden="true">↗</span>
-                  </span>
+                  <span className="w-7 font-[family-name:var(--font-dm-mono)] text-[12px] text-white/45">{pad(i + 1)}</span>
+                  <span className="min-w-0 flex-1 truncate text-[14px] font-bold">{row.label}</span>
+                  <span aria-hidden="true" className="text-white/45">↗</span>
                 </a>
               </li>
-            ),
-          )}
-        </ul>
+            ))}
+          </ol>
+        </div>
       </section>
 
       <PlayerFooter links={links} className="mt-16 md:mt-20" />

@@ -156,8 +156,8 @@ html[data-text-size="xl"] {
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-shadow: 0 6px 16px -6px rgba(17, 24, 39, 0.45);
 }
-.rot .cd-slot:hover .cd, .rot .cd-slot:focus-within .cd { transform: translateX(46%); }
-.rot .cd-left:hover .cd, .rot .cd-left:focus-within .cd { transform: translateX(-46%); }
+.rot .cd-slot:hover .cd, .rot .cd-slot:focus-within .cd { transform: translateX(52%); }
+.rot .cd-left:hover .cd, .rot .cd-left:focus-within .cd { transform: translateX(-52%); }
 .rot .cd-spin { animation: platterSpin 4s linear infinite; animation-play-state: paused; }
 .rot .cd-slot:hover .cd-spin { animation-play-state: running; }
 .rot .sq:hover .chip { background: #F3F4F6 !important; color: #111827 !important; }
@@ -167,21 +167,27 @@ html[data-text-size="xl"] {
   .rot .cd-spin { animation: none; }
 }
 
-/* Homepage cover grid. Phones: 2 across (6 sleeves). Small tablets stacked: 3 across (9). Side by side: squarer
-   windows get 2 across and 3 down, sized to fill the height; wide windows get 3 across, sized by width. */
+/* Homepage cover grid: landscape 5:4 sleeves, with useno filling a 2×2 block at the start. Phones: 2 across. Small tablets stacked: 3 across.
+   Side by side: squarer windows get 2 across and 4 rows (useno, then two pairs), sized to fill the height; wide
+   windows get 3 across, sized by width. */
 .home-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .home-grid .extra-blank { display: none; }
+/* With two columns nothing else shares useno's rows, so it carries its own height; with three the covers beside it set it. */
+.home-grid .lead { aspect-ratio: 5 / 4; }
 @media (min-width: 40rem) {
   .home-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .home-grid .extra-blank { display: contents; }
+  .home-grid .lead { aspect-ratio: auto; }
 }
 @media (min-width: 48rem) {
-  .home-grid { grid-template-columns: repeat(2, min(calc((62vw - 48px) / 2), calc((100vh - 64px - 32px) / 3))); }
+  .home-grid { grid-template-columns: repeat(2, min(calc((62vw - 48px) / 2), calc((100vh - 64px - 48px) / 4 * 1.25))); }
   .home-grid .extra-blank { display: none; }
+  .home-grid .lead { aspect-ratio: 5 / 4; }
 }
 @media (min-width: 48rem) and (min-aspect-ratio: 5 / 4) {
   .home-grid { grid-template-columns: repeat(3, calc((62vw - 64px) / 3)); }
   .home-grid .extra-blank { display: contents; }
+  .home-grid .lead { aspect-ratio: auto; }
 }
 
 /* Homepage lyrics: lines fade out towards the top and bottom edges and glide between positions */

@@ -93,10 +93,7 @@ export const caseStudies: CaseStudy[] = [
     },
     exploration: {
       lead: "Make the right opportunities **easier to recognize.**",
-      paragraphs: [
-        "I wanted students to spend less time figuring out whether they qualified and more time finding internships worth pursuing.",
-        "I explored how clearer eligibility information, focused filters, and simpler job cards could make each opportunity easier to evaluate at a glance.",
-      ],
+      paragraphs: ["Less time checking whether you qualify, more time on internships worth pursuing."],
       closing: "The goal wasn't to show students more jobs. It was to help them make better decisions about **the ones they found.**",
     },
     solution: [],

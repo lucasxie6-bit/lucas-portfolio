@@ -7,9 +7,12 @@ import { CoverArt, discBackground, items } from "@/components/records";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-// Grid order: item indices, with null for an empty sleeve.
-const SLOTS: (number | null)[] = [0, null, 1, null, 4, null, 3, null, 5];
+// Grid order: item indices, with null for an empty sleeve. useno comes first and fills a 2×2 block, so it's the first
+// thing anyone sees; the rest wrap around it.
+const SLOTS: (number | null)[] = [0, 1, 4, 3, null, 5];
 const SHOWN = SLOTS.filter((s): s is number => s !== null);
+// How big each cover's word sits on the homepage's wide sleeves; alvarez's short, heavy word reads small otherwise.
+const wordScale = (name: string) => (name === "alvarez" ? 0.92 : 0.8);
 
 function A({ href, className, style, children, ...rest }: React.ComponentProps<"a"> & { href: string }) {
   if (href.startsWith("mailto:")) {
@@ -333,28 +336,32 @@ export default function OnRotation() {
           <div className="home-grid">
             {SLOTS.map((slot, pos) => {
               if (slot === null) {
-                // Two columns show the five records plus the first blank (3 rows of 2); three columns show all nine.
+                // The empty sleeve only shows with three columns, where it fills out the bottom row.
                 return (
-                  <div key={`blank-${pos}`} className={pos === SLOTS.indexOf(null) ? "contents" : "extra-blank"}>
-                    <Blank variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />
+                  <div key={`blank-${pos}`} className="extra-blank">
+                    <Blank variant={2} />
                   </div>
                 );
               }
               const i = slot;
               const it = items[i];
+              const lead = pos === 0;
               // Discs slide out to the right, except in the last column where there's no room.
-              const slideLeft = pos % 3 === 2;
+              const slideLeft = [1, 2, 5].includes(pos);
               return (
-              <div key={it.name} className={`cd-slot relative aspect-square ${slideLeft ? "cd-left" : ""}`}>
-              <span aria-hidden="true" className="cd absolute inset-[6%] rounded-full">
-                <span className="cd-spin absolute inset-0 rounded-full" style={{ background: discBackground(it) }} />
+              <div key={it.name} className={`cd-slot relative ${lead ? "lead col-span-2 row-span-2" : "aspect-[5/4]"} ${slideLeft ? "cd-left" : ""}`}>
+              {/* The CD waits behind the sleeve on the side it slides out of, so hovering shows a good third of it. */}
+              <span aria-hidden="true" className={`absolute inset-0 flex items-center ${slideLeft ? "justify-start pl-[5%]" : "justify-end pr-[5%]"}`}>
+                <span className="cd relative h-[90%] aspect-square rounded-full">
+                  <span className="cd-spin absolute inset-0 rounded-full" style={{ background: discBackground(it) }} />
+                </span>
               </span>
               <A
                 href={it.href}
                 aria-label={`${it.name}, ${it.kind}`}
                 onMouseEnter={() => setSel(i)}
                 onFocus={() => setSel(i)}
-                className="sq block aspect-square relative overflow-hidden rounded-md"
+                className="sq absolute inset-0 block overflow-hidden rounded-md"
                 style={{ background: it.bg, color: it.fg, containerType: "inline-size" }}
               >
                 <span
@@ -363,11 +370,13 @@ export default function OnRotation() {
                 >
                   {it.name}
                 </span>
+                {/* The big lead cover keeps its art at a cover-like size instead of scaling it up to fill the block. */}
                 <span
-                  className="absolute inset-0 flex items-center justify-center text-center p-6 box-border leading-[0.92] whitespace-pre-line"
+                  className={`absolute inset-0 flex items-center justify-center text-center box-border leading-[0.92] whitespace-pre-line ${lead ? "px-[23%] py-[11%]" : "p-6"}`}
                   style={{
                     fontFamily: it.font,
-                    fontSize: `min(${it.size}px, ${((it.size / 248) * 100).toFixed(2)}cqw)`,
+                    // Cover words are sized off the width; the sleeves are wider than tall, so they're set a size down.
+                    fontSize: `min(${it.size * wordScale(it.name)}px, ${((it.size / 248) * 100 * wordScale(it.name)).toFixed(2)}cqw)`,
                     fontStyle: it.italic ? "italic" : "normal",
                   }}
                 >
@@ -389,7 +398,7 @@ const SILVER =
 
 // Empty sleeves: each one a different kind of nothing.
 function Blank({ variant }: { variant: number }) {
-  const base = "relative aspect-square rounded-md overflow-hidden";
+  const base = "relative aspect-[5/4] rounded-md overflow-hidden";
   switch (variant % 4) {
     case 0:
       // Empty jewel case: frosted plastic, a hub where the disc would clip in.
@@ -403,8 +412,8 @@ function Blank({ variant }: { variant: number }) {
           }}
         >
           <span className="absolute left-0 top-0 bottom-0 w-[7%] bg-[#E1E4E9] border-r border-white/70" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[64%] aspect-square rounded-full border border-[#D5D9DF]" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[16%] aspect-square rounded-full border-2 border-[#D1D5DB] bg-[#E5E7EB]" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[64%] aspect-square rounded-full border border-[#D5D9DF]" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[16%] aspect-square rounded-full border-2 border-[#D1D5DB] bg-[#E5E7EB]" />
         </div>
       );
     case 1:
@@ -412,7 +421,7 @@ function Blank({ variant }: { variant: number }) {
       return (
         <div aria-hidden="true" className={`${base} bg-[#EEF0F3]`}>
           <span
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[78%] aspect-square rounded-full shadow-[0_6px_14px_-8px_rgba(17,24,39,0.4)]"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[78%] aspect-square rounded-full shadow-[0_6px_14px_-8px_rgba(17,24,39,0.4)]"
             style={{
               background: `radial-gradient(circle, #EEF0F3 0 7%, rgba(17,24,39,0.3) 7.5% 8.5%, #F8F9FA 9% 33%, rgba(17,24,39,0.12) 33.5% 34%, transparent 34.5%), ${SILVER}`,
             }}
@@ -430,7 +439,7 @@ function Blank({ variant }: { variant: number }) {
               "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18) 0 1px, transparent 2px) 0 0 / 9px 9px, radial-gradient(circle at 70% 60%, rgba(60,40,20,0.12) 0 1px, transparent 2px) 0 0 / 13px 13px, #C9A87C",
           }}
         >
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[38%] aspect-square rounded-full bg-[#F3F4F6] shadow-[inset_0_2px_5px_rgba(60,40,20,0.35)]" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[38%] aspect-square rounded-full bg-[#F3F4F6] shadow-[inset_0_2px_5px_rgba(60,40,20,0.35)]" />
           <span className="absolute left-0 right-0 bottom-[10%] h-px bg-[rgba(60,40,20,0.18)]" />
         </div>
       );

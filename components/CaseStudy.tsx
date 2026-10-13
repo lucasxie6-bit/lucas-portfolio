@@ -15,7 +15,6 @@ const subscribeWide = (onChange: () => void) => {
 
 // A cool, quiet palette for the project pages.
 const INK = "#111827";
-const BODY = "#4B5563";
 const MUTED = "#6B7280";
 const FAINT = "#A3AAB8";
 const PANEL = "#EEF2F8";
@@ -175,9 +174,6 @@ function ExploreFigure({ title, children }: { title: string; children: React.Rea
   );
 }
 
-// A sample listing, used for every card so the versions compare like for like.
-const SAMPLE = { title: "Software Engineering Intern", company: "Fieldnote", place: "New York, NY", when: "Summer 2027" };
-
 function Check({ tint }: { tint: string }) {
   return (
     <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={tint} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -186,75 +182,83 @@ function Check({ tint }: { tint: string }) {
   );
 }
 
-function JobCardExplorations({ tint }: { tint: string }) {
-  const versions = [
-    {
-      key: "A",
-      name: "Listing first",
-      note: "Reads like every job board. Whether you can apply is buried in the description.",
-      card: (
-        <>
-          <p className="m-0 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
-          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place}</p>
-          <p className="m-0 mt-3 text-[11px]" style={{ color: FAINT }}>Posted 3 days ago · 214 applicants</p>
-        </>
-      ),
-    },
-    {
-      key: "B",
-      name: "Eligibility as tags",
-      note: "Who can apply is visible, but four equal tags compete with the role itself.",
-      card: (
-        <>
-          <p className="m-0 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
-          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place}</p>
-          <div className="mt-3 flex flex-wrap gap-1">
-            {["Class of 2027", "Sophomore+", "Paid", "On-site"].map((t) => (
-              <span key={t} className="rounded-[3px] px-1.5 py-0.5 text-[10px]" style={{ background: PANEL, color: BODY }}>{t}</span>
-            ))}
-          </div>
-        </>
-      ),
-    },
-    {
-      key: "C",
-      name: "One eligibility line",
-      note: "Can I apply? comes first, in one plain line. Everything else steps back.",
-      card: (
-        <>
-          <p className="m-0 flex items-center gap-1.5 text-[11px] font-medium" style={{ color: tint }}>
-            <Check tint={tint} />
-            Open to the class of 2027
-          </p>
-          <p className="m-0 mt-2 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
-          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place} · {SAMPLE.when}</p>
-        </>
-      ),
-    },
+// One listing, and how each kind of app answers "can I apply?": job boards bury it, other apps tag it, useno says it.
+function EligibilityCard() {
+  const rows = [
+    { who: "Job boards", answer: "Buried in the description", mark: "\u00d7", tone: { bg: "#FBE7E2", fg: "#B5513B" } },
+    { who: "Other apps", answer: "Tags, but no answer", mark: "?", tone: { bg: "#FDF1D2", fg: "#B7791F" } },
+    { who: "useno", answer: "Open to 1st and 2nd years", mark: "check", tone: { bg: "#DDF0E4", fg: "#2F7D4F" } },
   ];
   return (
-    <ExploreFigure title="Job card explorations">
-      <p className="m-0 mt-2 text-[13px] md:text-[14px]" style={{ color: MUTED }}>
-        The same listing three ways: where eligibility, role, location and timing sit.
-      </p>
-      <ol className="m-0 mt-7 p-0 list-none grid gap-6 sm:grid-cols-3 sm:gap-4">
-        {versions.map((v) => (
-          <li key={v.key} className="flex flex-col">
-            <p className="m-0 flex items-baseline gap-2 text-[12px]" style={{ color: INK }}>
-              <span className="font-[family-name:var(--font-dm-mono)] text-[11px]" style={{ color: FAINT }}>{v.key}</span>
-              {v.name}
-            </p>
-            <div
-              className="mt-3 rounded-[6px] border bg-white p-3.5 min-h-[104px]"
-              style={{ borderColor: v.key === "C" ? INK : "#E5E7EB" }}
-            >
-              {v.card}
-            </div>
-            <p className="m-0 mt-3 text-[12px] leading-relaxed" style={{ color: MUTED }}>{v.note}</p>
-          </li>
-        ))}
-      </ol>
-    </ExploreFigure>
+    <figure className="m-0 mt-10 rounded-[16px] p-2.5 md:p-4" style={{ background: "#EEF1F5" }}>
+      <div className="rounded-[18px] bg-white px-5 py-7 md:px-10 md:py-10">
+        <div className="flex items-center gap-3.5">
+          <span aria-hidden="true" className="grid size-11 md:size-12 shrink-0 place-items-center rounded-[10px] border bg-white" style={{ borderColor: "#E5E7EB" }}>
+            <svg viewBox="0 0 40 28" className="w-7 md:w-8">
+              <rect width="40" height="28" rx="2" fill="#76B900" />
+              <path d="M7 15c4-6 13-8 21-3-5-1-10 0-13 3 3 3 8 4 13 3-8 5-17 3-21-3Z" fill="#fff" />
+              <path d="M15 15c2-2 5-3 8-2-2 1-3 2-3 2s1 1 3 2c-3 1-6 0-8-2Z" fill="#76B900" />
+            </svg>
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[15px] md:text-[16px] font-semibold" style={{ color: INK }}>
+              NVIDIA
+            </span>
+            <span className="mt-0.5 block text-[13px] md:text-[15px]" style={{ color: "#9CA3AF" }}>
+              Santa Clara · Summer 2027
+            </span>
+          </span>
+        </div>
+        <p className="m-0 mt-4 md:mt-5 text-[26px] md:text-[38px] font-bold leading-[1.05] tracking-[-0.05em] md:whitespace-nowrap" style={{ color: INK }}>
+          Software Engineering Intern
+        </p>
+
+        <p className="m-0 mt-6 md:mt-7 inline-block rounded-full px-3.5 py-1.5 text-[13px] md:text-[14px] font-semibold" style={{ background: "#F1F3F6", color: "#1B2D58" }}>
+          Can I apply?
+        </p>
+        <ul className="m-0 mt-3 p-0 list-none space-y-1.5">
+          {rows.map((row, i) => {
+            const last = i === rows.length - 1;
+            return (
+              <li
+                key={row.who}
+                className={`grid grid-cols-[28px_minmax(0,1fr)] md:grid-cols-[28px_112px_minmax(0,1fr)] items-center gap-x-3 md:gap-x-4 gap-y-0.5 rounded-[14px] border px-4 py-3 md:px-5 md:py-4 ${
+                  last ? "shadow-[0_14px_30px_-18px_rgba(17,24,39,0.28)]" : ""
+                }`}
+                style={{ borderColor: "#E5E7EB" }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="row-span-2 md:row-span-1 grid size-7 place-items-center rounded-full text-[12px] font-bold"
+                  style={{ background: row.tone.bg, color: row.tone.fg }}
+                >
+                  {row.mark === "check" ? (
+                    <svg width="11" height="11" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 5.2 4.2 7.4 8 3" />
+                    </svg>
+                  ) : (
+                    row.mark
+                  )}
+                </span>
+                <span className="text-[14px] md:text-[15px] font-semibold" style={{ color: last ? INK : MUTED }}>
+                  {row.who}
+                </span>
+                <span
+                  className={last ? "text-[15px] md:text-[17px] font-semibold tracking-[-0.01em]" : "text-[14px] md:text-[15px]"}
+                  style={{ color: last ? INK : "#9CA3AF" }}
+                >
+                  {row.answer}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <figcaption className="sr-only">
+        A Software Engineering Intern listing at NVIDIA. Job boards bury who can apply in the description, other apps show
+        tags without an answer, and useno says it is open to 1st and 2nd years.
+      </figcaption>
+    </figure>
   );
 }
 
@@ -519,7 +523,7 @@ export default function CaseStudy({ study }: { study: Study }) {
   return (
     <div className="min-h-screen bg-white font-[family-name:var(--font-dm-sans)]" style={{ color: INK }}>
       {/* Header */}
-      <SiteHeader workHref={back} className="mx-auto h-[60px] max-w-[1146px] px-6 md:pl-[52px] md:pr-[38px]" />
+      <SiteHeader workHref={back} className="h-[64px] md:h-[80px] px-6 md:px-8" />
 
       {/* Smaller screens: a floating pill bar once you're past the title */}
       <nav
@@ -546,7 +550,7 @@ export default function CaseStudy({ study }: { study: Study }) {
         </div>
       </nav>
 
-      <div className="mx-auto max-w-[1146px] px-6 md:px-[52px] pt-10 lg:pt-[76px] pb-32 lg:grid lg:grid-cols-[minmax(180px,236px)_minmax(0,732px)]">
+      <div className="px-6 md:px-8 pt-6 lg:pt-14 pb-32 lg:grid lg:grid-cols-[minmax(190px,1fr)_minmax(0,732px)_minmax(0,1fr)] lg:gap-x-10">
         {/* Wide screens: all work, then the sections */}
         <aside className="hidden lg:block">
           <nav aria-label="On this page" className="sticky top-[88px]">
@@ -620,11 +624,11 @@ export default function CaseStudy({ study }: { study: Study }) {
               className="m-0 text-[30px] md:text-[40px] font-semibold leading-[1.1] tracking-[-0.045em]"
               style={{ color: INK }}
             >
-              <Rich text={study.headline ?? study.line} color={FAINT} />
+              <Rich text={study.headline ?? study.line} color={tint} />
             </h1>
 
             {/* Role, timeline and platform, each with its label */}
-            <dl className="m-0 mt-6 flex flex-wrap gap-x-8 md:gap-x-10 gap-y-3">
+            <dl className="m-0 mt-6 flex flex-wrap gap-x-9 md:gap-x-12 gap-y-4">
               {(
                 [
                   ["Role", study.meta.role],
@@ -633,10 +637,10 @@ export default function CaseStudy({ study }: { study: Study }) {
                 ] as const
               ).map(([label, value]) => (
                 <div key={label}>
-                  <dt className="text-[11px]" style={{ color: FAINT }}>
+                  <dt className="text-[12px]" style={{ color: MUTED }}>
                     {label}
                   </dt>
-                  <dd className="m-0 mt-1 text-[13px]" style={{ color: BODY }}>
+                  <dd className="m-0 mt-1 text-[14px] md:text-[15px]" style={{ color: INK }}>
                     {value}
                   </dd>
                 </div>
@@ -718,7 +722,7 @@ export default function CaseStudy({ study }: { study: Study }) {
                 {study.exploration.paragraphs.map((para) => (
                   <Prose key={para}>{para}</Prose>
                 ))}
-                <JobCardExplorations tint={tint} />
+                <EligibilityCard />
                 <DiscoveryLayout tint={tint} />
                 <p
                   className="m-0 mt-12 max-w-[620px] text-[18px] md:text-[20px] font-medium leading-[1.4] tracking-[-0.02em]"

@@ -145,7 +145,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
 
   return (
     <div className="film min-h-svh bg-white text-[#111827] font-[family-name:var(--font-dm-sans)] flex flex-col overflow-x-hidden">
-      <SiteHeader className="h-[72px] md:h-[96px] px-6 md:px-[72px]" />
+      <SiteHeader className="h-[64px] md:h-[80px] px-6 md:px-8" />
 
       <main className="flex-1 flex flex-col">
         <h1 className="sr-only">{rec.album.name}</h1>
@@ -201,7 +201,7 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
           </div>
         </div>
 
-        <div className="px-6 md:px-[72px] pb-10 md:pb-16">
+        <div className="px-6 md:px-8 pb-10 md:pb-16">
           {/* One segment per project */}
           <div className="flex gap-2">
             {RECORDS.map((r, i) => (
