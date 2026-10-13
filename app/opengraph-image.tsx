@@ -24,7 +24,7 @@ export default async function Image() {
 
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", background: "#F4F1EA", position: "relative" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "#F3F4F6", position: "relative" }}>
         {/* Record sliding out from behind the cover */}
         <div
           style={{
@@ -34,7 +34,7 @@ export default async function Image() {
             width: DISC,
             height: DISC,
             borderRadius: DISC,
-            background: "#1C1A1B",
+            background: "#111827",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -63,7 +63,7 @@ export default async function Image() {
               justifyContent: "center",
             }}
           >
-            <div style={{ width: 10, height: 10, borderRadius: 10, background: "#F4F1EA" }} />
+            <div style={{ width: 10, height: 10, borderRadius: 10, background: "#F3F4F6" }} />
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export default async function Image() {
             width: COVER,
             height: COVER,
             display: "flex",
-            boxShadow: "0 24px 48px -24px rgba(28,25,27,0.55)",
+            boxShadow: "0 24px 48px -24px rgba(17,24,39,0.55)",
           }}
         >
           <img src={photoSrc} width={COVER} height={COVER} alt="" style={{ position: "absolute", left: 0, top: 0 }} />
@@ -88,7 +88,7 @@ export default async function Image() {
               fontFamily: "Archivo Black",
               fontSize: 54 * k,
               letterSpacing: -2.7 * k,
-              color: "#1C191B",
+              color: "#111827",
               lineHeight: 1,
             }}
           >
@@ -101,7 +101,7 @@ export default async function Image() {
               top: 279 * k,
               fontFamily: "DM Mono",
               fontSize: 10 * k,
-              color: "#F2F0EB",
+              color: "#F1F2F4",
             }}
           >
             LX-001 · 2026
@@ -129,7 +129,7 @@ export default async function Image() {
               fontSize: 50,
               lineHeight: 1.05,
               letterSpacing: -1.5,
-              color: "#1C191B",
+              color: "#111827",
             }}
           >
             <span>i design apps</span>

@@ -31,7 +31,11 @@ const durationOf = (i: number) => 150 + ((i * 47) % 90);
 const clock = (s: number) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 
 const LYRICS = ["hi, i'm lucas.", "i design apps\nand websites.", "from first sketch\nto shipped.", "here are a few.", "♪"];
-const LINE_SECS = 1.4;
+// How long each line stays up; the greeting moves on quicker so the intro gets going.
+const LINE_SECS = [0.8, 1.4, 1.4, 1.4, 1.4];
+const LYRIC_LOOP = LINE_SECS.reduce((a, b) => a + b, 0);
+const LINE_STARTS = LINE_SECS.map((_, i) => LINE_SECS.slice(0, i).reduce((a, b) => a + b, 0));
+const lineAt = (t: number) => LINE_STARTS.findLastIndex((start) => start <= (t % LYRIC_LOOP) + 1e-6);
 // Where the current lyric sits in its box, from the top: a little above the middle.
 const LYRIC_ANCHOR = 0.4;
 // Lyrics roll upward like a lyrics view: the current line sits in the middle, its neighbours fade out above and below.
@@ -82,7 +86,7 @@ function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: 
             onFocus={(e) => e.currentTarget.matches(":focus-visible") && onHold(i)}
             aria-current={i === active ? "true" : undefined}
             className="lyric-line text-left whitespace-pre-line cursor-pointer"
-            style={{ color: i === active ? "#1C191B" : "#E4DFD6" }}
+            style={{ color: i === active ? "#111827" : "#D9DCE2" }}
           >
             {i === 0 ? <h1 className="m-0 font-[inherit] text-[length:inherit]">{line}</h1> : line}
           </button>
@@ -119,7 +123,7 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           type="button"
           aria-label={playing ? "Pause" : "Play"}
           onClick={onToggle}
-          className="grid place-items-center size-8 -ml-2 shrink-0 rounded-full text-[#1C191B] hover:bg-[#E6E1D8] transition-colors cursor-pointer"
+          className="grid place-items-center size-8 -ml-2 shrink-0 rounded-full text-[#111827] hover:bg-[#E7E9ED] transition-colors cursor-pointer"
         >
           {playing ? (
             <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -133,12 +137,12 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           )}
         </button>
         <p className="m-0 min-w-0 truncate">
-          <A href={now.href} className="text-[#1C191B]">
+          <A href={now.href} className="text-[#111827]">
             {now.name}
           </A>
-          <span className="text-[#8A847A]"> — lucas xie</span>
+          <span className="text-[#8B919C]"> — lucas xie</span>
         </p>
-        <span className="ml-auto font-[family-name:var(--font-dm-mono)] text-[11px] tabular-nums text-[#8A847A] whitespace-nowrap">
+        <span className="ml-auto font-[family-name:var(--font-dm-mono)] text-[11px] tabular-nums text-[#8B919C] whitespace-nowrap">
           {clock(duration)}
         </span>
       </div>
@@ -152,8 +156,8 @@ function Player({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
         onClick={seek}
         className="group relative mt-2 h-3 flex items-center cursor-pointer"
       >
-        <div className="relative w-full h-[2px] rounded-full bg-[#DDD7CC] group-hover:h-[3px] transition-[height]">
-          <div className="absolute inset-y-0 left-0 rounded-full bg-[#1C191B] transition-[width] duration-500 ease-linear" style={{ width: `${pct}%` }} />
+        <div className="relative w-full h-[2px] rounded-full bg-[#E2E5EA] group-hover:h-[3px] transition-[height]">
+          <div className="absolute inset-y-0 left-0 rounded-full bg-[#111827] transition-[width] duration-500 ease-linear" style={{ width: `${pct}%` }} />
         </div>
       </div>
     </section>
@@ -173,7 +177,7 @@ function MiniPlayer({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
   };
 
   return (
-    <section aria-label="Now playing" className="flex items-center gap-3 rounded-full bg-[#1C191B] p-1.5 pr-1.5 text-[#F4F1EA] shadow-[0_14px_34px_-14px_rgba(28,25,27,0.7)]">
+    <section aria-label="Now playing" className="flex items-center gap-3 rounded-full bg-[#111827] p-1.5 pr-1.5 text-[#F3F4F6] shadow-[0_14px_34px_-14px_rgba(17,24,39,0.7)]">
       <A href={now.href} aria-label={`${now.name}, ${now.kind}`} className="relative size-11 shrink-0 overflow-hidden rounded-full" style={{ background: now.bg, color: now.fg, containerType: "inline-size" }}>
         <span
           aria-hidden="true"
@@ -185,7 +189,7 @@ function MiniPlayer({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
       </A>
       <div className="min-w-0 shrink-0 max-w-[30%] leading-tight">
         <p className="m-0 truncate text-[14px] font-bold">{now.name}</p>
-        <p className="m-0 truncate text-[12px] text-[#F4F1EA]/55">lucas xie</p>
+        <p className="m-0 truncate text-[12px] text-[#F3F4F6]/55">lucas xie</p>
       </div>
       <div
         role="slider"
@@ -201,7 +205,7 @@ function MiniPlayer({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
           <span
             key={i}
             className="flex-1 min-w-0 rounded-full transition-colors duration-300"
-            style={{ height: `${Math.round(h * 100)}%`, background: (i + 0.5) / bars.length <= pct / 100 ? "#F4F1EA" : "rgba(244,241,234,0.28)" }}
+            style={{ height: `${Math.round(h * 100)}%`, background: (i + 0.5) / bars.length <= pct / 100 ? "#F3F4F6" : "rgba(243,244,246,0.28)" }}
           />
         ))}
       </div>
@@ -209,7 +213,7 @@ function MiniPlayer({ sel, playing, elapsed, onToggle, onSeek }: PlayerProps) {
         type="button"
         aria-label={playing ? "Pause" : "Play"}
         onClick={onToggle}
-        className="grid place-items-center size-11 shrink-0 rounded-full bg-[#F4F1EA] text-[#1C191B] cursor-pointer"
+        className="grid place-items-center size-11 shrink-0 rounded-full bg-[#F3F4F6] text-[#111827] cursor-pointer"
       >
         {playing ? (
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -268,14 +272,14 @@ export default function OnRotation() {
     return () => clearInterval(id);
   }, [playing, held]);
 
-  const activeLine = held ?? Math.floor(elapsed / LINE_SECS) % LYRICS.length;
+  const activeLine = held ?? lineAt(elapsed);
 
   // Let go: pick up from the line after the held one, keeping the song's position in its lyric loop.
   const release = () => {
     if (held === null) return;
-    const loop = LINE_SECS * LYRICS.length;
-    const start = elapsed - (elapsed % loop);
-    setElapsed(Math.min(start + (held + 1) * LINE_SECS, duration - 0.2));
+    const start = elapsed - (elapsed % LYRIC_LOOP);
+    const next = held + 1 < LYRICS.length ? LINE_STARTS[held + 1] : LYRIC_LOOP;
+    setElapsed(Math.min(start + next, duration - 0.2));
     setHeld(null);
   };
 
@@ -294,7 +298,7 @@ export default function OnRotation() {
   }, [held]);
 
   return (
-    <div className="rot min-h-screen overflow-x-clip bg-[#F4F1EA] text-[#1C191B] font-[family-name:var(--font-dm-sans)] side:flex side:items-start">
+    <div className="rot min-h-screen overflow-x-clip bg-white text-[#111827] font-[family-name:var(--font-dm-sans)] side:flex side:items-start">
       <aside className="@container box-border flex flex-col px-6 pt-6 pb-8 sm:px-10 side:flex-1 side:min-w-0 side:sticky side:top-0 side:h-screen side:pt-8 side:pb-10 xl:side:px-12 xl:side:pb-12">
         <TopBar />
 
@@ -392,25 +396,25 @@ function Blank({ variant }: { variant: number }) {
       return (
         <div
           aria-hidden="true"
-          className={`${base} border border-[#D8D2C6]`}
+          className={`${base} border border-[#DCDFE4]`}
           style={{
             background:
-              "linear-gradient(125deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.15) 38%, rgba(255,255,255,0) 52%, rgba(255,255,255,0.35) 80%, rgba(255,255,255,0) 100%), #ECE8E0",
+              "linear-gradient(125deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.15) 38%, rgba(255,255,255,0) 52%, rgba(255,255,255,0.35) 80%, rgba(255,255,255,0) 100%), #ECEEF1",
           }}
         >
-          <span className="absolute left-0 top-0 bottom-0 w-[7%] bg-[#DDD7CB] border-r border-white/70" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[64%] aspect-square rounded-full border border-[#D3CCBF]" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[16%] aspect-square rounded-full border-2 border-[#CFC8BA] bg-[#E4DFD5]" />
+          <span className="absolute left-0 top-0 bottom-0 w-[7%] bg-[#E1E4E9] border-r border-white/70" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[64%] aspect-square rounded-full border border-[#D5D9DF]" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[16%] aspect-square rounded-full border-2 border-[#D1D5DB] bg-[#E5E7EB]" />
         </div>
       );
     case 1:
       // Unlabelled CD-R sitting on its paper.
       return (
-        <div aria-hidden="true" className={`${base} bg-[#EFEBE3]`}>
+        <div aria-hidden="true" className={`${base} bg-[#EEF0F3]`}>
           <span
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[78%] aspect-square rounded-full shadow-[0_6px_14px_-8px_rgba(28,25,27,0.4)]"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[78%] aspect-square rounded-full shadow-[0_6px_14px_-8px_rgba(17,24,39,0.4)]"
             style={{
-              background: `radial-gradient(circle, #EFEBE3 0 7%, rgba(28,25,27,0.3) 7.5% 8.5%, #F8F6F1 9% 33%, rgba(28,25,27,0.12) 33.5% 34%, transparent 34.5%), ${SILVER}`,
+              background: `radial-gradient(circle, #EEF0F3 0 7%, rgba(17,24,39,0.3) 7.5% 8.5%, #F8F9FA 9% 33%, rgba(17,24,39,0.12) 33.5% 34%, transparent 34.5%), ${SILVER}`,
             }}
           />
         </div>
@@ -426,7 +430,7 @@ function Blank({ variant }: { variant: number }) {
               "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18) 0 1px, transparent 2px) 0 0 / 9px 9px, radial-gradient(circle at 70% 60%, rgba(60,40,20,0.12) 0 1px, transparent 2px) 0 0 / 13px 13px, #C9A87C",
           }}
         >
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[38%] aspect-square rounded-full bg-[#F4F1EA] shadow-[inset_0_2px_5px_rgba(60,40,20,0.35)]" />
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[38%] aspect-square rounded-full bg-[#F3F4F6] shadow-[inset_0_2px_5px_rgba(60,40,20,0.35)]" />
           <span className="absolute left-0 right-0 bottom-[10%] h-px bg-[rgba(60,40,20,0.18)]" />
         </div>
       );
@@ -435,13 +439,13 @@ function Blank({ variant }: { variant: number }) {
       return (
         <div
           aria-hidden="true"
-          className={`${base} bg-[#F7F5F0] border border-[#E2DDD2]`}
+          className={`${base} bg-[#F7F8FA] border border-[#E5E7EB]`}
           style={{
             backgroundImage:
-              "linear-gradient(115deg, transparent 0 28%, rgba(255,255,255,0.95) 31%, transparent 36% 58%, rgba(255,255,255,0.7) 60%, transparent 63%), linear-gradient(180deg, rgba(28,25,27,0.03), rgba(28,25,27,0.07))",
+              "linear-gradient(115deg, transparent 0 28%, rgba(255,255,255,0.95) 31%, transparent 36% 58%, rgba(255,255,255,0.7) 60%, transparent 63%), linear-gradient(180deg, rgba(17,24,39,0.03), rgba(17,24,39,0.07))",
           }}
         >
-          <span className="absolute right-[8%] top-[8%] w-[22%] h-[7%] rounded-[2px] bg-[rgba(28,25,27,0.06)]" />
+          <span className="absolute right-[8%] top-[8%] w-[22%] h-[7%] rounded-[2px] bg-[rgba(17,24,39,0.06)]" />
           <span className="absolute left-[6%] right-[6%] top-[3%] h-px bg-white/90" />
         </div>
       );

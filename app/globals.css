@@ -106,23 +106,33 @@ html[data-text-size="xl"] {
 .rack-case { animation: pullOut 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
 .rack-tracks { animation: tracksIn 0.6s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .rack-spine { transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), margin-bottom 0.2s; }
-/* Gentle start, long soft landing: covers ease into motion rather than snapping. */
-.flow-cover {
-  transition: transform 0.95s cubic-bezier(0.45, 0, 0.2, 1), opacity 0.95s cubic-bezier(0.45, 0, 0.2, 1),
-    box-shadow 0.95s cubic-bezier(0.45, 0, 0.2, 1);
+/* Work filmstrip: covers sit in a row, each placed by its distance from the picked one. */
+.film { --s: 72vw; --g: 14px; }
+@media (min-width: 48rem) {
+  .film { --s: clamp(240px, min(30.5vw, 100svh - 380px), 620px); --g: clamp(24px, 2.8vw, 48px); }
+}
+/* --o is the cover's place in the row (0 = picked); the picked one slides its CD out, so it sits a little left of
+   centre and everything after it moves over to make room. */
+.film-cover {
+  --cd: calc(var(--s) * 0.36);
+  left: 50%;
+  width: var(--s);
+  height: var(--s);
+  transform: translateX(calc(-50% + var(--o) * (var(--s) + var(--g)) + var(--k) * var(--cd) + var(--drag, 0px)));
+  transition: transform 0.75s cubic-bezier(0.45, 0, 0.2, 1);
   will-change: transform;
 }
-.crossfade { transition: opacity 0.7s cubic-bezier(0.45, 0, 0.2, 1); }
-.flow-dim { transition: opacity 0.95s cubic-bezier(0.45, 0, 0.2, 1); }
-.flow-cd {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 8px 20px -8px rgba(28, 25, 27, 0.45);
+.film-cd {
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 8px 20px -8px rgba(17, 24, 39, 0.4);
 }
-.flow-cd-spin { animation: platterSpin 4s linear infinite; animation-play-state: paused; }
-.flow-cover:hover .flow-cd-spin { animation-play-state: running; }
-@media (prefers-reduced-motion: reduce) { .flow-cd { transition: none; } .flow-cd-spin { animation: none; } }
-.flow-cover:focus-visible { outline: 2px solid #1C191B; outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .flow-cover, .flow-dim, .crossfade { transition: none; } }
+.film-cover[data-current] .film-cd { transform: translateX(39%); transition-delay: 0.25s; }
+.film-cd-spin { animation: platterSpin 5s linear infinite; animation-play-state: paused; }
+.film-cover[data-current] .film-cd-spin { animation-play-state: running; }
+.film-strip[data-dragging] .film-cover { transition: none; }
+.film-cover:focus-visible { outline: 2px solid #111827; outline-offset: 4px; }
+.crossfade { transition: opacity 0.6s cubic-bezier(0.45, 0, 0.2, 1); }
+@media (prefers-reduced-motion: reduce) { .film-cover, .film-cd, .crossfade { transition: none; } .film-cd-spin { animation: none; } }
 .rack-spine:hover { transform: translateY(-14px); }
 .rack-spine:focus-visible { outline: 3px solid #D9263D; outline-offset: 3px; }
 .room-disc { animation: platterSpin 3s linear infinite; }
@@ -130,27 +140,27 @@ html[data-text-size="xl"] {
 .room-sleeve {
   transform: translateY(calc(var(--lift) + var(--sag))) rotate(var(--tilt));
   transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 0 rgba(28, 25, 27, 0.18);
+  box-shadow: 0 2px 0 rgba(17, 24, 39, 0.18);
 }
 .room-sleeve:hover { transform: translateY(calc(var(--lift) + var(--sag) - 5px)) rotate(var(--tilt)); }
-.room-sleeve[aria-pressed="true"] { box-shadow: 0 10px 14px -8px rgba(28, 25, 27, 0.5); }
+.room-sleeve[aria-pressed="true"] { box-shadow: 0 10px 14px -8px rgba(17, 24, 39, 0.5); }
 .room-sleeve:focus-visible { outline: 3px solid #D9263D; outline-offset: 4px; }
 .rot a:hover { color: #D9263D; }
 .rot .sq { transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s; }
-.rot .sq:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -16px rgba(28, 25, 27, 0.5); }
+.rot .sq:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -16px rgba(17, 24, 39, 0.5); }
 .rot .sq:focus-visible { outline: 3px solid #D9263D; outline-offset: 3px; }
 .rot .chip { transition: background 0.2s, color 0.2s; }
 /* CD tucked behind each sleeve; on hover it slides out sideways and spins. */
 .rot .cd-slot:hover, .rot .cd-slot:focus-within { z-index: 10; }
 .rot .cd {
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-  box-shadow: 0 6px 16px -6px rgba(28, 25, 27, 0.45);
+  box-shadow: 0 6px 16px -6px rgba(17, 24, 39, 0.45);
 }
 .rot .cd-slot:hover .cd, .rot .cd-slot:focus-within .cd { transform: translateX(46%); }
 .rot .cd-left:hover .cd, .rot .cd-left:focus-within .cd { transform: translateX(-46%); }
 .rot .cd-spin { animation: platterSpin 4s linear infinite; animation-play-state: paused; }
 .rot .cd-slot:hover .cd-spin { animation-play-state: running; }
-.rot .sq:hover .chip { background: #F4F1EA !important; color: #1C191B !important; }
+.rot .sq:hover .chip { background: #F3F4F6 !important; color: #111827 !important; }
 @media (prefers-reduced-motion: reduce) {
   .rack-case, .rack-tracks, .room-disc { animation: none; }
   .rack-spine, .room-sleeve, .rot .sq, .rot .cd { transition: none; }
@@ -196,7 +206,7 @@ html[data-text-size="xl"] {
   opacity: 0.3;
   filter: grayscale(0.75);
   transform: rotate(var(--tilt));
-  box-shadow: 0 10px 24px -14px rgba(28, 25, 27, 0.45);
+  box-shadow: 0 10px 24px -14px rgba(17, 24, 39, 0.45);
   animation: coverFloat 10s ease-in-out infinite alternate;
   transition: opacity 0.4s ease, filter 0.4s ease;
 }

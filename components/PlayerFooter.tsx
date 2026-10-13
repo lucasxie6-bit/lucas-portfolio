@@ -42,7 +42,7 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
 
   return (
     <footer className={`sticky bottom-3 z-20 px-3 ${className}`}>
-      <div className="relative max-w-[780px] mx-auto overflow-hidden rounded-lg bg-[#1C191B] text-white pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_12px_28px_-16px_rgba(28,25,27,0.7)]">
+      <div className="relative max-w-[780px] mx-auto overflow-hidden rounded-lg bg-[#111827] text-white pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_12px_28px_-16px_rgba(17,24,39,0.7)]">
         {/* Now playing */}
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -65,7 +65,7 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
           </button>
           <a
             href={EMAIL}
-            className="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-[#F4F1EA] text-[#1C191B] text-[12px] font-bold hover:bg-white transition-colors"
+            className="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-[#F3F4F6] text-[#111827] text-[12px] font-bold hover:bg-white transition-colors"
           >
             <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path d="M4 2.6v10.8a.7.7 0 0 0 1.07.6l8.5-5.4a.7.7 0 0 0 0-1.2l-8.5-5.4A.7.7 0 0 0 4 2.6Z" />

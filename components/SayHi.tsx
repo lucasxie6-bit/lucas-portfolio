@@ -6,7 +6,7 @@ import { EMAIL, INBOX } from "@/components/records";
 type Status = "idle" | "sending" | "sent" | "error";
 
 const field =
-  "w-full rounded-xl bg-[#E5E1DA] px-4 text-[16px] text-[#1C191B] placeholder:text-[#8A847A] border-[1.5px] border-transparent outline-none transition-colors focus:bg-[#F7F5F0] focus:border-[#1C191B]";
+  "w-full rounded-[4px] bg-[#E8EAEE] px-4 text-[16px] text-[#111827] placeholder:text-[#8B919C] border-[1.5px] border-transparent outline-none transition-colors focus:bg-[#F7F8FA] focus:border-[#111827]";
 
 // Every message is delivered to INBOX by FormSubmit (https://formsubmit.co). The very first message triggers a one-time
 // "activate form" email to that inbox; nothing arrives until that link is clicked.
@@ -76,7 +76,7 @@ export default function SayHi() {
       ref={dialogRef}
       aria-labelledby="say-hi-title"
       onClick={(e) => e.target === e.currentTarget && close()}
-      className="m-auto w-[calc(100%-32px)] max-w-[440px] rounded-[28px] bg-[#F2F0EB] p-0 text-[#1C191B] shadow-[0_30px_80px_-30px_rgba(28,25,27,0.6)] backdrop:bg-[#1C191B]/35 backdrop:backdrop-blur-md open:animate-[sayHiIn_0.25s_ease-out]"
+      className="m-auto w-[calc(100%-32px)] max-w-[440px] rounded-[8px] bg-[#F1F2F4] p-0 text-[#111827] shadow-[0_30px_80px_-30px_rgba(17,24,39,0.6)] backdrop:bg-[#111827]/35 backdrop:backdrop-blur-md open:animate-[sayHiIn_0.25s_ease-out]"
     >
       <div className="p-6 md:p-7">
         <div className="flex items-start gap-3.5">
@@ -86,13 +86,13 @@ export default function SayHi() {
             <h2 id="say-hi-title" className="text-[20px] font-bold leading-tight">
               say hi
             </h2>
-            <p className="text-[14px] text-[#8A847A]">it goes straight to my inbox</p>
+            <p className="text-[14px] text-[#8B919C]">it goes straight to my inbox</p>
           </div>
           <button
             type="button"
             onClick={close}
             aria-label="Close"
-            className="grid place-items-center size-8 shrink-0 rounded-full bg-[#E5E1DA] hover:bg-[#DAD5CC] transition-colors cursor-pointer"
+            className="grid place-items-center size-8 shrink-0 rounded-[4px] bg-[#E8EAEE] hover:bg-[#DCDFE4] transition-colors cursor-pointer"
           >
             <svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
               <path d="M2 2l6 6M8 2l-6 6" />
@@ -103,11 +103,11 @@ export default function SayHi() {
         {status === "sent" ? (
           <div className="mt-8 mb-2">
             <p className="text-[16px] font-bold">got it, thanks.</p>
-            <p className="mt-1 text-[14px] text-[#6B655C]">i&apos;ll write back soon.</p>
+            <p className="mt-1 text-[14px] text-[#5F6672]">i&apos;ll write back soon.</p>
             <button
               type="button"
               onClick={close}
-              className="mt-6 w-full h-12 rounded-xl bg-[#1C191B] text-[#F2F0EB] text-[15px] font-bold hover:bg-[#3A3533] transition-colors cursor-pointer"
+              className="mt-6 w-full h-12 rounded-[4px] bg-[#111827] text-[#F1F2F4] text-[15px] font-bold hover:bg-[#2B303A] transition-colors cursor-pointer"
             >
               close
             </button>
@@ -154,7 +154,7 @@ export default function SayHi() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="mt-5 w-full h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-[#1C191B] text-[#F2F0EB] text-[15px] font-bold hover:bg-[#3A3533] disabled:opacity-60 transition-colors cursor-pointer"
+              className="mt-5 w-full h-12 inline-flex items-center justify-center gap-2 rounded-[4px] bg-[#111827] text-[#F1F2F4] text-[15px] font-bold hover:bg-[#2B303A] disabled:opacity-60 transition-colors cursor-pointer"
             >
               <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path d="M4 2.6v10.8a.7.7 0 0 0 1.07.6l8.5-5.4a.7.7 0 0 0 0-1.2l-8.5-5.4A.7.7 0 0 0 4 2.6Z" />
@@ -162,13 +162,13 @@ export default function SayHi() {
               {status === "sending" ? "sending…" : "send"}
             </button>
 
-            <p className="mt-4 text-center text-[13px] text-[#8A847A]">
+            <p className="mt-4 text-center text-[13px] text-[#8B919C]">
               or copy my email:{" "}
               <button
                 type="button"
                 onClick={copyEmail}
                 title="Copy email address"
-                className="inline-flex items-center gap-1.5 font-bold text-[#1C191B] hover:text-[#6B655C] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 font-bold text-[#111827] hover:text-[#5F6672] transition-colors cursor-pointer"
               >
                 <span aria-live="polite">{copied ? "copied ✓" : INBOX}</span>
                 {!copied && (

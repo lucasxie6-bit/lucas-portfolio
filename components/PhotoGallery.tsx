@@ -68,7 +68,7 @@ function Grid({
             {row.map(({ photo, span }) => (
               <figure
                 key={photo.src}
-                className="relative m-0 overflow-hidden bg-[#3B3531]"
+                className="relative m-0 overflow-hidden bg-[#2B2F36]"
                 style={{ gridColumn: `span ${span} / span ${span}` }}
               >
                 <Image
@@ -91,7 +91,7 @@ function Grid({
 // A featured photo: full row width, cropped only lightly so the whole moment fits.
 function Featured({ photo }: { photo: Photo }) {
   return (
-    <figure className="relative m-0 overflow-hidden bg-[#3B3531]" style={{ aspectRatio: Math.max(photo.ratio ?? 4 / 3, 3 / 2) }}>
+    <figure className="relative m-0 overflow-hidden bg-[#2B2F36]" style={{ aspectRatio: Math.max(photo.ratio ?? 4 / 3, 3 / 2) }}>
       <Image
         src={photo.src}
         alt={photo.alt}

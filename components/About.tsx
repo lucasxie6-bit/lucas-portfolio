@@ -58,7 +58,7 @@ export default function About() {
       <div className="max-w-[800px] mx-auto px-6">
         {/* Wrapped-style card: the cover on the left, listening stats on the right */}
         <h1 className="sr-only">hi, i&apos;m lucas.</h1>
-        <div className="rounded-lg bg-[#E0803F] p-4 md:p-5 flex flex-col md:flex-row gap-6 md:gap-7 text-[#1C191B]">
+        <div className="rounded-lg bg-[#E0803F] p-4 md:p-5 flex flex-col md:flex-row gap-6 md:gap-7 text-[#111827]">
           {/* Cover with the record sliding out from behind it */}
           <div className="relative w-[70%] md:w-[250px] shrink-0 aspect-square md:mr-[92px]">
             <div
@@ -69,12 +69,12 @@ export default function About() {
                   "radial-gradient(circle, #E0803F 0 3%, transparent 3.5%)",
                   "radial-gradient(circle, #3E5AA8 0 30%, transparent 30.5%)",
                   "conic-gradient(from 60deg, transparent 0 18%, rgba(255,255,255,0.14) 22%, transparent 27% 100%)",
-                  "repeating-radial-gradient(circle, #1C1A1B 0 2px, #2A2728 2px 3px)",
+                  "repeating-radial-gradient(circle, #111827 0 2px, #2A2728 2px 3px)",
                 ].join(", "),
                 boxShadow: "inset 0 0 0 2px #121011",
               }}
             />
-            <div className="relative size-full overflow-hidden bg-[#E8E3D9] shadow-[0_18px_34px_-20px_rgba(28,25,27,0.55)]">
+            <div className="relative size-full overflow-hidden bg-[#E6E8EC] shadow-[0_18px_34px_-20px_rgba(17,24,39,0.55)]">
               <Image src="/lucas-cover.svg" alt="Lucas Xie, styled as an album cover" fill unoptimized className="object-cover" priority />
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="mt-12 space-y-5 text-[19px] md:text-[20px] leading-[1.65] text-[#3A3533]">
+        <div className="mt-12 space-y-5 text-[19px] md:text-[20px] leading-[1.65] text-[#2B303A]">
           <p>
             i design apps and websites. i like when something useful still has a bit of personality. right now i&apos;m
             working on useno, an internship discovery platform.
@@ -102,10 +102,10 @@ export default function About() {
         {/* Favourite albums */}
         <section aria-labelledby="albums-heading" className="mt-20">
           <div className="flex items-baseline justify-between gap-4 mb-4">
-            <h2 id="albums-heading" className="text-[17px] font-bold text-[#1C191B]">
+            <h2 id="albums-heading" className="text-[17px] font-bold text-[#111827]">
               recent favourites
             </h2>
-            <Link href="/" className="text-[13px] text-[#6B655C] hover:text-[#1C191B] transition-colors">
+            <Link href="/" className="text-[13px] text-[#5F6672] hover:text-[#111827] transition-colors">
               see the whole shelf →
             </Link>
           </div>
@@ -157,15 +157,15 @@ export default function About() {
           </div>
 
           <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-x-10 gap-y-4">
-            <p className="sm:w-[64px] text-[12px] leading-tight text-[#6B655C]">also on rotation</p>
+            <p className="sm:w-[64px] text-[12px] leading-tight text-[#5F6672]">also on rotation</p>
             {alsoOnRotation.map((item) => (
               <div key={item.artist} className="flex items-center gap-3">
-                <span className="relative size-12 shrink-0 overflow-hidden rounded-[2px] bg-[#E8E3D9]">
+                <span className="relative size-12 shrink-0 overflow-hidden rounded-[2px] bg-[#E6E8EC]">
                   <Image src={item.cover} alt={`${item.album} by ${item.artist}`} fill unoptimized className="object-cover" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-bold text-[#1C191B]">{item.album}</span>
-                  <span className="block text-[13px] text-[#6B655C]">{item.artist}</span>
+                  <span className="block text-[14px] font-bold text-[#111827]">{item.album}</span>
+                  <span className="block text-[13px] text-[#5F6672]">{item.artist}</span>
                 </span>
               </div>
             ))}
@@ -181,7 +181,7 @@ export default function About() {
 
       {/* Links on phones, where the player bar is too narrow for them */}
       <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex flex-wrap gap-x-6 gap-y-3">
-        <a href={`${EMAIL}?subject=hi`} className="basis-full py-1 text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors">
+        <a href={`${EMAIL}?subject=hi`} className="basis-full py-1 text-[17px] text-[#2B303A] hover:text-[#111827] transition-colors">
           {INBOX}
         </a>
         {links.map((link) => (
@@ -190,7 +190,7 @@ export default function About() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="py-1 text-[17px] text-[#3A3533] hover:text-[#1C191B] transition-colors"
+            className="py-1 text-[17px] text-[#2B303A] hover:text-[#111827] transition-colors"
           >
             {link.label} ↗
           </a>
@@ -207,11 +207,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
 function StatList({ label, items }: { label: string; items: string[] }) {
   return (
     <div>
-      <p className="text-[12px] text-[#1C191B]/75">{label}</p>
+      <p className="text-[12px] text-[#111827]/75">{label}</p>
       <ol className="mt-2.5 space-y-1">
         {items.map((item, i) => (
           <li key={i} className="flex items-baseline gap-2 sm:gap-3">
-            <span className="w-2 text-[11px] text-[#1C191B]/55">{i + 1}</span>
+            <span className="w-2 text-[11px] text-[#111827]/55">{i + 1}</span>
             <span className="text-[13px] min-[380px]:text-[14px] sm:text-[15px] font-bold leading-tight whitespace-nowrap">{item}</span>
           </li>
         ))}
@@ -223,7 +223,7 @@ function StatList({ label, items }: { label: string; items: string[] }) {
 function BigStat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[12px] text-[#1C191B]/75">{label}</p>
+      <p className="text-[12px] text-[#111827]/75">{label}</p>
       <p className="mt-1 font-[family-name:var(--font-archivo)] text-[34px] md:text-[42px] leading-none tracking-[-0.03em]">{value}</p>
     </div>
   );

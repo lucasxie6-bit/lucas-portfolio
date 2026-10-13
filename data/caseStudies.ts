@@ -5,6 +5,8 @@ export interface CaseStudy {
   kind: string;
   year: string;
   line: string;
+  /** The big line under the product shot; defaults to `line`. **Double asterisks** fade words out. */
+  headline?: string;
   /** The project's colour, used for its big name. */
   accent: string;
   /** Colour for the small section labels; defaults to the accent. */
@@ -18,7 +20,8 @@ export interface CaseStudy {
   heroEmbed?: { src: string; title: string };
   /** An optional headline shown above the overview paragraph; **double asterisks** pick words out in the tint. */
   overviewLead?: string;
-  overview: string;
+  /** One paragraph, or a pair of short labelled cards (the problem, then what was built). */
+  overview: string | { label: string; text: string }[];
   /** The question the project answers, shown in a callout at the end of the context. Wrap words in **double
    *  asterisks** to pick them out; the overview paragraph supports the same. */
   problem: string;
@@ -27,7 +30,13 @@ export interface CaseStudy {
     lead: string;
     paragraphs: string[];
     /** The annotated comparison of real searches; leave `src` out until there's a real screenshot. */
-    evidence: { src?: string; alt: string; caption: string };
+    evidence?: { src?: string; alt: string; caption: string };
+    /** A count of how many first-page listings on each board say who can apply; shown instead of `evidence`. */
+    chart?: {
+      title: string;
+      note: string;
+      rows: { name: string; logo: "linkedin" | "simplify"; hits: number; total: number }[];
+    };
     insight: string;
     principles: { title: string; line: string }[];
   };
@@ -45,25 +54,34 @@ export const caseStudies: CaseStudy[] = [
     slug: "useno",
     name: "useno",
     accent: "#1B2D58",
-    tint: "#2D54D2",
+    tint: "#5A6E9F",
     kind: "startup",
     year: "2026",
     line: "Internship discovery and application tracking, in one place.",
-    meta: { role: "Founder, product designer, developer", timeline: "June 2026 – present", platform: "Responsive web app" },
+    headline: "Find and track internships **in one place.**",
+    meta: { role: "Founder, designer, developer", timeline: "June 2026 – present", platform: "Responsive web app" },
     heroEmbed: { src: "/useno-spotlight/index.html", title: "Animated walkthrough of the useno.app homepage" },
-    overviewLead: "The right internships were buried in **the wrong ones.**",
-    overview:
-      "Job boards gave me **hundreds of listings**, but finding opportunities I **actually qualified for** was another story. I built useno to surface student-relevant internships **directly from company career pages**, with saving and application tracking in one place.",
+    overviewLead: "The right roles were buried in **the wrong ones.**",
+    overview: [
+      { label: "The problem", text: "Job boards gave me hundreds of listings, but finding ones I actually qualified for was another story." },
+      {
+        label: "What I built",
+        text: "useno surfaces student-relevant internships directly from company career pages, with saving and application tracking in one place.",
+      },
+    ],
     problem: "How might students find internships they **qualify for**, before they **close**?",
     research: {
       lead: "More listings didn't mean **better opportunities.**",
       paragraphs: [
-        "I examined how existing job platforms surfaced internships, focusing on relevance, eligibility, and how easily students could identify roles suited to their experience.",
-        "The question became less about how many jobs students could find, and more about how many were actually worth their time.",
+        "I looked at how job boards surface internships, judging relevance, eligibility and fit for experience.",
       ],
-      evidence: {
-        alt: "Annotated comparison of internship searches on LinkedIn, Handshake and Simplify",
-        caption: "[Annotated comparison of real searches on LinkedIn, Handshake and Simplify]",
+      chart: {
+        title: "Which listings say who can apply?",
+        note: "First page of results for “software engineering intern, New York”.",
+        rows: [
+          { name: "LinkedIn", logo: "linkedin", hits: 2, total: 25 },
+          { name: "Simplify", logo: "simplify", hits: 0, total: 21 },
+        ],
       },
       insight: "Students don't need more listings. They need a better way to find the right ones.",
       principles: [
