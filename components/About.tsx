@@ -3,6 +3,7 @@ import Link from "next/link";
 import PhotoGallery, { type Photo } from "@/components/PhotoGallery";
 import PlayerFooter from "@/components/PlayerFooter";
 import { EMAIL, INBOX } from "@/components/records";
+import CoverStrip from "@/components/CoverStrip";
 import SideCovers, { type Cover } from "@/components/SideCovers";
 import { albumCovers } from "@/data/covers";
 
@@ -100,6 +101,8 @@ export default function About() {
           </p>
         </div>
 
+        {/* On screens without side margins, the covers run in one row here instead */}
+        <CoverStrip className="mt-14" />
 
         {/* Favourite albums */}
         <section aria-labelledby="albums-heading" className="mt-20">
@@ -181,23 +184,31 @@ export default function About() {
         <PhotoGallery photos={photos} />
       </section>
 
-      {/* Links on phones, where the player bar is too narrow for them */}
-      <div className="md:hidden max-w-[800px] mx-auto px-6 mt-16 flex flex-wrap gap-x-6 gap-y-3">
-        <a href={`${EMAIL}?subject=hi`} className="basis-full py-1 text-[17px] text-[#2B303A] hover:text-[#111827] transition-colors">
-          {INBOX}
-        </a>
-        {links.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="py-1 text-[17px] text-[#2B303A] hover:text-[#111827] transition-colors"
-          >
-            {link.label} ↗
-          </a>
-        ))}
-      </div>
+      {/* Contact on phones, where the player bar is too narrow for the links */}
+      <section aria-labelledby="contact-heading" className="md:hidden max-w-[800px] mx-auto px-6 mt-16">
+        <h2 id="contact-heading" className="text-[13px] font-normal text-[#8B919C]">
+          get in touch
+        </h2>
+        <ul className="mt-3 border-t border-[#E5E7EB]">
+          {[{ label: "email", href: `${EMAIL}?subject=hi`, detail: INBOX, external: false }, ...links.map((l) => ({ ...l, detail: "", external: true }))].map(
+            (row) => (
+              <li key={row.label} className="border-b border-[#E5E7EB]">
+                <a
+                  href={row.href}
+                  {...(row.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="flex items-center justify-between gap-4 py-4 text-[16px] text-[#111827]"
+                >
+                  {row.label}
+                  <span className="flex min-w-0 items-center gap-2 text-[14px] text-[#6B7280]">
+                    <span className="truncate">{row.detail}</span>
+                    <span aria-hidden="true">↗</span>
+                  </span>
+                </a>
+              </li>
+            ),
+          )}
+        </ul>
+      </section>
 
       <PlayerFooter links={links} className="mt-16 md:mt-20" />
     </section>

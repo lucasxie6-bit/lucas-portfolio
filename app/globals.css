@@ -195,6 +195,14 @@ html[data-text-size="xl"] {
 @media (prefers-reduced-motion: reduce) { .lyrics-track, .lyric-line { transition: none; } }
 
 /* About page: faded album covers drifting in the side margins, full colour on hover */
+/* About page on small screens: a row of covers drifting left, faded out at both ends. */
+@keyframes stripScroll { to { transform: translateX(calc(-50% - 5px)); } }
+.cover-strip { mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.cover-strip-track { animation: stripScroll 70s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .cover-strip { overflow-x: auto; }
+  .cover-strip-track { animation: none; }
+}
 @keyframes coverFloat {
   from { transform: translateY(-6px) rotate(var(--tilt)); }
   to   { transform: translateY(6px) rotate(var(--tilt)); }
