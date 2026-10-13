@@ -157,10 +157,27 @@ html[data-text-size="xl"] {
   .rot .cd-spin { animation: none; }
 }
 
+/* Homepage cover grid. Phones: 2 across (6 sleeves). Small tablets stacked: 3 across (9). Side by side: squarer
+   windows get 2 across and 3 down, sized to fill the height; wide windows get 3 across, sized by width. */
+.home-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-grid .extra-blank { display: none; }
+@media (min-width: 40rem) {
+  .home-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-grid .extra-blank { display: contents; }
+}
+@media (min-width: 48rem) {
+  .home-grid { grid-template-columns: repeat(2, min(calc((62vw - 48px) / 2), calc((100vh - 64px - 32px) / 3))); }
+  .home-grid .extra-blank { display: none; }
+}
+@media (min-width: 48rem) and (min-aspect-ratio: 5 / 4) {
+  .home-grid { grid-template-columns: repeat(3, calc((62vw - 64px) / 3)); }
+  .home-grid .extra-blank { display: contents; }
+}
+
 /* Homepage lyrics: lines fade out towards the top and bottom edges and glide between positions */
 .lyrics-view {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 66%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 66%, transparent 100%);
 }
 /* One symmetric ease-in-out for both the glide and the colour change, so they move as one. */
 .lyrics-track { transition: transform 0.75s cubic-bezier(0.65, 0, 0.35, 1); will-change: transform; }

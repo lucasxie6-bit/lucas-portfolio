@@ -177,36 +177,25 @@ const at = (y, viewH) => y + (viewH||810)/2;
 const outAt = (tl, s) => tl.at(s, ()=>$('.scene').classList.add('out'));
 
 /* =====================================================================
-   SPOTLIGHT: the camera moves in close on each part of the real page.
+   SPOTLIGHT: the camera moves in on the landing page: the headline, then the search box. Trimmed to the hero only.
    ===================================================================== */
 const vSpotlight = {
   id:'spotlight', label:'Spotlight',
   html:()=>`<div class="scene"><div class="vp" style="left:0;top:0;width:1440px;height:810px">${pageHTML()}</div></div>`,
   build(tl){
-    const D=33;
+    const D=13;
     bootPage(tl,D);
     const cam=camera(1440,810);
     //        t      cx    cy    zoom
+    // A slow push-in on the headline and search box; the menu bar stays just out of frame.
     const p=path([
-      [0,     720,  405,  1   ],
-      [1.2,   720,  405,  1   ],
-      [3.2,   720,  368,  1.32],
-      [6.8,   720,  368,  1.32],
-      [8.4,   720,  433,  1.62],
-      [12.2,  720,  433,  1.62],
-      [14.4,  720, 1332,  1.18],
-      [16.8,  720, 1332,  1.18],
-      [18.8, 1038, 2236,  1.36],
-      [21.4, 1038, 2236,  1.36],
-      [23.4, 1016, 3034,  1.32],
-      [26,   1016, 3034,  1.32],
-      [28,    720, 3860,  1   ],
-      [29.4,  720, 3860,  1   ],
-      [31,    720, 4330,  1   ],
-      [32.2,  720, 4330,  1   ]
+      [0,     720,  402,  1.22],
+      [1.0,   720,  402,  1.22],
+      [11.6,  720,  386,  1.36],
+      [12.2,  720,  386,  1.36]
     ]);
     tl.track(s=>{const [cx,cy,z]=p(s);cam(cx,cy,z)});
-    outAt(tl,32.3);
+    outAt(tl,12.3);
     tl.dur=D*1000;
   }
 };

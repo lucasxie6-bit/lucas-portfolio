@@ -32,6 +32,8 @@ const clock = (s: number) => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 
 const LYRICS = ["hi, i'm lucas.", "i design apps\nand websites.", "from first sketch\nto shipped.", "here are a few.", "♪"];
 const LINE_SECS = 1.4;
+// Where the current lyric sits in its box, from the top: a little above the middle.
+const LYRIC_ANCHOR = 0.4;
 // Lyrics roll upward like a lyrics view: the current line sits in the middle, its neighbours fade out above and below.
 // Pointing at the lyrics holds the current line; clicking a faded one jumps to it. Letting go carries on from the
 // line after whichever one was held.
@@ -46,7 +48,7 @@ function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: 
     if (!view) return;
     const centre = () => {
       const line = lineRefs.current[active];
-      if (line) setShift(view.clientHeight / 2 - (line.offsetTop + line.offsetHeight / 2));
+      if (line) setShift(view.clientHeight * LYRIC_ANCHOR - (line.offsetTop + line.offsetHeight / 2));
     };
     centre();
     const ro = new ResizeObserver(centre);
@@ -317,25 +319,20 @@ export default function OnRotation() {
         </div>
       </aside>
 
-      {/* Side by side, the covers always take about 62% of the window's width and the sidebar the rest, so both scale
-          together. The covers start level with the header; a short window scrolls past them while the sidebar stays put. */}
+      {/* Side by side, the covers start level with the header and the sidebar takes whatever width is left. Wide windows
+          get three columns sized by width; squarer ones get bigger covers, two across and three down, sized to fill the
+          height. See .home-grid in globals.css. */}
       <main
         className="relative px-6 pb-28 sm:px-10 side:flex-none side:pb-8 side:py-8 side:pl-0 side:pr-8"
-        style={{ "--tile": "calc((62vw - 32px - 32px) / 3)" } as React.CSSProperties}
       >
         <div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 side:[grid-template-columns:repeat(3,var(--tile))]">
+          <div className="home-grid">
             {SLOTS.map((slot, pos) => {
               if (slot === null) {
-                const blank = <Blank variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />;
-                // Two columns can't fit nine sleeves evenly, so the last blank only shows when the grid has three.
-                return pos === SLOTS.lastIndexOf(null) ? (
-                  <div key={`blank-${pos}`} className="hidden sm:contents">
-                    {blank}
-                  </div>
-                ) : (
-                  <div key={`blank-${pos}`} className="contents">
-                    {blank}
+                // Two columns show the five records plus the first blank (3 rows of 2); three columns show all nine.
+                return (
+                  <div key={`blank-${pos}`} className={pos === SLOTS.indexOf(null) ? "contents" : "extra-blank"}>
+                    <Blank variant={SLOTS.slice(0, pos).filter((s) => s === null).length} />
                   </div>
                 );
               }
@@ -372,7 +369,6 @@ export default function OnRotation() {
                 >
                   <CoverArt it={it} />
                 </span>
-                <span className="absolute left-3.5 bottom-3 text-xs opacity-80">{it.kind}</span>
               </A>
               </div>
               );

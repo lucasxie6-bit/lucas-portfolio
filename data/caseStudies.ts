@@ -5,6 +5,10 @@ export interface CaseStudy {
   kind: string;
   year: string;
   line: string;
+  /** The project's colour, used for its big name. */
+  accent: string;
+  /** Colour for the small section labels; defaults to the accent. */
+  tint?: string;
   meta: { role: string; timeline: string; platform: string };
   /** Phone screens shown side by side in the hero panel; leave out for a placeholder. */
   heroScreens?: { src: string; alt: string }[];
@@ -12,9 +16,21 @@ export interface CaseStudy {
   heroImage?: { src: string; alt: string };
   /** A self-contained animated page (in /public) shown in the hero panel, framed at 16:9. */
   heroEmbed?: { src: string; title: string };
+  /** An optional headline shown above the overview paragraph; **double asterisks** pick words out in the tint. */
+  overviewLead?: string;
   overview: string;
-  /** One sentence that sums up the problem, shown large. */
+  /** The question the project answers, shown in a callout at the end of the context. Wrap words in **double
+   *  asterisks** to pick them out; the overview paragraph supports the same. */
   problem: string;
+  /** Optional research section between the problem and the solution. */
+  research?: {
+    lead: string;
+    paragraphs: string[];
+    /** The annotated comparison of real searches; leave `src` out until there's a real screenshot. */
+    evidence: { src?: string; alt: string; caption: string };
+    insight: string;
+    principles: { title: string; line: string }[];
+  };
   solution: { title: string; line: string }[];
   role: string;
   outcome: string;
@@ -28,31 +44,52 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "useno",
     name: "useno",
+    accent: "#1B2D58",
+    tint: "#2D54D2",
     kind: "startup",
     year: "2026",
-    line: "internship discovery and application tracking, in one place.",
-    meta: { role: "[role]", timeline: "[timeline]", platform: "[web / mobile]" },
+    line: "Internship discovery and application tracking, in one place.",
+    meta: { role: "Founder, product designer, developer", timeline: "June 2026 – present", platform: "Responsive web app" },
     heroEmbed: { src: "/useno-spotlight/index.html", title: "Animated walkthrough of the useno.app homepage" },
+    overviewLead: "The right internships were buried in **the wrong ones.**",
     overview:
-      "useno helps students find internships worth applying to, then keeps every application in one place: search and filters, saved opportunities, and a tracker for where each one stands.",
-    problem: "[the one sentence that sums up the problem]",
+      "Job boards gave me **hundreds of listings**, but finding opportunities I **actually qualified for** was another story. I built useno to surface student-relevant internships **directly from company career pages**, with saving and application tracking in one place.",
+    problem: "How might students find internships they **qualify for**, before they **close**?",
+    research: {
+      lead: "More listings didn't mean **better opportunities.**",
+      paragraphs: [
+        "I examined how existing job platforms surfaced internships, focusing on relevance, eligibility, and how easily students could identify roles suited to their experience.",
+        "The question became less about how many jobs students could find, and more about how many were actually worth their time.",
+      ],
+      evidence: {
+        alt: "Annotated comparison of internship searches on LinkedIn, Handshake and Simplify",
+        caption: "[Annotated comparison of real searches on LinkedIn, Handshake and Simplify]",
+      },
+      insight: "Students don't need more listings. They need a better way to find the right ones.",
+      principles: [
+        { title: "Relevance before volume", line: "[One line on the principle]" },
+        { title: "Eligibility clarity", line: "[One line on the principle]" },
+        { title: "Actionable discovery", line: "[One line on the principle]" },
+      ],
+    },
     solution: [
-      { title: "internship discovery", line: "[one line on what it does]" },
-      { title: "search and filters", line: "[one line on what it does]" },
-      { title: "saved opportunities", line: "[one line on what it does]" },
-      { title: "application tracking", line: "[one line on what it does]" },
+      { title: "Internship discovery", line: "[One line on what it does]" },
+      { title: "Search and filters", line: "[One line on what it does]" },
+      { title: "Saved opportunities", line: "[One line on what it does]" },
+      { title: "Application tracking", line: "[One line on what it does]" },
     ],
-    role: "[what you did on useno]",
-    outcome: "[what came of it]",
+    role: "[What you did on Useno]",
+    outcome: "[What came of it]",
     gallery: [],
   },
   {
     slug: "sponty",
     name: "sponty",
+    accent: "#4A3F6B",
     kind: "case study",
     year: "2026",
-    line: "spontaneous hangouts in three taps.",
-    meta: { role: "product design", timeline: "[timeline]", platform: "mobile" },
+    line: "Spontaneous hangouts in three taps.",
+    meta: { role: "Product designer", timeline: "[Timeline]", platform: "Mobile app" },
     heroScreens: screens("sponty", [
       ["01-map", "Map home screen showing active hangouts as pins"],
       ["02-create", "Create a hangout screen with vibe, time limit, and group size options"],
@@ -63,10 +100,10 @@ export const caseStudies: CaseStudy[] = [
       "Sponty is a mobile app that turns \"I'm bored\" into \"let's hang out\" in three taps. Instead of planning days ahead, you post what you're doing right now, like grabbing coffee or heading to the park, and nearby friends can join on the spot.",
     problem: "Making plans takes so much back-and-forth that most people just stay home.",
     solution: [
-      { title: "spontaneity over planning", line: "Hangouts happen in the moment, not days later." },
-      { title: "buttons over typing", line: "Pre-built activities like coffee, park, study and food." },
-      { title: "expiration by design", line: "Every post disappears after 30 minutes, 1 hour or 2 hours." },
-      { title: "map-first", line: "One screen with pins, instead of a feed and a map." },
+      { title: "Spontaneity over planning", line: "Hangouts happen in the moment, not days later." },
+      { title: "Buttons over typing", line: "Pre-built activities like coffee, park, study and food." },
+      { title: "Expiration by design", line: "Every post disappears after 30 minutes, 1 hour or 2 hours." },
+      { title: "Map-first", line: "One screen with pins, instead of a feed and a map." },
     ],
     role:
       "Owned the product design end to end: competitive analysis of what made early Snapchat and Houseparty feel fun, the core interaction model, wireframes for the post flow and map, and the privacy and safety edge cases.",
@@ -77,10 +114,11 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "spark",
     name: "spark",
+    accent: "#3B2F6B",
     kind: "case study",
     year: "2026",
-    line: "earn the answer. build the thinking.",
-    meta: { role: "product design", timeline: "[timeline]", platform: "[platform]" },
+    line: "Earn the answer. Build the thinking.",
+    meta: { role: "Product designer", timeline: "[Timeline]", platform: "[Platform]" },
     heroScreens: screens("spark", [
       ["01-home", "Home screen showing Spark Score and progress toward Thinker status"],
       ["02-tiered", "Tiered help screen with hints and guiding questions"],
@@ -91,10 +129,10 @@ export const caseStudies: CaseStudy[] = [
       "Spark is an app designed to break the habit of defaulting to AI for instant answers. It asks you to think first, and treats AI as a second opinion rather than a first resort.",
     problem: "When AI can answer anything instantly, people stop forming their own opinions first.",
     solution: [
-      { title: "think first, unlock after", line: "Try your own answer before the AI one opens up." },
-      { title: "tiered help", line: "Hints and guiding questions earn points; full answers stay locked." },
-      { title: "guided redirects", line: "\"Do it for me\" requests turn into guided help." },
-      { title: "spark status", line: "Levels from Assisted to Thinker show your progress." },
+      { title: "Think first, unlock after", line: "Try your own answer before the AI one opens up." },
+      { title: "Tiered help", line: "Hints and guiding questions earn points; full answers stay locked." },
+      { title: "Guided redirects", line: "\"Do it for me\" requests turn into guided help." },
+      { title: "Spark status", line: "Levels from Assisted to Thinker show your progress." },
     ],
     role:
       "Led product design, from defining the core \"think first, unlock after\" mechanic to designing the unlock flow, the feedback prompts, and the balance between friction and reward.",
@@ -105,10 +143,11 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "grove",
     name: "grove",
+    accent: "#3E2419",
     kind: "case study",
     year: "2026",
-    line: "turning everyday receipts into small, doable steps toward less waste.",
-    meta: { role: "product design", timeline: "[timeline]", platform: "[platform]" },
+    line: "Turning everyday receipts into small, doable steps toward less waste.",
+    meta: { role: "Product designer", timeline: "[Timeline]", platform: "[Platform]" },
     heroScreens: screens("grove", [
       ["01-scan", "Scan receipt screen"],
       ["02-impact", "Impact results screen showing CO2 and water use with relatable comparisons"],
@@ -119,10 +158,10 @@ export const caseStudies: CaseStudy[] = [
       "Grove turns everyday receipts into a personal sustainability tracker. Scan a receipt and see the carbon and water cost behind what you bought, in numbers you can picture, then get one simple swap to try next time.",
     problem: "People want to buy more sustainably, but nothing connects everyday spending to its footprint.",
     solution: [
-      { title: "scan a receipt", line: "Plant it in your grove with one photo." },
-      { title: "see the impact", line: "Carbon and water, translated into things you can picture." },
-      { title: "one small swap", line: "A single suggestion, like lentils instead of beef once a week." },
-      { title: "watch it grow", line: "Every swap you complete grows your grove." },
+      { title: "Scan a receipt", line: "Plant it in your grove with one photo." },
+      { title: "See the impact", line: "Carbon and water, translated into things you can picture." },
+      { title: "One small swap", line: "A single suggestion, like lentils instead of beef once a week." },
+      { title: "Watch it grow", line: "Every swap you complete grows your grove." },
     ],
     role:
       "Led the design end to end: research into how people think about sustainable shopping, mapping the scan-to-action flow, and designing and prototyping the full UI in Figma.",
@@ -137,19 +176,20 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "alvarez",
     name: "alvarez",
+    accent: "#2A2722",
     kind: "brand",
     year: "2024",
-    line: "brand and storefront direction for an apparel label.",
-    meta: { role: "brand & ecommerce", timeline: "[timeline]", platform: "shopify" },
+    line: "Brand and storefront direction for an apparel label.",
+    meta: { role: "Brand and ecommerce", timeline: "[Timeline]", platform: "Shopify" },
     heroImage: { src: "/alvarez1.png", alt: "Alvarez hoodie front and back mockup" },
     overview:
       "Alvarez was an apparel brand project that turned an early fashion concept into a concrete ecommerce direction: market research, brand positioning, visual design exploration, and planning a Shopify store.",
     problem: "A broad apparel idea needed a clear customer, a position and an online home before it could launch.",
     solution: [
-      { title: "market research", line: "Competitors, pricing, and how they present product." },
-      { title: "two design directions", line: "Dark streetwear, and a cleaner retail look." },
-      { title: "storefront structure", line: "How the Shopify site is laid out and shopped." },
-      { title: "product mockups", line: "Colour and graphic placement on real garments." },
+      { title: "Market research", line: "Competitors, pricing, and how they present product." },
+      { title: "Two design directions", line: "Dark streetwear, and a cleaner retail look." },
+      { title: "Storefront structure", line: "How the Shopify site is laid out and shopped." },
+      { title: "Product mockups", line: "Colour and graphic placement on real garments." },
     ],
     role:
       "Led market research, ecommerce planning and design direction: competitor review, Shopify site structure, visual concepts, and turning the business idea into two possible brand directions.",
