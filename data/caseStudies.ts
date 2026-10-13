@@ -38,9 +38,12 @@ export interface CaseStudy {
       rows: { name: string; logo: "linkedin" | "simplify"; hits: number; total: number }[];
     };
     insight: string;
-    principles: { title: string; line: string }[];
   };
+  /** Optional design-exploration section between the research and the solution. */
+  exploration?: { lead: string; paragraphs: string[]; closing: string };
   solution: { title: string; line: string }[];
+  /** The interface choices that were made and why; shown as "Key Design Decisions" in place of `solution`. */
+  decisions?: { title: string; why: string }[];
   role: string;
   outcome: string;
   gallery: { src: string; alt: string }[];
@@ -84,17 +87,21 @@ export const caseStudies: CaseStudy[] = [
         ],
       },
       insight: "Students don't need more listings. They need a better way to find the right ones.",
-      principles: [
-        { title: "Relevance before volume", line: "[One line on the principle]" },
-        { title: "Eligibility clarity", line: "[One line on the principle]" },
-        { title: "Actionable discovery", line: "[One line on the principle]" },
-      ],
     },
-    solution: [
-      { title: "Internship discovery", line: "[One line on what it does]" },
-      { title: "Search and filters", line: "[One line on what it does]" },
-      { title: "Saved opportunities", line: "[One line on what it does]" },
-      { title: "Application tracking", line: "[One line on what it does]" },
+    exploration: {
+      lead: "Make the right opportunities **easier to recognize.**",
+      paragraphs: [
+        "I wanted students to spend less time figuring out whether they qualified and more time finding internships worth pursuing.",
+        "I explored how clearer eligibility information, focused filters, and simpler job cards could make each opportunity easier to evaluate at a glance.",
+      ],
+      closing: "The goal wasn't to show students more jobs. It was to help them make better decisions about **the ones they found.**",
+    },
+    solution: [],
+    decisions: [
+      { title: "Search in plain words", why: "[Why students describe the role instead of building a query]" },
+      { title: "Listings straight from career pages", why: "[Why useno pulls from company sites instead of job boards]" },
+      { title: "Eligibility before everything", why: "[Why “can I apply?” leads each card]" },
+      { title: "Saving and tracking in one place", why: "[Why the shortlist and the applications live together]" },
     ],
     role: "[What you did on Useno]",
     outcome: "[What came of it]",

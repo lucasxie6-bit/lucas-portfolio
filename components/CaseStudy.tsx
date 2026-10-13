@@ -25,7 +25,9 @@ const LABELS: Record<string, string> = {
   intro: "Overview",
   overview: "Context",
   research: "Research",
+  exploration: "Design Exploration",
   solution: "Solution",
+  decisions: "Key Design Decisions",
   role: "Role",
   outcome: "Outcome",
   gallery: "Gallery",
@@ -165,6 +167,180 @@ function ListingChart({ chart }: { chart: Chart }) {
   );
 }
 
+// Design exploration visuals. These were drawn after the fact, so each one carries a "retrospective" tag.
+function ExploreFigure({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <figure className="m-0 mt-10 rounded-[12px] px-5 py-7 md:px-10 md:py-10" style={{ background: SOFT }}>
+      <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <span className="text-[17px] md:text-[20px] font-semibold tracking-[-0.025em]" style={{ color: INK }}>
+          {title}
+        </span>
+        <span className="rounded-[4px] border bg-white px-2 py-1 text-[11px]" style={{ borderColor: "#E5E7EB", color: MUTED }}>
+          Retrospective exploration
+        </span>
+      </figcaption>
+      {children}
+    </figure>
+  );
+}
+
+// A sample listing, used for every card so the versions compare like for like.
+const SAMPLE = { title: "Software Engineering Intern", company: "Fieldnote", place: "New York, NY", when: "Summer 2027" };
+
+function Check({ tint }: { tint: string }) {
+  return (
+    <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={tint} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 5.2 4.2 7.4 8 3" />
+    </svg>
+  );
+}
+
+function JobCardExplorations({ tint }: { tint: string }) {
+  const versions = [
+    {
+      key: "A",
+      name: "Listing first",
+      note: "Reads like every job board. Whether you can apply is buried in the description.",
+      card: (
+        <>
+          <p className="m-0 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
+          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place}</p>
+          <p className="m-0 mt-3 text-[11px]" style={{ color: FAINT }}>Posted 3 days ago · 214 applicants</p>
+        </>
+      ),
+    },
+    {
+      key: "B",
+      name: "Eligibility as tags",
+      note: "Who can apply is visible, but four equal tags compete with the role itself.",
+      card: (
+        <>
+          <p className="m-0 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
+          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place}</p>
+          <div className="mt-3 flex flex-wrap gap-1">
+            {["Class of 2027", "Sophomore+", "Paid", "On-site"].map((t) => (
+              <span key={t} className="rounded-[3px] px-1.5 py-0.5 text-[10px]" style={{ background: PANEL, color: BODY }}>{t}</span>
+            ))}
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "C",
+      name: "One eligibility line",
+      note: "Can I apply? comes first, in one plain line. Everything else steps back.",
+      card: (
+        <>
+          <p className="m-0 flex items-center gap-1.5 text-[11px] font-medium" style={{ color: tint }}>
+            <Check tint={tint} />
+            Open to the class of 2027
+          </p>
+          <p className="m-0 mt-2 text-[13px] font-medium" style={{ color: INK }}>{SAMPLE.title}</p>
+          <p className="m-0 mt-1 text-[12px]" style={{ color: MUTED }}>{SAMPLE.company} · {SAMPLE.place} · {SAMPLE.when}</p>
+        </>
+      ),
+    },
+  ];
+  return (
+    <ExploreFigure title="Job card explorations">
+      <p className="m-0 mt-2 text-[13px] md:text-[14px]" style={{ color: MUTED }}>
+        The same listing three ways: where eligibility, role, location and timing sit.
+      </p>
+      <ol className="m-0 mt-7 p-0 list-none grid gap-6 sm:grid-cols-3 sm:gap-4">
+        {versions.map((v) => (
+          <li key={v.key} className="flex flex-col">
+            <p className="m-0 flex items-baseline gap-2 text-[12px]" style={{ color: INK }}>
+              <span className="font-[family-name:var(--font-dm-mono)] text-[11px]" style={{ color: FAINT }}>{v.key}</span>
+              {v.name}
+            </p>
+            <div
+              className="mt-3 rounded-[6px] border bg-white p-3.5 min-h-[104px]"
+              style={{ borderColor: v.key === "C" ? INK : "#E5E7EB" }}
+            >
+              {v.card}
+            </div>
+            <p className="m-0 mt-3 text-[12px] leading-relaxed" style={{ color: MUTED }}>{v.note}</p>
+          </li>
+        ))}
+      </ol>
+    </ExploreFigure>
+  );
+}
+
+function Marker({ n, tint }: { n: number; tint: string }) {
+  return (
+    <span aria-hidden="true" className="grid size-[18px] shrink-0 place-items-center rounded-[4px] text-[10px] font-semibold text-white" style={{ background: tint }}>
+      {n}
+    </span>
+  );
+}
+
+function DiscoveryLayout({ tint }: { tint: string }) {
+  const bar = (w: string, c = "#E5E7EB") => <span className="block h-[6px] rounded-full" style={{ width: w, background: c }} />;
+  const notes = [
+    "Search leads. Students describe the role in their own words instead of building a query.",
+    "Three filters stay up front: grad year, role type and location. The rest wait behind “More”.",
+    "Every result answers “can I apply?” before anything else, so a scan is enough to rule a role in or out.",
+  ];
+  return (
+    <ExploreFigure title="Discovery layout explorations">
+      <p className="m-0 mt-2 text-[13px] md:text-[14px]" style={{ color: MUTED }}>
+        What gets prominence, what stays secondary, and what makes an internship quick to assess.
+      </p>
+
+      {/* The wireframe */}
+      <div aria-hidden="true" className="mt-7 rounded-[8px] border bg-white p-3.5 md:p-5" style={{ borderColor: "#E5E7EB" }}>
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 flex-1 items-center rounded-[6px] border px-3 text-[11px] md:text-[12px]" style={{ borderColor: "#D7DBE2", color: FAINT }}>
+            Describe your dream internship…
+          </div>
+          <Marker n={1} tint={tint} />
+        </div>
+        <div className="mt-4 grid gap-4 md:grid-cols-[150px_minmax(0,1fr)] md:gap-5">
+          <div>
+            <div className="flex items-center gap-2 md:mb-2">
+              <span className="text-[10px] uppercase tracking-[0.08em]" style={{ color: FAINT }}>Filters</span>
+              <Marker n={2} tint={tint} />
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5 md:flex-col md:gap-2">
+              {["Class of 2027", "Software", "New York"].map((f) => (
+                <span key={f} className="rounded-[4px] border px-2 py-1 text-[11px]" style={{ borderColor: INK, color: INK }}>
+                  {f}
+                </span>
+              ))}
+              <span className="px-2 py-1 text-[11px]" style={{ color: FAINT }}>More +</span>
+            </div>
+          </div>
+          <div className="space-y-2.5">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-[6px] border p-3" style={{ borderColor: "#E5E7EB" }}>
+                <div className="flex items-center gap-2">
+                  <Check tint={tint} />
+                  {bar("34%", tint)}
+                  {i === 0 && <span className="ml-auto"><Marker n={3} tint={tint} /></span>}
+                </div>
+                <div className="mt-2.5 space-y-1.5">
+                  {bar(["62%", "54%", "58%"][i], "#C9CFD9")}
+                  {bar(["40%", "46%", "36%"][i])}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <ol className="m-0 mt-6 p-0 list-none grid gap-4 sm:grid-cols-3 sm:gap-5">
+        {notes.map((note, i) => (
+          <li key={i} className="flex gap-2.5">
+            <Marker n={i + 1} tint={tint} />
+            <p className="m-0 text-[12px] leading-relaxed" style={{ color: MUTED }}>{note}</p>
+          </li>
+        ))}
+      </ol>
+    </ExploreFigure>
+  );
+}
+
 function Placeholder({ label, className = "" }: { label: string; className?: string }) {
   return (
     <div className={`grid place-items-center ${className}`} style={{ background: PANEL }}>
@@ -182,7 +358,8 @@ export default function CaseStudy({ study }: { study: Study }) {
     "intro",
     "overview",
     ...(study.research ? ["research"] : []),
-    "solution",
+    ...(study.exploration ? ["exploration"] : []),
+    study.decisions ? "decisions" : "solution",
     "role",
     "outcome",
     ...(showGallery ? ["gallery"] : []),
@@ -426,27 +603,52 @@ export default function CaseStudy({ study }: { study: Study }) {
                     {plain(study.research.insight)}
                   </p>
                 </div>
+              </section>
+            )}
 
-                {/* Principles drawn from the research */}
-                <ol className="m-0 mt-10 p-0 list-none grid sm:grid-cols-3 gap-x-8 gap-y-6">
-                  {study.research.principles.map((item, i) => (
-                    <li key={item.title}>
-                      <span className="font-[family-name:var(--font-dm-mono)] text-[11px]" style={{ color: MUTED }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <p className="m-0 mt-2 text-[14px] font-medium" style={{ color: INK }}>
+            {study.exploration && (
+              <section id="exploration" aria-labelledby="exploration-title" className="scroll-mt-24 mt-20 md:mt-24">
+                <Label id="exploration" tint={tint} n={sections.indexOf("exploration")} />
+                <Lead tint={tint}>{study.exploration.lead}</Lead>
+                {study.exploration.paragraphs.map((para) => (
+                  <Prose key={para}>{para}</Prose>
+                ))}
+                <JobCardExplorations tint={tint} />
+                <DiscoveryLayout tint={tint} />
+                <p
+                  className="m-0 mt-12 max-w-[620px] text-[18px] md:text-[20px] font-medium leading-[1.4] tracking-[-0.02em]"
+                  style={{ color: INK }}
+                >
+                  <Rich text={study.exploration.closing} color={tint} />
+                </p>
+              </section>
+            )}
+
+            {study.decisions ? (
+              <section id="decisions" aria-labelledby="decisions-title" className="scroll-mt-24 mt-20 md:mt-24">
+                <Label id="decisions" tint={tint} n={sections.indexOf("decisions")} />
+                <ol className="m-0 mt-8 p-0 list-none">
+                  {study.decisions.map((item, i) => (
+                    <li
+                      key={item.title}
+                      className="grid gap-y-2 border-t py-6 md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] md:gap-x-10"
+                      style={{ borderColor: "#E5E7EB" }}
+                    >
+                      <p className="m-0 flex items-baseline gap-3 text-[16px] md:text-[17px] font-medium tracking-[-0.01em]" style={{ color: INK }}>
+                        <span className="font-[family-name:var(--font-dm-mono)] text-[11px] font-normal" style={{ color: FAINT }}>
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                         {item.title}
                       </p>
-                      <p className="m-0 mt-1 text-[13px] leading-relaxed" style={{ color: MUTED }}>
-                        {item.line}
+                      <p className="m-0 text-[14px] leading-[1.65] md:pt-0.5" style={{ color: MUTED }}>
+                        {item.why}
                       </p>
                     </li>
                   ))}
                 </ol>
               </section>
-            )}
-
-            <section id="solution" aria-labelledby="solution-title" className="scroll-mt-24 mt-20 md:mt-24">
+            ) : (
+              <section id="solution" aria-labelledby="solution-title" className="scroll-mt-24 mt-20 md:mt-24">
               <Label id="solution" tint={tint} n={sections.indexOf("solution")} />
               <ul className="m-0 mt-6 p-0 list-none grid sm:grid-cols-2 gap-x-12 gap-y-6">
                 {study.solution.map((item) => (
@@ -461,6 +663,7 @@ export default function CaseStudy({ study }: { study: Study }) {
                 ))}
               </ul>
             </section>
+            )}
 
             <section id="role" aria-labelledby="role-title" className="scroll-mt-24 mt-20 md:mt-24">
               <Label id="role" tint={tint} n={sections.indexOf("role")} />
