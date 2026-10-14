@@ -1899,12 +1899,7 @@ export default function CaseStudy({ study }: { study: Study }) {
                 <AlvarezReel />
               </section>
               ) : (
-              <section
-                id="gallery"
-                aria-labelledby="gallery-title"
-                // The spark screens are small, so their panel reaches a little past the column on wide screens
-                className={`scroll-mt-24 mt-20 md:mt-24 ${study.galleryArt === "spark-screens" ? "xl:-mx-[80px] 2xl:-mx-[120px] xl:[&>h2]:px-[80px] 2xl:[&>h2]:px-[120px]" : ""}`}
-              >
+              <section id="gallery" aria-labelledby="gallery-title" className="scroll-mt-24 mt-20 md:mt-24">
                 <Label id="gallery" text={labelOf("gallery")} tint={tint} n={sections.indexOf("gallery")} />
                 {study.galleryArt === "sponty-bento" ? (
                   <SpontyGallery />

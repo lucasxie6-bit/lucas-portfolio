@@ -52,7 +52,7 @@ export function Phone({ children, dark = false, className = "" }: { children: Re
           background: dark ? "#1C1C22" : "#FFFFFF",
           borderRadius: c(36),
           padding: dark ? c(7.5) : c(2.5),
-          boxShadow: dark ? "0 30px 60px -30px rgba(0,0,0,0.6)" : "0 24px 50px -24px rgba(8,8,40,0.6)",
+          boxShadow: dark ? "0 30px 60px -30px rgba(0,0,0,0.6)" : "0 0 0 1px rgba(31,35,71,0.06), 0 14px 30px -20px rgba(31,35,71,0.35)",
         }}
       >
         <div
@@ -102,11 +102,12 @@ function Tabs({ active }: { active: "home" | "learn" | "status" | "profile" }) {
   );
 }
 
-function ScoreCard() {
+function ScoreCard({ style }: { style?: React.CSSProperties }) {
   return (
     <div
       className="relative overflow-hidden text-white"
       style={{
+        ...style,
         margin: `0 ${c(11)}`,
         padding: `${c(14)} ${c(15)} ${c(13)}`,
         borderRadius: c(18),
@@ -377,6 +378,41 @@ const LEVELS = [
   { name: "Thinker", note: "Leading with your own reasoning", range: "300+", state: "next" },
 ];
 
+function LevelsCard({ style }: { style?: React.CSSProperties }) {
+  return (
+    <Card style={{ margin: `${c(11)} ${c(11)} 0`, padding: c(5), ...style }}>
+      {LEVELS.map((lv) => (
+        <div
+          key={lv.name}
+          className="flex items-center"
+          style={{ gap: c(9), padding: `${c(8)} ${c(8)}`, borderRadius: c(10), background: lv.state === "now" ? LAV : "transparent" }}
+        >
+          <span
+            className="grid shrink-0 place-items-center rounded-full text-white"
+            style={{ width: c(18), height: c(18), background: lv.state === "next" ? "transparent" : NAVY, border: lv.state === "next" ? `1px solid #D4D4DE` : undefined }}
+          >
+            {lv.state === "done" && (
+              <svg viewBox="0 0 12 12" style={{ width: c(8) }} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2.5 6.2l2.3 2.3 4.7-5" />
+              </svg>
+            )}
+            {lv.state === "now" && <Sparkle size={6} />}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block" style={{ fontSize: c(10), fontWeight: 600, color: lv.state === "next" ? GREY : INK }}>
+              {lv.name}
+            </span>
+            <span className="block" style={{ fontSize: c(7.5), color: GREY, marginTop: c(1) }}>
+              {lv.note}
+            </span>
+          </span>
+          <span style={{ fontSize: c(8), fontWeight: lv.state === "now" ? 600 : 400, color: lv.state === "now" ? INK : GREY }}>{lv.range}</span>
+        </div>
+      ))}
+    </Card>
+  );
+}
+
 export function StatusScreen() {
   return (
     <>
@@ -384,73 +420,52 @@ export function StatusScreen() {
         <span style={{ fontWeight: 700 }}>spark</span> <span style={{ fontFamily: SERIF, fontStyle: "italic" }}>status</span>
       </p>
       <ScoreCard />
-      <Card style={{ margin: `${c(11)} ${c(11)} 0`, padding: c(5) }}>
-        {LEVELS.map((lv) => (
-          <div
-            key={lv.name}
-            className="flex items-center"
-            style={{ gap: c(9), padding: `${c(8)} ${c(8)}`, borderRadius: c(10), background: lv.state === "now" ? LAV : "transparent" }}
-          >
-            <span
-              className="grid shrink-0 place-items-center rounded-full text-white"
-              style={{ width: c(18), height: c(18), background: lv.state === "next" ? "transparent" : NAVY, border: lv.state === "next" ? `1px solid #D4D4DE` : undefined }}
-            >
-              {lv.state === "done" && (
-                <svg viewBox="0 0 12 12" style={{ width: c(8) }} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2.5 6.2l2.3 2.3 4.7-5" />
-                </svg>
-              )}
-              {lv.state === "now" && <Sparkle size={6} />}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block" style={{ fontSize: c(10), fontWeight: 600, color: lv.state === "next" ? GREY : INK }}>
-                {lv.name}
-              </span>
-              <span className="block" style={{ fontSize: c(7.5), color: GREY, marginTop: c(1) }}>
-                {lv.note}
-              </span>
-            </span>
-            <span style={{ fontSize: c(8), fontWeight: lv.state === "now" ? 600 : 400, color: lv.state === "now" ? INK : GREY }}>{lv.range}</span>
-          </div>
-        ))}
-      </Card>
+      <LevelsCard />
       <Tabs active="status" />
     </>
   );
 }
 
-const GALLERY = [
-  { title: "home", note: "your score, and where to pick up", Screen: HomeScreen },
-  { title: "asking spark", note: "help on offer, not the answer", Screen: AskScreen },
-  { title: "getting a hint", note: "a question back, to think through", Screen: HintScreen },
-  { title: "spark status", note: "four levels, earned by thinking", Screen: StatusScreen },
-];
+const LAVENDER = "linear-gradient(160deg, #ECEAF9 0%, #F3F0F4 100%)";
+const FLOAT = "0 18px 40px -22px rgba(31,35,71,0.4)";
 
-// The four screens side by side on the app's navy, a soft glow behind them.
+// The gallery as a bento: home in a tall card, the score and levels floating together, the "help on your terms"
+// line, and the hint screen running off the bottom of its card. Each card sizes its contents in its own cqw.
 export function SparkGallery() {
   return (
-    <div
-      className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 rounded-[16px] px-5 py-8 md:grid-cols-4 md:gap-x-5 md:px-7 md:py-10"
-      style={{ background: "radial-gradient(ellipse 70% 55% at 50% 0%, #48489A 0%, rgba(72,72,154,0) 100%), #23255A" }}
-    >
-      {GALLERY.map(({ title, note, Screen }, i) => (
-        <figure key={title} className="m-0">
-          <Phone>
-            <Screen />
-          </Phone>
-          <figcaption className="mt-4">
-            <span className="flex items-baseline gap-2 text-[14px] md:text-[15px] font-semibold text-white">
-              <span className="font-[family-name:var(--font-dm-mono)] text-[10px] font-normal" style={{ color: "#8D8FBF" }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              {title}
-            </span>
-            <span className="mt-1 block pl-[22px] text-[11.5px] leading-snug" style={{ color: "#A9ABD0" }}>
-              {note}
-            </span>
-          </figcaption>
-        </figure>
-      ))}
+    <div className="mt-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2.5 sm:grid-cols-[minmax(0,427fr)_minmax(0,424fr)_minmax(0,423fr)] sm:gap-3">
+      <div className="relative col-span-2 aspect-[427/600] overflow-hidden rounded-[18px] sm:col-span-1 sm:row-span-2 sm:aspect-auto" style={{ background: LAVENDER, containerType: "inline-size" }}>
+        <Phone className="absolute left-[15.5cqw] top-[13.6cqw] w-[69cqw]">
+          <HomeScreen />
+        </Phone>
+      </div>
+      <div className="col-span-2 aspect-[867/312] overflow-hidden rounded-[18px]" style={{ background: LAVENDER, containerType: "inline-size" }}>
+        <div className="flex size-full items-center justify-center" style={{ gap: "3.8cqw" }}>
+          <div className="w-[39.1cqw]" style={{ containerType: "inline-size" }}>
+            <ScoreCard style={{ boxShadow: FLOAT }} />
+          </div>
+          <div className="w-[38.1cqw]" style={{ containerType: "inline-size" }}>
+            <LevelsCard style={{ margin: `0 ${c(11)}`, boxShadow: FLOAT }} />
+          </div>
+        </div>
+      </div>
+      <div className="aspect-[424/408] overflow-hidden rounded-[18px]" style={{ background: "#F3EFE6", containerType: "inline-size" }}>
+        <div className="flex size-full flex-col justify-end" style={{ padding: "9.2cqw" }}>
+        <p className="m-0 leading-[0.98]" style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: "13.7cqw", letterSpacing: "-0.03em", color: NAVY }}>
+          Help on
+          <br />
+          your terms
+        </p>
+        <p className="m-0 leading-[1.5]" style={{ fontSize: "4cqw", color: GREY, marginTop: "4cqw", maxWidth: "62cqw" }}>
+          Students choose how much support they need.
+        </p>
+        </div>
+      </div>
+      <div className="relative aspect-[423/408] overflow-hidden rounded-[18px]" style={{ background: LAVENDER, containerType: "inline-size" }}>
+        <Phone className="absolute left-[18.1cqw] top-[11.8cqw] w-[63.8cqw]">
+          <HintScreen />
+        </Phone>
+      </div>
     </div>
   );
 }
