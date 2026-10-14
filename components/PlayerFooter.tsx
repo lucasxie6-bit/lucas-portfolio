@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { EMAIL, INBOX } from "@/components/records";
+import { PlayIcon, stop, toggle, useNowPlaying } from "@/components/NowPlaying";
 
 export type FooterLink = { label: string; href: string };
 
@@ -10,6 +11,9 @@ export type FooterLink = { label: string; href: string };
 export default function PlayerFooter({ links, className = "" }: { links: FooterLink[]; className?: string }) {
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
+  const now = useNowPlaying();
+  // Leaving the page stops the music.
+  useEffect(() => stop, []);
 
   useEffect(() => {
     const update = () => {
@@ -43,14 +47,39 @@ export default function PlayerFooter({ links, className = "" }: { links: FooterL
   return (
     <footer className={`sticky bottom-3 z-20 px-3 ${className}`}>
       <div className="relative max-w-[780px] mx-auto overflow-hidden rounded-lg bg-[#111827] text-white pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_12px_28px_-16px_rgba(17,24,39,0.7)]">
-        {/* Now playing */}
+        {/* Now playing: thanks for listening, or the preview someone started on the page */}
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/lx-icon.svg" alt="" width={28} height={28} className="size-7 shrink-0" />
-          <div className="min-w-0 leading-tight">
-            <p className="text-[12px] font-bold truncate">thanks for listening</p>
-            <p className="text-[11px] text-white/50">lucas xie</p>
-          </div>
+          {now.track ? (
+            <>
+              <button
+                type="button"
+                onClick={() => now.track && toggle(now.track)}
+                aria-label={now.playing ? "Pause" : "Play"}
+                className="relative grid size-7 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-[3px] border-0 p-0 text-white"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={now.track.cover} alt="" width={28} height={28} className="absolute inset-0 size-full object-cover" />
+                <span className="relative grid size-full place-items-center bg-black/40">
+                  <PlayIcon playing={now.playing} size={10} />
+                </span>
+              </button>
+              <div className="min-w-0 leading-tight">
+                <p className="text-[12px] font-bold truncate">{now.track.title}</p>
+                <a href={now.track.href} target="_blank" rel="noopener noreferrer" className="block truncate text-[11px] text-white/50 hover:text-white/80">
+                  {now.track.artist} · Apple Music ↗
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/lx-icon.svg" alt="" width={28} height={28} className="size-7 shrink-0" />
+              <div className="min-w-0 leading-tight">
+                <p className="text-[12px] font-bold truncate">thanks for listening</p>
+                <p className="text-[11px] text-white/50">lucas xie</p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Controls */}

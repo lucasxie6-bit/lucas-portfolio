@@ -6,6 +6,7 @@ import { EMAIL, INBOX } from "@/components/records";
 import CoverStrip from "@/components/CoverStrip";
 import SideCovers, { type Cover } from "@/components/SideCovers";
 import { albumCovers } from "@/data/covers";
+import { PlayableCover, TrackRow, type Track } from "@/components/NowPlaying";
 
 // Photos live in /public/photos, shown in this order. Set `size` to "big" (full row), "wide" (half) or "small" (a
 // quarter) to choose which ones stand out; rows always fill out, so any mix works. Big photos use their `ratio`, capped at 3:2.
@@ -37,16 +38,80 @@ const wrapped = {
   year: "2026",
 };
 
-// Recent favourite albums. Add `href` to a track to link it.
+// 30-second previews from Apple Music, played only on a click. Each links back to the song on Apple Music.
+const PREVIEW = "https://audio-ssl.itunes.apple.com/itunes-assets/";
+const preview = (title: string, artist: string, cover: string, file: string, href: string): Track => ({
+  title,
+  artist,
+  cover,
+  preview: PREVIEW + file,
+  href: `https://music.apple.com/us/album/${href}`,
+});
+
+// Recent favourite albums. A track with a `preview` can be played.
 const favourite = {
   album: "wor$t girl in america",
   artist: "slayyyter",
   cover: "/albums/worst-girl-in-america.jpg",
-  tracks: [{ title: "brand new chanel$" }, { title: "beat up chanel$" }, { title: "cannibalism!" }] as { title: string; href?: string }[],
+  tracks: [
+    {
+      // A single, and on the deluxe edition rather than the original album
+      title: "brand new chanel$",
+      preview: preview(
+        "brand new chanel$",
+        "slayyyter",
+        "/albums/worst-girl-in-america.jpg",
+        "AudioPreview221/v4/66/b6/e1/66b6e1ee-2cea-ba98-ca53-2ae13b134326/mzaf_3396294438659672321.plus.aac.p.m4a",
+        "brand-new-chanel%24/6793636947?i=6793636948",
+      ),
+    },
+    {
+      title: "beat up chanel$",
+      preview: preview(
+        "beat up chanel$",
+        "slayyyter",
+        "/albums/worst-girl-in-america.jpg",
+        "AudioPreview211/v4/4e/60/aa/4e60aab6-ffb7-b319-1b12-1be05eb56832/mzaf_6344798636293333887.plus.aac.p.m4a",
+        "beat-up-chanel%24/1867530577?i=1867531314",
+      ),
+    },
+    {
+      title: "cannibalism!",
+      preview: preview(
+        "cannibalism!",
+        "slayyyter",
+        "/albums/worst-girl-in-america.jpg",
+        "AudioPreview211/v4/be/dc/42/bedc42aa-03e2-b6bd-7c61-822741a980b0/mzaf_11662850259420659096.plus.aac.p.m4a",
+        "cannibalism/1867530577?i=1867531315",
+      ),
+    },
+  ] as { title: string; preview?: Track }[],
 };
 const alsoOnRotation = [
-  { album: "popstar", artist: "tinashe", cover: "/albums/popstar.jpg" },
-  { album: "you seem so sad for a girl", artist: "olivia rodrigo", cover: "/albums/you-seem-so-sad-for-a-girl.jpg" },
+  {
+    album: "popstar",
+    artist: "tinashe",
+    cover: "/albums/popstar.jpg",
+    track: preview(
+      "popstar",
+      "tinashe",
+      "/albums/popstar.jpg",
+      "AudioPreview221/v4/04/9b/12/049b12f8-836f-8c34-9c5c-f2aa51819d5f/mzaf_7672359453511026379.plus.aac.p.m4a",
+      "popstar/6789739137?i=6789739161",
+    ),
+  },
+  {
+    album: "you seem so sad for a girl",
+    artist: "olivia rodrigo",
+    cover: "/albums/you-seem-so-sad-for-a-girl.jpg",
+    track: preview(
+      "drop dead",
+      "olivia rodrigo",
+      "/albums/you-seem-so-sad-for-a-girl.jpg",
+      "AudioPreview211/v4/89/57/ad/8957adf6-1862-4e4e-bcb5-810d6cf79cc4/mzaf_7752581374620577831.plus.aac.p.m4a",
+      "drop-dead/1889992111?i=1889992113",
+    ),
+  },
 ];
 
 const links = [
@@ -135,28 +200,11 @@ export default function About() {
             </div>
 
             <div className="md:w-[300px] shrink-0">
-              <p className="font-[family-name:var(--font-dm-mono)] text-[12px] text-white/55 pb-2">my favourites on it</p>
+              <p className="font-[family-name:var(--font-dm-mono)] text-[12px] text-white/55 pb-2">my favourites on it · tap to play</p>
               <ol className="border-t border-white/10">
-                {favourite.tracks.map((track, i) => {
-                  const row = (
-                    <>
-                      <span className="font-[family-name:var(--font-dm-mono)] text-[12px] text-white/45 w-7">{pad(i + 1)}</span>
-                      <span className="flex-1 text-[14px] font-bold">{track.title}</span>
-                      <span aria-hidden="true" className="text-white/45">↗</span>
-                    </>
-                  );
-                  return (
-                    <li key={i} className="border-b border-white/10 last:border-b-0">
-                      {track.href ? (
-                        <a href={track.href} target="_blank" rel="noopener noreferrer" className="flex items-center py-2.5 hover:text-white/80">
-                          {row}
-                        </a>
-                      ) : (
-                        <div className="flex items-center py-2.5">{row}</div>
-                      )}
-                    </li>
-                  );
-                })}
+                {favourite.tracks.map((track, i) => (
+                  <TrackRow key={track.title} n={i + 1} title={track.title} track={track.preview} />
+                ))}
               </ol>
             </div>
           </div>
@@ -164,15 +212,7 @@ export default function About() {
           <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-x-10 gap-y-4">
             <p className="sm:w-[64px] text-[12px] leading-tight text-[#5F6672]">also on rotation</p>
             {alsoOnRotation.map((item) => (
-              <div key={item.artist} className="flex items-center gap-3">
-                <span className="relative size-12 shrink-0 overflow-hidden rounded-[2px] bg-[#E6E8EC]">
-                  <Image src={item.cover} alt={`${item.album} by ${item.artist}`} fill unoptimized className="object-cover" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[14px] font-bold text-[#111827]">{item.album}</span>
-                  <span className="block text-[13px] text-[#5F6672]">{item.artist}</span>
-                </span>
-              </div>
+              <PlayableCover key={item.artist} album={item.album} artist={item.artist} cover={item.cover} track={item.track} />
             ))}
           </div>
         </section>
