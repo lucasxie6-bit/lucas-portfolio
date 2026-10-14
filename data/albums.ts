@@ -22,6 +22,8 @@ export interface Album {
   tracks: Track[];
   cta: string;
   href?: string;
+  /** The project to look at first; it gets a small star on the work carousel. */
+  featured?: boolean;
 }
 
 const EMAIL = "mailto:lucas.xie6@gmail.com";
@@ -54,6 +56,7 @@ export const albums: Album[] = [
     tracks: caseStudyTracks("useno"),
     cta: "Play — see the project",
     href: "/work/useno",
+    featured: true,
   },
   {
     slug: "sponty",

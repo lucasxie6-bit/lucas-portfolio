@@ -11,8 +11,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 // thing anyone sees; the rest wrap around it.
 const SLOTS: (number | null)[] = [0, 1, 4, 3, null, 5];
 const SHOWN = SLOTS.filter((s): s is number => s !== null);
-// How big each cover's word sits on the homepage's wide sleeves; alvarez's short, heavy word reads small otherwise.
-const wordScale = (name: string) => (name === "alvarez" ? 0.92 : 0.8);
+// How big each cover's word sits on the homepage's wide sleeves; alvarez and grove are tuned by eye.
+const wordScale = (name: string) => (name === "alvarez" ? 0.92 : name === "grove" ? 0.84 : 0.8);
 
 function A({ href, className, style, children, ...rest }: React.ComponentProps<"a"> & { href: string }) {
   if (href.startsWith("mailto:")) {
@@ -42,7 +42,7 @@ const lineAt = (t: number) => LINE_STARTS.findLastIndex((start) => start <= (t %
 // Where the current lyric sits in its box, from the top: a little above the middle.
 const LYRIC_ANCHOR = 0.4;
 // Lyrics roll upward like a lyrics view: the current line sits in the middle, its neighbours fade out above and below.
-// Pointing at the lyrics holds the current line; clicking a faded one jumps to it. Letting go carries on from the
+// Pointing at a lyric holds the current line; clicking a faded one jumps to it. Letting go carries on from the
 // line after whichever one was held.
 function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: number) => void; onRelease: () => void }) {
   const viewRef = useRef<HTMLDivElement>(null);
@@ -67,8 +67,6 @@ function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: 
   return (
     <div
       ref={viewRef}
-      onPointerEnter={(e) => e.pointerType === "mouse" && onHold(active)}
-      onPointerLeave={(e) => e.pointerType === "mouse" && onRelease()}
       onBlur={(e) => !viewRef.current?.contains(e.relatedTarget as Node | null) && onRelease()}
       className="lyrics-view relative h-full overflow-hidden"
     >
@@ -85,10 +83,15 @@ function Lyrics({ active, onHold, onRelease }: { active: number; onHold: (line: 
             type="button"
             data-lyric
             onClick={() => onHold(i)}
+            // Only the words themselves hold the lyrics, not the empty space around them.
+            onPointerEnter={(e) => e.pointerType === "mouse" && onHold(active)}
+            onPointerLeave={(e) =>
+              e.pointerType === "mouse" && !(e.relatedTarget as Element | null)?.closest?.("[data-lyric]") && onRelease()
+            }
             // Only keyboard focus holds a line; a focus left behind by a click must not re-freeze it later.
             onFocus={(e) => e.currentTarget.matches(":focus-visible") && onHold(i)}
             aria-current={i === active ? "true" : undefined}
-            className="lyric-line text-left whitespace-pre-line cursor-pointer"
+            className="lyric-line self-start text-left whitespace-pre-line cursor-pointer"
             style={{ color: i === active ? "#111827" : "#D9DCE2" }}
           >
             {i === 0 ? <h1 className="m-0 font-[inherit] text-[length:inherit]">{line}</h1> : line}
@@ -346,13 +349,16 @@ export default function OnRotation() {
               const i = slot;
               const it = items[i];
               const lead = pos === 0;
-              // Discs slide out to the right, except in the last column where there's no room.
-              const slideLeft = [1, 2, 5].includes(pos);
+              // Discs slide toward open space: right by default, left from the rightmost column. The columns differ by
+              // layout, so CSS picks the direction: cd-l2 slides left in two columns, cd-l3 in three.
+              const leftIn2 = [0, 2, 5].includes(pos);
+              const leftIn3 = [1, 2, 5].includes(pos);
               return (
-              <div key={it.name} className={`cd-slot relative ${lead ? "lead col-span-2 row-span-2" : "aspect-[5/4]"} ${slideLeft ? "cd-left" : ""}`}>
+              <div key={it.name} className={`cd-slot relative ${lead ? "lead col-span-2 row-span-2" : "tile"} ${leftIn2 ? "cd-l2" : ""} ${leftIn3 ? "cd-l3" : ""}`} style={{ containerType: "size" }}>
               {/* The CD waits behind the sleeve on the side it slides out of, so hovering shows a good third of it. */}
-              <span aria-hidden="true" className={`absolute inset-0 flex items-center ${slideLeft ? "justify-start pl-[5%]" : "justify-end pr-[5%]"}`}>
-                <span className="cd relative h-[90%] aspect-square rounded-full">
+              <span aria-hidden="true" className="cd-wrap absolute inset-0 flex items-center">
+                {/* Sized by the sleeve's shorter side, so it stays hidden behind it however the tile is shaped */}
+                <span className="cd relative shrink-0 rounded-full" style={{ width: "88cqmin", height: "88cqmin" }}>
                   <span className="cd-spin absolute inset-0 rounded-full" style={{ background: discBackground(it) }} />
                 </span>
               </span>
@@ -362,13 +368,22 @@ export default function OnRotation() {
                 onMouseEnter={() => setSel(i)}
                 onFocus={() => setSel(i)}
                 className="sq absolute inset-0 block overflow-hidden rounded-md"
-                style={{ background: it.bg, color: it.fg, containerType: "inline-size" }}
+                style={{ background: it.bg, color: it.fg, containerType: "size" }}
               >
-                <span
-                  className="chip absolute right-3.5 top-3.5 text-xs px-2.5 py-[5px] rounded"
-                  style={{ background: it.chipBg, color: it.chipFg }}
-                >
-                  {it.name}
+                <span className="absolute right-3.5 top-3.5 flex items-center gap-1">
+                  {it.platform && (
+                    <span
+                      className="chip grid h-[26px] w-[26px] place-items-center rounded"
+                      style={{ background: it.chipBg, color: it.chipFg }}
+                      title={it.platform === "web" ? "Web app" : "Mobile app"}
+                    >
+                      <PlatformIcon platform={it.platform} />
+                      <span className="sr-only">{it.platform === "web" ? "web app" : "mobile app"}</span>
+                    </span>
+                  )}
+                  <span className="chip text-xs px-2.5 py-[5px] rounded" style={{ background: it.chipBg, color: it.chipFg }}>
+                    {it.name}
+                  </span>
                 </span>
                 {/* The big lead cover keeps its art at a cover-like size instead of scaling it up to fill the block. */}
                 <span
@@ -376,7 +391,8 @@ export default function OnRotation() {
                   style={{
                     fontFamily: it.font,
                     // Cover words are sized off the width; the sleeves are wider than tall, so they're set a size down.
-                    fontSize: `min(${it.size * wordScale(it.name)}px, ${((it.size / 248) * 100 * wordScale(it.name)).toFixed(2)}cqw)`,
+                    // Sized by the tile's shorter side (cqmin), so a short, wide tile can't blow the word up.
+                    fontSize: `min(${it.size * wordScale(it.name)}px, ${((it.size / 248) * 125 * wordScale(it.name)).toFixed(2)}cqmin)`,
                     fontStyle: it.italic ? "italic" : "normal",
                   }}
                 >
@@ -397,8 +413,25 @@ const SILVER =
   "conic-gradient(from 20deg, #D7D9DE, #F5F5F7, #C8D5E6, #EDE1EF, #D3DCE4, #F7F1E3, #CFD6E2, #E9E9ED, #D7D9DE)";
 
 // Empty sleeves: each one a different kind of nothing.
+// A phone for mobile apps, a browser window for web ones.
+function PlatformIcon({ platform }: { platform: "web" | "mobile" }) {
+  return platform === "mobile" ? (
+    <svg aria-hidden="true" width="9" height="12" viewBox="0 0 9 12" fill="none" stroke="currentColor" strokeWidth="1.2">
+      <rect x="0.6" y="0.6" width="7.8" height="10.8" rx="1.6" />
+      <path d="M3.5 9.4h2" strokeLinecap="round" />
+    </svg>
+  ) : (
+    <svg aria-hidden="true" width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor" strokeWidth="1.2">
+      <rect x="0.6" y="0.6" width="10.8" height="8.8" rx="1.4" />
+      <path d="M0.6 3h10.8" />
+      <circle cx="2.2" cy="1.8" r="0.35" fill="currentColor" stroke="none" />
+      <circle cx="3.4" cy="1.8" r="0.35" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function Blank({ variant }: { variant: number }) {
-  const base = "relative aspect-[5/4] rounded-md overflow-hidden";
+  const base = "tile relative rounded-md overflow-hidden";
   switch (variant % 4) {
     case 0:
       // Empty jewel case: frosted plastic, a hub where the disc would clip in.

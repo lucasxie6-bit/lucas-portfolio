@@ -194,6 +194,27 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                     >
                       <CoverArt it={r.item} />
                     </span>
+                    {/* The featured record wears a small gold star on its sleeve */}
+                    {r.album.featured && (
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="absolute top-[5%] left-[5%]"
+                        style={{ width: "max(7cqw, 16px)", height: "max(7cqw, 16px)" }}
+                        fill="#D6A04A"
+                      >
+                        <path d="M12 2.5l2.6 6.1 6.6.6-5 4.4 1.5 6.5L12 16.7 6.3 20.1l1.5-6.5-5-4.4 6.6-.6z" />
+                      </svg>
+                    )}
+                    {/* A faint play button: the cover in the middle opens its case study */}
+                    <span
+                      className="film-open absolute bottom-[4%] right-[4%] grid place-items-center rounded-full backdrop-blur-sm"
+                      style={{ width: "max(8cqw, 26px)", height: "max(8cqw, 26px)", background: "rgba(255,255,255,0.6)", color: "#111827" }}
+                    >
+                      <svg width="34%" height="34%" viewBox="0 0 10 10" fill="currentColor" style={{ marginLeft: "6%" }}>
+                        <path d="M2.6 1.6C2.6 1.05 3.2.7 3.68.98l5.1 2.98c.47.28.47.96 0 1.24l-5.1 2.98C3.2 8.46 2.6 8.1 2.6 7.56z" />
+                      </svg>
+                    </span>
                   </span>
                 </button>
               );
@@ -228,7 +249,15 @@ export default function CDRack({ initialSlug }: { initialSlug?: string }) {
                 key={r.slug}
                 className="grid gap-y-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:gap-x-8"
               >
-                <p className="m-0 text-[28px] md:text-[32px] font-semibold leading-none tracking-[-0.05em]">{r.album.name.toLowerCase()}</p>
+                <p className="m-0 flex items-start gap-1.5 text-[28px] md:text-[32px] font-semibold leading-none tracking-[-0.05em]">
+                  {r.album.name.toLowerCase()}
+                  {r.album.featured && (
+                    // A quiet star on the one to see first
+                    <svg aria-label="Featured" role="img" viewBox="0 0 24 24" className="mt-0.5 size-3.5 shrink-0" fill="#D6A04A">
+                      <path d="M12 2.5l2.6 6.1 6.6.6-5 4.4 1.5 6.5L12 16.7 6.3 20.1l1.5-6.5-5-4.4 6.6-.6z" />
+                    </svg>
+                  )}
+                </p>
                 <p className="m-0 text-[14px] md:text-[16px] leading-snug text-[#4B5563]">{describe(r.album)}</p>
                 {r.album.href && (
                   <Link

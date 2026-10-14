@@ -27,6 +27,8 @@ export interface Item {
   chipFg: string;
   art?: "useno" | "sponty" | "alvarez" | "grove";
   disc?: string;
+  /** What the project is, shown as a small icon beside the name on the homepage. */
+  platform?: "web" | "mobile";
 }
 
 // Four-point sparkle with concave sides, as on the sponty cover.
@@ -49,9 +51,10 @@ export function CoverArt({ it }: { it: Item }) {
     return (
       <span
         className="relative inline-block leading-none"
-        style={{ fontFamily: "var(--font-fredoka), sans-serif", fontWeight: 700, fontStretch: "125%", letterSpacing: "-0.02em", color: "#EFE5D6" }}
+        style={{ fontFamily: "var(--font-fredoka), sans-serif", fontWeight: 700, fontStretch: "108%", letterSpacing: "-0.02em", color: "#EFE5D6" }}
       >
-        <svg viewBox="-2 -2 82 101" aria-hidden="true" className="absolute" style={{ left: "30.5%", top: "-0.24em", width: "0.2em" }}>
+        {/* The leaf sprouts from the top of the "r"; grove has no tall letters, so it sits just above the x-height. */}
+        <svg viewBox="-2 -2 82 101" aria-hidden="true" className="absolute" style={{ left: "31%", top: "0.06em", width: "0.24em" }}>
           <path d="M0 0C40 5 80 40 78 97C35 92-3 55 0 0Z" fill="#7AAE58" />
         </svg>
         grove
@@ -88,7 +91,7 @@ function UsenoMark({ className = "" }: { className?: string }) {
 }
 
 export const items: Item[] = [
-  { name: "useno", kind: "startup", href: "/work/useno", bg: "#1F3A5F", fg: "#FFFFFF", title: "useno", font: ARCHIVO, size: 48, chipBg: "#FFFFFF", chipFg: "#1F3A5F", art: "useno" },
+  { name: "useno", kind: "startup", href: "/work/useno", bg: "#1F3A5F", fg: "#FFFFFF", title: "useno", font: ARCHIVO, size: 48, chipBg: "#FFFFFF", chipFg: "#1F3A5F", art: "useno", platform: "web" },
   {
     name: "sponty",
     kind: "case study",
@@ -110,11 +113,12 @@ export const items: Item[] = [
     chipFg: "#523A62",
     art: "sponty",
     disc: "#E4B4E6",
+    platform: "mobile",
   },
   { name: "camera roll", kind: "photos", href: "/play/camera-roll", bg: flash("50%", "40%"), fg: "#F3F4F6", title: "", font: MONO, size: 10, chipBg: paper, chipFg: "#111827" },
-  { name: "grove", kind: "case study", href: "/work/grove", bg: "#3E2419", fg: "#EFE5D6", title: "grove", font: SERIF, size: 54, chipBg: "rgba(239,229,214,0.14)", chipFg: "#EFE5D6", art: "grove", disc: "#7AAE58" },
-  { name: "spark", kind: "case study", href: "/work/spark", bg: "#F0EDE7", fg: "#3B2F6B", title: "spark", font: "var(--font-fraunces), serif", size: 62, italic: true, chipBg: "rgba(59,47,107,0.1)", chipFg: "#3B2F6B", disc: "#3B2F6B" },
-  { name: "alvarez", kind: "brand", href: "/work/alvarez", bg: "#E8DEB0", fg: "#2A2722", title: "alvarez", font: SERIF, size: 46, chipBg: "rgba(42,39,34,0.1)", chipFg: "#2A2722", art: "alvarez", disc: "#2A2722" },
+  { name: "grove", kind: "case study", href: "/work/grove", bg: "#3E2419", fg: "#EFE5D6", title: "grove", font: SERIF, size: 54, chipBg: "rgba(239,229,214,0.14)", chipFg: "#EFE5D6", art: "grove", disc: "#7AAE58", platform: "mobile" },
+  { name: "spark", kind: "case study", href: "/work/spark", bg: "#F0EDE7", fg: "#3B2F6B", title: "spark", font: "var(--font-fraunces), serif", size: 62, italic: true, chipBg: "rgba(59,47,107,0.1)", chipFg: "#3B2F6B", disc: "#3B2F6B", platform: "mobile" },
+  { name: "alvarez", kind: "brand", href: "/work/alvarez", bg: "#E8DEB0", fg: "#2A2722", title: "alvarez", font: SERIF, size: 46, chipBg: "rgba(42,39,34,0.1)", chipFg: "#2A2722", art: "alvarez", disc: "#2A2722", platform: "web" },
   { name: "about me", kind: "liner notes", href: "/about", bg: "#E7B2C4", fg: "#111827", title: "more about me\nthan you\nasked for", font: SERIF, size: 30, italic: true, chipBg: dark, chipFg: "#111827" },
   { name: "scan-o-matic", kind: "lab", href: "/play/scan-o-matic", bg: "#F5D000", fg: "#111827", title: "scan-o-\nmatic\n3000", font: ARCHIVO, size: 32, chipBg: "#FF5FB4", chipFg: "#111827" },
   { name: "friends", kind: "photos", href: "/play/camera-roll", bg: flash("35%", "55%"), fg: "#F3F4F6", title: "", font: MONO, size: 10, chipBg: paper, chipFg: "#111827" },

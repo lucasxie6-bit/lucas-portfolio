@@ -153,11 +153,23 @@ html[data-text-size="xl"] {
 /* CD tucked behind each sleeve; on hover it slides out sideways and spins. */
 .rot .cd-slot:hover, .rot .cd-slot:focus-within { z-index: 10; }
 .rot .cd {
+  pointer-events: none;
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-shadow: 0 6px 16px -6px rgba(17, 24, 39, 0.45);
 }
 .rot .cd-slot:hover .cd, .rot .cd-slot:focus-within .cd { transform: translateX(52%); }
-.rot .cd-left:hover .cd, .rot .cd-left:focus-within .cd { transform: translateX(-52%); }
+/* The disc waits behind the sleeve on the side it leaves from. Covers in the rightmost column slide left, so the disc
+   never runs off the screen; which covers those are depends on whether the grid is two or three across. */
+/* Discs never take the pointer: when one slides over a neighbouring cover, pointing there picks that cover instead. */
+.rot .cd-wrap { justify-content: flex-end; padding-right: 5%; pointer-events: none; }
+@media (max-width: 39.999rem), (min-width: 48rem) and (max-aspect-ratio: 5 / 4) {
+  .rot .cd-l2 .cd-wrap { justify-content: flex-start; padding-left: 5%; padding-right: 0; }
+  .rot .cd-l2:hover .cd, .rot .cd-l2:focus-within .cd { transform: translateX(-52%); }
+}
+@media (min-width: 40rem) and (max-width: 47.999rem), (min-width: 48rem) and (min-aspect-ratio: 5 / 4) {
+  .rot .cd-l3 .cd-wrap { justify-content: flex-start; padding-left: 5%; padding-right: 0; }
+  .rot .cd-l3:hover .cd, .rot .cd-l3:focus-within .cd { transform: translateX(-52%); }
+}
 .rot .cd-spin { animation: platterSpin 4s linear infinite; animation-play-state: paused; }
 .rot .cd-slot:hover .cd-spin { animation-play-state: running; }
 .rot .sq:hover .chip { background: #F3F4F6 !important; color: #111827 !important; }
@@ -167,10 +179,12 @@ html[data-text-size="xl"] {
   .rot .cd-spin { animation: none; }
 }
 
-/* Homepage cover grid: landscape 5:4 sleeves, with useno filling a 2×2 block at the start. Phones: 2 across. Small tablets stacked: 3 across.
-   Side by side: squarer windows get 2 across and 4 rows (useno, then two pairs), sized to fill the height; wide
-   windows get 3 across, sized by width. */
+/* Homepage cover grid: useno fills a 2×2 block at the start. Phones and stacked tablets scroll, with 5:4 sleeves.
+   Side by side, the grid fills the window's full height, so there's no dead space under it: squarer windows get 2
+   across and 4 rows (useno, then two pairs); wide windows get 3 across and 3 rows. The sleeves take whatever shape the
+   window gives them, and their art sizes to the tile's shorter side. */
 .home-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-grid .tile { aspect-ratio: 5 / 4; }
 .home-grid .extra-blank { display: none; }
 /* With two columns nothing else shares useno's rows, so it carries its own height; with three the covers beside it set it. */
 .home-grid .lead { aspect-ratio: 5 / 4; }
@@ -180,14 +194,17 @@ html[data-text-size="xl"] {
   .home-grid .lead { aspect-ratio: auto; }
 }
 @media (min-width: 48rem) {
-  .home-grid { grid-template-columns: repeat(2, min(calc((62vw - 48px) / 2), calc((100vh - 64px - 48px) / 4 * 1.25))); }
+  .home-grid {
+    height: calc(100svh - 64px);
+    grid-template-columns: repeat(2, calc((62vw - 48px) / 2));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
   .home-grid .extra-blank { display: none; }
-  .home-grid .lead { aspect-ratio: 5 / 4; }
+  .home-grid .lead, .home-grid .tile { aspect-ratio: auto; height: 100%; }
 }
 @media (min-width: 48rem) and (min-aspect-ratio: 5 / 4) {
-  .home-grid { grid-template-columns: repeat(3, calc((62vw - 64px) / 3)); }
+  .home-grid { grid-template-columns: repeat(3, calc((62vw - 64px) / 3)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
   .home-grid .extra-blank { display: contents; }
-  .home-grid .lead { aspect-ratio: auto; }
 }
 
 /* Homepage lyrics: lines fade out towards the top and bottom edges and glide between positions */
@@ -217,8 +234,8 @@ html[data-text-size="xl"] {
   pointer-events: auto;
   overflow: hidden;
   border-radius: 3px;
-  opacity: 0.82;
-  filter: saturate(0.85);
+  opacity: 0.3;
+  filter: grayscale(0.75);
   transform: rotate(var(--tilt));
   box-shadow: 0 14px 30px -16px rgba(17, 24, 39, 0.5);
   animation: coverFloat 10s ease-in-out infinite alternate;
@@ -289,3 +306,49 @@ html[data-text-size="xl"] {
   animation: platinumShine 11s ease-in-out infinite;
 }
 
+
+/* ── Case study animations ── */
+/* useno search animation: a filter value eases in when it changes. */
+@keyframes searchSwap { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.search-swap { display: inline-block; animation: searchSwap 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* sponty map: your location's ring breathes, the blocks drift, friends bob, and the plan's avatars join one by one. */
+@keyframes spontyHalo { 0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 1; } 50% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.7; } }
+.sponty-halo { transform: translate(-50%, -50%); animation: spontyHalo 3.2s ease-in-out infinite; }
+@keyframes spontyDrift { from { transform: translate(0, 0); } to { transform: translate(-2.2%, 1.4%); } }
+.sponty-drift { animation: spontyDrift 22s ease-in-out infinite alternate; }
+@keyframes spontyFloat { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 0.7cqw)); } }
+.sponty-float { transform: translate(-50%, -50%); animation: spontyFloat 5s ease-in-out infinite; }
+@keyframes spontyJoin {
+  0% { transform: scale(0.4); opacity: 0; }
+  10%, 82% { transform: scale(1); opacity: 1; }
+  92%, 100% { transform: scale(0.6); opacity: 0; }
+}
+.sponty-join { animation: spontyJoin 6.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .search-swap, .sponty-halo, .sponty-drift, .sponty-float, .sponty-join { animation: none; }
+}
+
+/* Work carousel: the cover in the middle shows a faint corner arrow, so it reads as something you can open. */
+.film-open { opacity: 0; transform: translateY(4px) scale(0.9); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+.film-cover[data-current] .film-open { opacity: 0.55; transform: none; transition-delay: 0.35s; }
+.film-cover[data-current]:hover .film-open, .film-cover[data-current]:focus-visible .film-open { opacity: 1; transition-delay: 0s; }
+@media (prefers-reduced-motion: reduce) { .film-open { transition: none; } }
+
+/* grove hero: the grown seeds pop in one by one, and the next empty ring breathes. */
+@keyframes groveGrow { from { transform: scale(0.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.grove-dot { animation: groveGrow 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes groveNext { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.88); opacity: 0.55; } }
+.grove-next { animation: groveNext 2.6s ease-in-out 1.6s infinite; }
+@media (prefers-reduced-motion: reduce) { .grove-dot, .grove-next { animation: none; } }
+
+/* Hero art settling in on load */
+@keyframes heroRise { from { transform: translateY(12%); opacity: 0; } to { transform: none; opacity: 1; } }
+.hero-rise { animation: heroRise 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+@media (prefers-reduced-motion: reduce) { .hero-rise { animation: none; } }
+@keyframes sparkFill { from { width: 0; } }
+.spark-fill { animation: sparkFill 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both; }
+@media (prefers-reduced-motion: reduce) { .spark-fill { animation: none; } }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

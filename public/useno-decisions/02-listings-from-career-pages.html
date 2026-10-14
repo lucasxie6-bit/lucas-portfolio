@@ -1,0 +1,3714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Listings From Career Pages</title>
+<style>
+:root{--panel:#EEF2F8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--panel)}
+body{overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:680px;height:510px;background:var(--panel);overflow:hidden;transform-origin:center}
+#card{position:absolute;left:24px;top:24px;width:632px;height:462px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px rgba(30,58,95,.08),0 18px 40px rgba(20,42,80,.08);transition:opacity .5s ease}
+#card iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#fff;transition:transform 1.25s cubic-bezier(.65,0,.35,1),opacity .55s ease}
+#card.fade{opacity:0}
+</style>
+</head>
+<body>
+<div id="stage"><div id="card"></div></div>
+<script type="text/plain" id="w-board"><!doctype html><html class="useno-auth-ready"><head><meta charset="utf-8"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+/* Pre-auth paint. These must describe what this page
+     actually renders: the guard paints them while body is visibility:hidden,
+     so a value that disagrees shows up as a colour flash on every navigation
+     into the page. Declared here rather than in shared.css because a :root
+     rule there would win on source order and silently override them. */
+  :root { --shell-prepaint-bg: #FFFFFF; --shell-prepaint-header: 58px; --shell-prepaint-header-sm: 45px; }
+  /* NO visibility:hidden HERE, and this is the page it mattered most on.
+     Discover is a public route: it is where every alert email's "See
+     everything on Useno" lands, where every shared /internships?job=
+     link lands, and where a search result lands. Blanking the body until
+     Supabase answers meant all three arrived at a white screen first, and
+     showed a crawler nothing at all.
+
+     It blanked itself for as long as it has been public. The test that should
+     have caught it read PUBLIC_APP_PATHS with a regex that treated an
+     apostrophe in a nearby comment as an opening quote, so this route was
+     never in the parsed set and the page was checked against the private-page
+     rule instead. The parser is fixed in tests/prepaint-shell.test.js; this is
+     the second defect it was hiding, after pricing.html.
+
+     The placeholder shell above is what a visitor sees in the meantime, which
+     is what those three tokens are for. */
+/* ================================================================
+   USENO — Shared Design System v2
+   Two-sided career intelligence platform
+   ================================================================ */
+
+
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Main area (light theme) ── */
+  --page-bg:       #F0F1F4;
+  --surface:       #ffffff;
+  --navy:          #1E3A5F;
+  --navy-hover:    #2a4d7a;
+  --navy-label:    rgba(30, 58, 95, 0.72);
+  --navy-muted:    rgba(30, 58, 95, 0.6);
+  --navy-disabled: rgba(30, 58, 95, 0.42);
+  --navy-border:   rgba(30, 58, 95, 0.18);
+  --navy-border-strong: rgba(30, 58, 95, 0.28);
+  --stage-interview: #1A7F5A;
+  --stage-applied:   #1155BB;
+
+  /* ── Sidebar (dark theme) ── */
+  --sidebar-bg:              #141F2E;
+  --sidebar-text-active:     #fff;
+  --sidebar-text-inactive:   rgba(255, 255, 255, 0.32);
+  --sidebar-text-muted:      rgba(255, 255, 255, 0.4);
+  --sidebar-divider:         rgba(255, 255, 255, 0.1);
+  --sidebar-nav:             rgba(255, 255, 255, 0.62);
+  --sidebar-nav-hover:       rgba(255, 255, 255, 0.8);
+  --sidebar-nav-active:      #fff;
+  --sidebar-nav-count:       rgba(255, 255, 255, 0.48);
+  --sidebar-nav-count-active:rgba(255, 255, 255, 0.65);
+  --sidebar-count-inactive:  rgba(255, 255, 255, 0.32);
+  --sidebar-count-active:    rgba(255, 255, 255, 0.5);
+  --sidebar-clay:            #B0533A;
+
+  /* ── Shell tokens ──
+     student-auth-guard.js paints a placeholder shell before auth resolves, so
+     the page is not a blank rectangle during the Supabase round trip. That
+     placeholder used to hardcode its own colours, and when the sidebar was
+     re-themed light it was left painting the old dark one — every navigation
+     flashed a navy slab that then snapped to #F4F6F9. The guard now reads
+     these, and the real sidebar below is painted from the same values, so the
+     two cannot drift apart again. Keep them in sync by construction, not by
+     remembering to edit two files. */
+  --shell-sidebar-bg:        #F4F6F9;
+  --shell-sidebar-border:    #D7E0EA;
+  --shell-sidebar-shadow:    6px 0 22px rgba(18, 48, 82, .045);
+  /* --shell-prepaint-bg / --shell-prepaint-header are deliberately NOT
+     declared here. They are per-page, and each page sets them in its own
+     <style id="useno-auth-pending">; a :root default in this file would
+     outrank that style on source order, since shared.css is linked after it.
+     Undeclared, the guard's own var() fallbacks apply. */
+
+  --border:        var(--navy-border);
+  --border-strong: var(--navy-border-strong);
+  --text:          #1a1d2e;
+  --muted:         var(--navy-label);
+  --subtle:        var(--navy-muted);
+  --lime:          #1155BB;
+  --lime-soft:     rgba(17, 85, 187, 0.08);
+  --lime-border:   rgba(17, 85, 187, 0.22);
+  --lime-text:     #1155BB;
+  --lime-accent:   #1155BB;
+  --navy-mid:      #2a4d7a;
+  --green:         #1A7F5A;
+  --amber:         #d9730d;
+  --red:           #e03e3e;
+  --blue:          #1155BB;
+  --hover-bg:      rgba(30, 58, 95, 0.06);
+
+  --f:             'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --sidebar-f:     'Plus Jakarta Sans', 'Geist', system-ui, sans-serif;
+  --sidebar-mono:  'Geist Mono', ui-monospace, monospace;
+  --sidebar-w:     212px;
+  --radius:        6px;
+  --radius-lg:     8px;
+}
+
+/* Off-canvas drawers (filter sidebar, detail panels, the nav drawer) are
+   positioned via transform:translateX(100%/-100%) while closed. In their
+   closed state that box still sits outside the viewport, and some engines
+   count it toward the root scroller's content size, producing a horizontal
+   scrollbar to "reach" content that's never actually meant to be visible.
+   Nothing in this layout relies on horizontal scroll at the page level, so
+   this is a safe, blanket guard rather than chasing each drawer piecemeal. */
+html, body { overflow-x: hidden; }
+html { font-size: 16px; background: var(--page-bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+body { font-family: var(--f); min-height: 100vh; display: flex; background: var(--page-bg); }
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--f); cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: var(--f); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  border-right: none;
+  display: flex; flex-direction: column;
+  z-index: 50; overflow: hidden;
+  transition: width .18s ease;
+  font-family: var(--sidebar-f);
+}
+
+.sidebar-top,
+.sidebar-nav,
+.sidebar-user-footer,
+.workspace-switcher,
+.workspace-card {
+  position: relative;
+  z-index: 1;
+}
+.sidebar-resize-handle {
+  position: absolute; top: 0; right: -5px; bottom: 0; width: 10px;
+  cursor: default; z-index: 60;
+  background: transparent;
+}
+/* Blue blob accent */
+.sidebar-resize-handle::after {
+  content: '';
+  position: absolute; top: 0; left: 4px; bottom: 0; width: 3px;
+  background: var(--blue);
+  border-radius: 2px;
+  opacity: 0.18;
+  transition: opacity .18s ease, width .18s ease, box-shadow .18s ease;
+}
+.sidebar-resize-handle:hover::after,
+.sidebar-resize-handle.dragging::after {
+  opacity: 0.75;
+  width: 4px;
+  box-shadow: 0 0 10px rgba(37,99,235,0.5), 0 0 24px rgba(37,99,235,0.25);
+}
+.sidebar-resize-handle.dragging::after {
+  opacity: 1;
+  width: 4px;
+  box-shadow: 0 0 14px rgba(37,99,235,0.7), 0 0 32px rgba(37,99,235,0.35);
+}
+/* Grip pill hidden — replaced by the blob */
+.sidebar-resize-handle::before { content: none; }
+/* Resize tooltip */
+.sidebar-resize-tip {
+  position: fixed;
+  left: 0;   /* set via JS */
+  top: 0;    /* set via JS — follows cursor Y */
+  transform: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+  padding: 7px 11px;
+  font-size: 12px;
+  font-family: var(--f);
+  color: var(--muted);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity .15s ease, top .06s ease;
+  line-height: 1.6;
+}
+.sidebar-resize-tip strong { color: var(--text); font-weight: 600; }
+.sidebar-resize-tip.visible { opacity: 1; }
+body.sidebar-resizing { cursor: col-resize; user-select: none; }
+
+.sidebar-top {
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Brand label (replaces logo image) */
+.sidebar-brand {
+  padding: 26px 24px 20px;
+  flex-shrink: 0;
+}
+.sidebar-wordmark-link {
+  display: inline-flex; align-items: center;
+  width: fit-content; text-decoration: none;
+}
+.sidebar-wordmark-text {
+  font-family: var(--sidebar-f);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--sidebar-text-muted);
+}
+.sidebar-logo-img {
+  width: 36px; height: 36px; border-radius: 8px; display: block;
+  opacity: 0.9; transition: opacity .15s;
+}
+.sidebar-wordmark-link:hover .sidebar-logo-img { opacity: 1; }
+
+/* Student user footer — accordion toggle */
+.sidebar-user-footer {
+  padding: 10px 12px 14px;
+  border-top: 1px solid var(--sidebar-divider);
+  flex-shrink: 0;
+}
+.sidebar-user-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px; cursor: pointer;
+  padding: 8px 10px;
+  transition: background .12s;
+  text-align: left; color: inherit;
+}
+.sidebar-user-btn:hover { background: rgba(255,255,255,0.07); }
+.sidebar-user-footer.open .sidebar-user-btn {
+  background: rgba(255,255,255,0.06);
+  border-radius: 0 0 8px 8px;
+}
+.sidebar-user-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.75);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name {
+  font-family: var(--sidebar-f);
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75);
+  letter-spacing: -0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-user-role {
+  font-family: var(--sidebar-f);
+  font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--sidebar-text-muted);
+  margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-user-chevron {
+  flex-shrink: 0; color: rgba(255,255,255,0.28);
+  transition: transform .2s ease, color .12s;
+}
+.sidebar-user-footer.open .sidebar-user-chevron {
+  transform: rotate(180deg); color: rgba(255,255,255,0.55);
+}
+
+/* Accordion panel (expands inline below trigger) */
+.sidebar-user-panel {
+  max-height: 0; overflow: hidden; opacity: 0;
+  padding: 0 4px;
+  border-radius: 8px 8px 0 0;
+  transition: max-height 0.22s ease, opacity 0.18s ease, padding 0.18s ease;
+}
+.sidebar-user-footer.open .sidebar-user-panel {
+  max-height: 240px; opacity: 1; padding: 6px 4px 2px;
+}
+.sidebar-user-email {
+  font-size: 11px; color: rgba(255,255,255,0.38);
+  padding: 6px 8px 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slm-divider {
+  height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0;
+}
+.slm-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 12.5px; font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  cursor: pointer;
+  background: none; border: none; width: 100%;
+  transition: background .12s, color .12s;
+}
+.slm-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.slm-item svg { flex-shrink: 0; opacity: 0.7; }
+.slm-danger { color: #f87171 !important; }
+.slm-danger:hover { background: rgba(248,113,113,0.1) !important; }
+
+/* Logo button (settings trigger) */
+.sidebar-logo-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center;
+  border-radius: 10px; transition: box-shadow .15s;
+}
+.sidebar-logo-btn:hover { box-shadow: 0 0 0 2px rgba(255,255,255,0.15); }
+.sidebar-logo-btn:hover .sidebar-logo-img { opacity: 1; }
+
+/* Logo settings menu */
+.sidebar-logo-menu {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 16px;
+  width: 220px;
+  background: #1e2d3e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity .15s, transform .15s;
+  z-index: 9999;
+}
+.sidebar-logo-menu.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+.slm-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 8px 10px;
+}
+.slm-user-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #2f4a66; color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.slm-user-name {
+  font-size: 12px; font-weight: 600; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slm-user-email {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.slm-divider {
+  height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0;
+}
+.slm-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 12.5px; font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  cursor: pointer;
+  background: none; border: none; width: 100%;
+  transition: background .12s, color .12s;
+}
+.slm-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.slm-item svg { flex-shrink: 0; opacity: 0.7; }
+.slm-danger { color: #f87171 !important; }
+.slm-danger:hover { background: rgba(248,113,113,0.1) !important; }
+
+/* Legacy wordmark classes kept for backward compat */
+.sidebar-hero {
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px 10px 20px;
+  background: transparent;
+  position: relative; z-index: 1;
+}
+.wordmark {
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; position: relative; z-index: 1;
+}
+.wordmark-icon {
+  width: 26px; height: 26px;
+  background: var(--lime); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.wordmark-name { font-size: 15px; font-weight: 700; letter-spacing: -0.025em; color: var(--text); line-height: 1.1; }
+.wordmark-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* Workspace switcher */
+.workspace-switcher { position: relative; flex-shrink: 0; border-top: 1px solid var(--sidebar-divider); padding: 16px 20px; }
+
+.ws-btn {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 4px 6px; border-radius: var(--radius);
+  background: transparent; border: none;
+  cursor: pointer; transition: background 0.08s;
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8);
+  text-align: left;
+}
+.ws-btn:hover { background: rgba(255,255,255,0.06); }
+
+.ws-indicator {
+  width: 34px; height: 34px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+.ws-indicator.cs { background: rgba(30,58,138,0.8); color: #fff; }
+.ws-indicator.st { background: rgba(99,102,241,0.25); color: rgba(199,210,254,0.9); border-radius: 50%; }
+
+.ws-btn-label { flex: 1; min-width: 0; }
+.ws-btn-name  { font-size: 13px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ws-btn-type  { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.ws-chevron   { color: rgba(255,255,255,0.35); flex-shrink: 0; }
+
+.ws-dropdown {
+  display: none; position: absolute; bottom: calc(100% + 6px); left: 0; right: 0;
+  background: #1a2235; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  z-index: 100; overflow: hidden;
+}
+.ws-dropdown.open { display: block; }
+
+.ws-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; cursor: pointer;
+  transition: background 0.1s; text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ws-option:last-child { border-bottom: none; }
+.ws-option:hover { background: rgba(255,255,255,0.05); }
+.ws-option.active { background: rgba(255,255,255,0.07); }
+
+.ws-option-label { flex: 1; }
+.ws-option-name  { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
+.ws-option-sub   { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.ws-check        { color: rgba(255,255,255,0.5); }
+
+/* Nav — scoped to .sidebar so page styles can't override */
+.sidebar .sidebar-nav {
+  padding: 4px 12px 8px; flex: 1; overflow-y: auto; min-height: 0;
+  font-family: var(--sidebar-f);
+}
+
+.sidebar .nav-section-label {
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.3); padding: 0 4px; margin-bottom: 8px; margin-top: 20px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+.sidebar .nav-section-divider {
+  display: none;
+}
+
+.sidebar .nav-item {
+  display: flex; align-items: center;
+  padding: 10px 14px; border-radius: 8px;
+  font-family: var(--sidebar-f);
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--sidebar-nav);
+  transition: color 0.12s, background 0.12s;
+  cursor: pointer; position: relative; user-select: none; text-decoration: none;
+  margin-bottom: 3px; gap: 0; line-height: 1.25;
+}
+.sidebar .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--sidebar-nav-hover); }
+.sidebar .nav-item.active {
+  background: rgba(255,255,255,0.09);
+  color: var(--sidebar-nav-active);
+  font-weight: 600;
+}
+.sidebar .nav-item.active::before {
+  content: '•';
+  color: var(--sidebar-clay);
+  font-size: 20px;
+  line-height: 1;
+  margin-right: 9px;
+  flex-shrink: 0;
+  display: block;
+}
+.sidebar .nav-dot { display: none; }
+.sidebar .nav-item svg { display: none; }
+.sidebar .nav-item .nav-doc-chevron,
+.sidebar .nav-item .nav-sub-chevron { display: block; }
+
+.sidebar .nav-drag-handle { display: none !important; }
+.sidebar .nav-item.nav-dragging { opacity: 0.4; }
+.sidebar .nav-item.nav-drag-over { background: rgba(255,255,255,0.04); border-radius: 8px; }
+
+.sidebar .nav-badge {
+  margin-left: auto; font-size: 13px; font-weight: 400;
+  font-family: var(--sidebar-mono);
+  color: var(--sidebar-nav-count); background: transparent;
+  padding: 0; border-radius: 0; letter-spacing: 0.04em;
+  padding-right: 4px;
+}
+.sidebar .nav-item.active .nav-badge { color: var(--sidebar-nav-count-active); }
+.sidebar .nav-badge.alert { background: transparent; color: rgba(239,68,68,0.65); }
+
+/* ── Student sidebar: icon + label rows (scoped, dark bg unchanged) ── */
+.sidebar.sidebar-student .sidebar-nav { padding: 8px 12px; }
+.sidebar.sidebar-student .nav-item {
+  gap: 12px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  margin-bottom: 2px;
+  border-radius: 8px;
+}
+.sidebar.sidebar-student .nav-item .nav-ic {
+  display: flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; flex-shrink: 0;
+  color: rgba(255,255,255,0.5);
+  transition: color 0.12s;
+}
+.sidebar.sidebar-student .nav-item .nav-ic svg { width: 18px; height: 18px; display: block !important; }
+.sidebar.sidebar-student .nav-item .nav-label { min-width: 0; }
+.sidebar.sidebar-student .nav-item:hover .nav-ic { color: rgba(255,255,255,0.8); }
+.sidebar.sidebar-student .nav-item.active { background: rgba(255,255,255,0.10); font-weight: 600; }
+.sidebar.sidebar-student .nav-item.active .nav-ic { color: #FFFFFF; }
+.sidebar.sidebar-student .nav-item.active::before,
+.sidebar.sidebar-student .nav-item::before,
+.sidebar.sidebar-student .nav-item.active::after,
+.sidebar.sidebar-student .nav-item::after { content: none !important; display: none !important; }
+
+/* ── Documents sub-nav tree ── */
+.sidebar .nav-subnav {
+  display: flex; flex-direction: column;
+  overflow: hidden; max-height: 0;
+  transition: max-height 0.22s ease;
+  padding-left: 14px;
+}
+.sidebar .nav-subnav.open { max-height: 300px; }
+.sidebar .nav-subitem {
+  display: flex; align-items: center;
+  padding: 7px 12px; font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.35); cursor: pointer; text-decoration: none;
+  transition: color 0.12s, background 0.12s; line-height: 1.25; position: relative;
+  border-radius: 6px; margin-bottom: 1px;
+}
+.sidebar .nav-subitem::before {
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 3px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+}
+.sidebar .nav-subitem:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); }
+.sidebar .nav-subitem:hover::before { background: rgba(255,255,255,0.5); }
+.sidebar .nav-subitem.active {
+  color: rgba(255,255,255,0.88); font-weight: 600;
+  background: rgba(255,255,255,0.06);
+}
+.sidebar .nav-subitem.active::before { background: var(--sidebar-clay); }
+
+/* (sidebar-user-footer styles live with account menu above) */
+
+/* Workspace card (career services) */
+.workspace-card {
+  margin: 10px; padding: 11px 13px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; flex-shrink: 0;
+}
+.workspace-header { display: flex; align-items: center; gap: 10px; }
+.workspace-avatar {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--navy); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.workspace-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); line-height: 1.2; }
+.workspace-role { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+
+/* Student profile card */
+.student-card {
+  margin: 8px; padding: 10px 12px;
+  background: transparent; border-top: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0; flex-shrink: 0;
+}
+.student-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.student-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.student-name { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+.student-prog { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.profile-bar-wrap { margin-bottom: 8px; }
+.profile-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.profile-bar-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.profile-bar-fill  { height: 100%; background: var(--lime-accent); border-radius: 2px; }
+.profile-cta { font-size: 11px; color: var(--lime-text); font-weight: 500; cursor: pointer; }
+.profile-cta:hover { text-decoration: underline; }
+
+/* ── MAIN SHELL ── */
+.main {
+  margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh;
+  transition: margin-left .18s ease;
+}
+
+/* ── TOP HEADER ── */
+.top-header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 40; flex-shrink: 0;
+}
+.top-header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 52px;
+}
+.header-tabs { display: flex; align-items: stretch; height: 100%; }
+.header-tab {
+  display: flex; align-items: center; padding: 0 16px;
+  font-size: 14px; font-weight: 500; color: var(--muted);
+  border-bottom: 2px solid transparent; transition: color 0.12s;
+  cursor: pointer; text-decoration: none;
+}
+.header-tab:hover { color: var(--text); }
+.header-tab.active { color: var(--blue); font-weight: 600; border-bottom-color: var(--blue); }
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: background 0.12s, color 0.12s; cursor: pointer;
+}
+.icon-btn:hover { background: var(--hover-bg); color: var(--text); }
+.user-avatar-sm {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: box-shadow .12s;
+}
+.user-avatar-sm:hover { box-shadow: 0 0 0 2.5px var(--lime-border); }
+
+/* ── Student top header (light, minimal) ── */
+.top-header.top-header-student {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(22, 38, 60, 0.07);
+}
+.top-header-student .top-header-inner {
+  justify-content: flex-end;
+  height: auto;
+  padding: 10px 28px;
+}
+/* Two objects, one system. This corner used to be a 37px rounded SQUARE that
+   filled flat grey on hover, sitting beside a 33px grey CIRCLE — two shapes,
+   two greys, the stock SaaS header. They now share a size and a shape, so the
+   pair reads as one control cluster rather than two unrelated widgets, and
+   the only colour in it is the brand blue on the thing you are touching. */
+.top-header-student .icon-btn {
+  color: rgba(22, 38, 60, 0.55);
+  position: relative;
+  width: 33px; height: 33px; border-radius: 50%;
+}
+/* 0.4 alpha read as disabled — a bell you assume is dead is worse than no
+   bell. 0.55 at rest, brand blue on hover, which is the same accent the
+   Explore icon and the loading bar use. */
+.top-header-student .icon-btn:hover { background: rgba(37, 99, 217, 0.09); color: #2563D9; }
+.top-header-student .icon-btn svg { width: 17px; height: 17px; }
+/* Navy, not a 10%-alpha grey wash. The avatar is the one element here that
+   stands for a person; as a pale grey disc with pale grey initials it read as
+   an unloaded placeholder, which is exactly the generic look being fixed. */
+.top-header-student .user-avatar-sm {
+  background: var(--navy, #16263C);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .01em;
+  width: 24px;
+  height: 24px;
+}
+.top-header-student .user-avatar-sm:hover {
+  box-shadow: 0 0 0 3px rgba(37, 99, 217, 0.16);
+  background: var(--navy, #16263C);
+}
+/* ── Notification bell ──
+   No tile, no box, no fill — not at rest and not on hover. A tinted square
+   behind the glyph was tried and rejected: it put a second background on a
+   header that already has one, and read as a button pretending to be a chip.
+   The glyph is the control. What carries state is colour on the bell and the
+   counted badge, nothing behind it. */
+.notif-bell {
+  position: relative;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none;
+  color: #4A5B73;
+  background: none;
+  border: 0;
+  transition: color .14s;
+}
+/* Colour only on hover. No fill, no box — the glyph is the control. */
+.notif-bell:hover { color: #2563D9; }
+.notif-bell:focus-visible { outline: 2px solid #2563D9; outline-offset: 2px; }
+/* The bell tips toward you on hover. One small piece of life on the control
+   whose whole job is to be noticed — and only on hover, so it never moves on
+   its own while you are reading. */
+.notif-bell svg { transition: transform .18s cubic-bezier(.34,1.4,.64,1); }
+.notif-bell:hover svg { transform: rotate(-10deg); }
+@media (prefers-reduced-motion: reduce) {
+  .notif-bell svg, .notif-bell:hover svg { transition: none; transform: none; }
+}
+/* Unread turns the glyph blue. Nothing appears behind it. */
+.notif-bell.has-unread { color: #2563D9; }
+/* A counted badge, not an anonymous dot. The white ring is what separates it
+   from the tile underneath at this size. */
+.notif-count {
+  position: absolute; top: -5px; right: -5px;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: 999px;
+  background: #2563D9; color: #fff;
+  font-size: 9.5px; font-weight: 700; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 2px rgba(22, 38, 60, .16);
+}
+
+/* Notifications dropdown */
+.notif-menu-wrap { position: relative; }
+.notif-dropdown { width: 280px; }
+.notif-dd-header { padding: 12px 14px; font-size: 13px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); }
+.notif-dd-list { max-height: 320px; overflow-y: auto; }
+.notif-dd-item { display: block; padding: 10px 14px; text-decoration: none; border-bottom: 1px solid var(--border); transition: background .08s; }
+.notif-dd-item:last-child { border-bottom: none; }
+.notif-dd-item:hover { background: var(--hover-bg); }
+.notif-dd-item-label { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.notif-dd-item-detail { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.notif-dd-empty { padding: 20px 14px; font-size: 12.5px; color: var(--muted); text-align: center; }
+
+/* Profile dropdown */
+.profile-menu-wrap { position: relative; }
+.profile-dropdown {
+  display: none; position: absolute; top: calc(100% + 10px); right: 0;
+  width: 260px; background: #fff; border: 1px solid rgba(28,43,58,0.12);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(28,43,58,0.16);
+  z-index: 200; overflow: hidden;
+  animation: profileDdIn .14s ease;
+}
+@keyframes profileDdIn {
+  from { opacity: 0; transform: translateY(-3px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.profile-dropdown.open { display: block; }
+.profile-dd-section { padding: 6px; border-bottom: 1px solid var(--border); }
+.profile-dd-section:last-child { border-bottom: none; }
+.profile-dd-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 12px; font-size: 14px; font-weight: 500; color: var(--text);
+  cursor: pointer; transition: background .12s ease, color .12s ease; text-decoration: none;
+  border-radius: 9px;
+}
+.profile-dd-item:hover { background: var(--hover-bg); }
+.profile-dd-item svg { color: var(--muted); flex-shrink: 0; opacity: .75; transition: opacity .12s ease; }
+.profile-dd-item:hover svg { opacity: 1; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--f); font-size: 13px; font-weight: 500;
+  padding: 8px 14px; border-radius: var(--radius);
+  transition: background 0.12s, border-color 0.12s;
+  cursor: pointer; white-space: nowrap; text-decoration: none;
+}
+.btn-primary   { background: var(--blue); color: #fff; border: 1px solid var(--blue); }
+.btn-primary:hover { background: var(--navy-mid); }
+.btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+.btn-secondary:hover { background: var(--hover-bg); }
+.btn-lime      { background: var(--lime); color: var(--navy); border: 1px solid var(--lime-border); font-weight: 600; }
+.btn-lime:hover { background: #6da3d4; }
+.btn-ghost     { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--hover-bg); color: var(--text); }
+.btn-sm        { font-size: 12px; padding: 6px 11px; }
+.btn-danger    { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.btn-danger:hover { background: #fee2e2; }
+
+/* ── SOLID PANEL ACTIONS ── */
+.panel-action-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+.panel-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font-family: 'Geist', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.panel-action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.panel-action-btn.icon-only {
+  width: 30px;
+  padding: 0;
+  gap: 0;
+}
+.panel-action-btn.archive {
+  color: #16263C;
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+}
+.panel-action-btn.archive:hover {
+  color: #16263C;
+  background: #E8EDF2;
+  border-color: #E8EDF2;
+}
+.panel-action-btn.delete {
+  color: #FFFFFF;
+  background: #DC2626;
+  border-color: #DC2626;
+}
+.panel-action-btn.delete:hover {
+  color: #FFFFFF;
+  background: #B91C1C;
+  border-color: #B91C1C;
+}
+.panel-action-btn:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* ── STATUS DOTS ── */
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--green); }
+.dot-lime  { background: var(--lime-accent); }
+.dot-amber { background: var(--amber); }
+.dot-gray  { background: var(--subtle); }
+.dot-red   { background: var(--red); }
+.dot-navy  { background: var(--navy); }
+.dot-blue  { background: var(--blue); }
+
+/* ── STATUS BADGES ── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 3px 9px;
+  border-radius: 5px; white-space: nowrap;
+}
+.sb-green  { background: rgba(26,127,90,0.08); color: var(--stage-interview); border: 1px solid rgba(26,127,90,0.22); }
+.sb-lime   { background: var(--lime-soft); color: var(--lime-text); border: 1px solid var(--lime-border); }
+.sb-amber  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.sb-gray   { background: var(--page-bg); color: var(--muted); border: 1px solid var(--border); }
+.sb-red    { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.sb-navy   { background: #eef0f6; color: var(--navy); border: 1px solid #c7cde0; }
+.sb-blue   { background: var(--lime-soft); color: var(--lime-text); border: 1px solid var(--lime-border); }
+
+/* ── PAGE HEADER BAND ── */
+.page-band {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 32px 40px 20px; flex-shrink: 0;
+}
+.page-header-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; margin-bottom: 14px;
+}
+.page-title   { font-size: 30px; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -0.035em; }
+.page-subtitle { font-size: 13px; color: var(--muted); margin-top: 5px; line-height: 1.5; max-width: 600px; font-weight: 400; }
+.page-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* ── SEARCH ── */
+.search-wrap { position: relative; flex: 1; max-width: 480px; }
+.search-icon-pos {
+  position: absolute; left: 11px; top: 50%;
+  transform: translateY(-50%); color: var(--subtle);
+  pointer-events: none; display: flex;
+}
+.search-input {
+  width: 100%; height: 36px; padding: 0 12px 0 34px;
+  font-size: 13px; color: var(--text);
+  background: var(--page-bg); border: 1px solid var(--border-strong);
+  border-radius: var(--radius); outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.search-input::placeholder { color: var(--subtle); }
+.search-input:focus { border-color: var(--subtle); box-shadow: 0 0 0 3px rgba(0,0,0,0.04); background: var(--surface); }
+
+/* ── TABLE ── */
+.table-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-size: 11px; font-weight: 500;
+  color: var(--subtle); padding: 9px 16px; text-align: left;
+  background: var(--surface); border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.data-table td { padding: 11px 16px; font-size: 13.5px; color: var(--text); border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tbody tr { transition: background 0.08s; cursor: pointer; }
+.data-table tbody tr:hover { background: var(--hover-bg); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ── TABLE ROW CONTROLS ── */
+.tc-th {
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  padding: 9px 8px !important;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.tc-cell {
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  padding: 0 8px !important;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  position: relative;
+}
+.tc-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+  white-space: nowrap;
+}
+.data-table tbody tr:hover .tc-row-controls,
+.data-table tbody tr.tc-selected .tc-row-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Individual control buttons */
+.tc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  color: var(--subtle);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  flex-shrink: 0;
+}
+.tc-btn:hover { background: rgba(37,99,235,0.09); color: var(--blue); }
+
+/* Checkbox: unchecked */
+.tc-check .tc-check-mark { display: none; }
+.tc-check:hover rect { stroke: var(--blue); }
+/* Checked state */
+.tc-check.tc-checked rect { fill: var(--blue); stroke: var(--blue); }
+.tc-check.tc-checked .tc-check-mark { display: block; stroke: #fff; }
+.tc-check.tc-checked { color: #fff; }
+
+/* Grip */
+.tc-grip { cursor: grab; }
+.tc-grip:active { cursor: grabbing; }
+
+/* Row states */
+.data-table tbody tr.tc-selected { background: rgba(37,99,235,0.04); }
+.data-table tbody tr.tc-dragging { opacity: 0.4; }
+.data-table tbody tr.tc-drop-target { background: rgba(37,99,235,0.07); box-shadow: inset 0 -2px 0 var(--blue); }
+.data-table tbody tr.tc-drop-flash { animation: tc-flash 0.4s ease; }
+@keyframes tc-flash {
+  0%   { background: rgba(37,99,235,0.16); }
+  100% { background: transparent; }
+}
+
+/* New blank row cells */
+.tc-new-cell {
+  outline: none;
+  background: rgba(37,99,235,0.03);
+  min-width: 80px;
+  border-bottom: 1px solid var(--border);
+}
+.tc-new-cell:empty::before {
+  content: attr(data-placeholder);
+  color: var(--subtle);
+  font-style: italic;
+  pointer-events: none;
+}
+.tc-new-cell:focus {
+  background: rgba(37,99,235,0.06);
+  box-shadow: inset 0 -2px 0 var(--blue);
+}
+
+/* ── SELECTION ACTION BAR ── */
+/* ── SELECTION ACTION BAR ── */
+.tc-selection-bar {
+  position: fixed;
+  top: 72px; /* Floats beautifully below the sticky top-header */
+  left: calc(50% + var(--sidebar-w, 212px) / 2);
+  transform: translateX(-50%) translateY(-16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), left 0.1s linear;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #FFFFFF;
+  border: 1px solid rgba(28,43,58,0.12);
+  border-radius: 10px;
+  padding: 4px 6px;
+  box-shadow: 0 8px 24px rgba(28,43,58,0.16);
+  white-space: nowrap;
+}
+.tc-selection-bar.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.tc-bar-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(28,43,58,0.62);
+  padding: 0 12px;
+  letter-spacing: .01em;
+}
+.tc-bar-count strong { color: #16263C; font-weight: 800; }
+.tc-bar-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(47,82,112,0.16);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+.tc-bar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2F5270;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  font-family: var(--f);
+  letter-spacing: .01em;
+}
+.tc-bar-btn:hover { background: rgba(47,82,112,0.08); color: #16263C; }
+.tc-bar-btn.danger { color: #B4534B; }
+.tc-bar-btn.danger:hover { background: rgba(180,83,75,0.1); color: #8F332C; }
+.tc-bar-btn svg { flex-shrink: 0; opacity: 0.85; }
+.tc-bar-btn:hover svg { opacity: 1; }
+
+
+/* ── SIDE PANEL ── */
+.panel-backdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(15,20,40,0.22);
+  z-index: 200;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.panel-backdrop.open { display: block; }
+.detail-panel {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -44%) scale(0.97);
+  opacity: 0;
+  width: min(760px, 92vw);
+  max-height: 86vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  z-index: 201;
+  display: flex; flex-direction: column;
+  transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), opacity 0.18s ease;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.06);
+  pointer-events: none;
+}
+.detail-panel.open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.panel-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 26px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.panel-label  { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--subtle); }
+.panel-close  { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; transition: background 0.1s; border: 1px solid transparent; }
+.panel-close:hover { background: var(--hover-bg); color: var(--text); border-color: var(--border); }
+.panel-scroll { flex: 1; overflow-y: auto; padding: 20px 22px; }
+.panel-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--subtle); margin-bottom: 10px; }
+.panel-divider { height: 1px; background: var(--border); margin: 16px 0; }
+.panel-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+.panel-kv { display: flex; flex-direction: column; gap: 3px; }
+.panel-key { font-size: 11px; color: var(--subtle); }
+.panel-val { font-size: 13px; color: var(--text); font-weight: 500; }
+.panel-actions { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.panel-btn { width: 100%; height: 36px; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13px; font-weight: 500; border-radius: var(--radius); cursor: pointer; transition: background 0.12s; }
+.panel-btn-primary   { background: var(--blue); color: #fff; border: 1px solid var(--blue); }
+.panel-btn-primary:hover { background: var(--navy-mid); }
+.panel-btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+.panel-btn-secondary:hover { background: var(--hover-bg); }
+.panel-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.panel-entity { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.panel-entity-logo {
+  width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--page-bg); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--navy); flex-shrink: 0;
+}
+.panel-entity-name { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.025em; line-height: 1.2; }
+.panel-entity-sub  { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; }
+.timeline-item { display: flex; gap: 10px; padding-bottom: 14px; position: relative; }
+.timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 6px; top: 14px; bottom: 0; width: 1px; background: var(--border); }
+.timeline-dot { width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--lime); background: var(--surface); flex-shrink: 0; margin-top: 2px; z-index: 1; }
+.timeline-dot.done { background: var(--lime); border-color: var(--lime); }
+.timeline-action { font-size: 13px; color: var(--text); line-height: 1.4; }
+.timeline-time   { font-size: 11px; color: var(--subtle); margin-top: 2px; }
+
+/* ── STAT CARDS ── */
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+.stat-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.04em; line-height: 1; }
+.stat-sub   { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.stat-lime  { color: var(--lime-text); }
+
+/* ── CONTENT AREA ── */
+.content-area { padding: 22px 32px; flex: 1; }
+
+/* ── MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 15, 15, 0.6); z-index: 300; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+}
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--border); }
+.modal-title  { font-size: 15px; font-weight: 700; color: var(--text); }
+.modal-body   { padding: 20px 22px; }
+.modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── Add modal (application + contact) ── */
+#add-app-modal.modal-overlay,
+#add-contact-modal.modal-overlay,
+#upload-modal.modal-overlay { background: rgba(22, 38, 60, 0.28); }
+.add-modal {
+  background: #FFFFFF;
+  border: 1px solid rgba(28,43,58,0.12);
+  border-radius: 16px;
+  width: 100%; max-width: 460px; max-height: 90vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(28,43,58,0.22);
+}
+.add-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(28,43,58,0.08);
+}
+.add-modal-title {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 16px; font-weight: 800; color: #1C2B3A;
+  letter-spacing: -0.01em; margin: 0;
+}
+.add-modal-close {
+  width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(28,43,58,0.06);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #3A5470; flex-shrink: 0; padding: 0;
+  transition: background .12s, color .12s;
+}
+.add-modal-close:hover { background: rgba(28,43,58,0.12); color: #16263C; }
+.add-modal-body {
+  overflow-y: auto; padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.add-modal-field label {
+  display: block;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: #5A7A96; margin-bottom: 6px;
+}
+.add-modal-field label span {
+  font-weight: 500; text-transform: none; letter-spacing: 0;
+  font-size: 11px; color: #8A9BB0;
+}
+.add-modal .form-input,
+.add-modal .form-select,
+.add-modal .form-textarea {
+  width: 100%; box-sizing: border-box;
+  background: #F4F6F8 !important;
+  border: 1px solid rgba(47, 82, 112, 0.22) !important;
+  border-radius: 8px !important;
+  color: #1C2B3A !important;
+  font-family: 'Geist', system-ui, sans-serif;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.add-modal .form-input:focus,
+.add-modal .form-select:focus,
+.add-modal .form-textarea:focus {
+  border-color: #2F5270 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 2px rgba(47,82,112,0.18) !important;
+}
+.add-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.add-modal-foot {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid rgba(28,43,58,0.08);
+}
+.add-modal-cancel {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: 8px;
+  border: 1px solid rgba(28,43,58,0.14); background: transparent;
+  color: #4A637A; cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.add-modal-cancel:hover { color: #16263C; border-color: rgba(28,43,58,0.28); background: rgba(28,43,58,0.04); }
+.add-modal-save {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 13px; font-weight: 700;
+  padding: 8px 18px; border-radius: 8px;
+  border: none; background: #2F5270; color: #fff;
+  cursor: pointer; transition: background .12s;
+}
+.add-modal-save:hover { background: #1E3A5F; }
+
+.form-group   { margin-bottom: 14px; }
+.form-label   { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.form-input   { width: 100%; height: 36px; padding: 0 11px; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; }
+.form-input:focus { border-color: var(--subtle); box-shadow: 0 0 0 3px rgba(0,0,0,0.04); }
+.form-select  {
+  width: 100%; height: 36px; padding: 0 30px 0 11px; font-size: 13px; color: var(--text);
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%2378899F' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center;
+  border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; appearance: none;
+}
+select[data-cs-init] { display: none !important; }
+
+/* ── Custom select ──────────────────────────────────────────────────────────── */
+.cs-wrap { position: relative; width: 100%; }
+.cs-btn {
+  width: 100%; height: 36px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 10px 0 11px; font-size: 13px; font-family: inherit; font-weight: 500;
+  color: var(--text); background: #fff; border: 1px solid rgba(47,82,112,0.22);
+  border-radius: 6px; cursor: pointer; user-select: none; transition: border-color .12s, box-shadow .12s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cs-btn:hover { border-color: #2F5270; }
+.cs-btn.open  { border-color: #2F5270; box-shadow: 0 0 0 2px rgba(47,82,112,0.18); }
+.cs-btn-text  { flex: 1; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.cs-chevron   { flex-shrink: 0; color: #8A9BB0; margin-left: 6px; transition: transform .15s; }
+.cs-btn.open .cs-chevron { transform: rotate(180deg); }
+.cs-dropdown {
+  display: none; position: absolute; left: 0; right: 0;
+  background: #fff; border: 1px solid rgba(28,43,58,0.12); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(28,43,58,0.16); z-index: 500; overflow: hidden;
+  padding: 6px;
+}
+.cs-dropdown.open { display: block; }
+.cs-dropdown.up   { bottom: calc(100% + 4px); top: auto; }
+.cs-dropdown.down { top: calc(100% + 4px); bottom: auto; }
+.cs-opt {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; font-size: 13px; font-weight: 500; color: #4A637A;
+  border-radius: 7px; cursor: pointer; transition: background .1s;
+}
+.cs-opt:hover { background: rgba(28,43,58,0.06); }
+.cs-opt.selected { font-weight: 700; color: #2F5270; }
+.cs-opt-check { color: #2F5270; flex-shrink: 0; opacity: 0; }
+.cs-opt.selected .cs-opt-check { opacity: 1; }
+.form-textarea { width: 100%; padding: 9px 11px; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); outline: none; resize: vertical; min-height: 80px; line-height: 1.5; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--navy); color: #fff; padding: 10px 18px;
+  border-radius: var(--radius); font-size: 13px; font-weight: 500;
+  opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 400; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── PRIORITY LABELS ── */
+.urgency { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+.urgency-red   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.urgency-amber { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.urgency-lime  { background: var(--lime-soft); color: var(--lime-text); border: 1px solid var(--lime-border); }
+
+/* ── SECTION HEADING ── */
+.section-heading { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.section-sub      { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── INFO BANNER ── */
+.info-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--lime-soft); border: 1px solid var(--lime-border);
+  border-radius: var(--radius); padding: 10px 14px;
+  font-size: 13px; color: var(--lime-text); margin-bottom: 16px;
+}
+
+/* ── BAR CHART ── */
+.bar-chart { display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: flex; align-items: center; gap: 10px; }
+.bar-label { font-size: 12px; color: var(--muted); width: 160px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 4px; background: var(--navy); transition: width 0.6s ease; }
+.bar-fill.lime { background: var(--lime-accent); }
+.bar-val   { font-size: 12px; color: var(--muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+/* ── DONUT ── */
+.donut-wrap { position: relative; width: 120px; height: 120px; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-big  { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.04em; }
+.donut-tiny { font-size: 11px; color: var(--muted); }
+
+/* ── KANBAN ── */
+.kanban-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.kanban-col {
+  min-width: 200px; max-width: 220px; flex-shrink: 0;
+  background: var(--page-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.kanban-col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 12px; font-weight: 600; color: var(--muted);
+}
+.kanban-count { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--subtle); }
+.kanban-cards { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.kanban-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px;
+  cursor: pointer; transition: box-shadow 0.1s, border-color 0.1s;
+}
+.kanban-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.kc-company { font-size: 11px; color: var(--muted); margin-bottom: 2px; font-weight: 500; }
+.kc-role    { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 8px; }
+.kc-meta    { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.kc-tag     { font-size: 10px; padding: 1px 6px; border-radius: 3px; background: var(--hover-bg); color: var(--muted); border: 1px solid var(--border); }
+.kc-urgency { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 3px; }
+.kc-next    { font-size: 11px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+/* ── FUNNEL ── */
+.funnel { display: flex; flex-direction: column; gap: 8px; }
+.funnel-row { display: flex; align-items: center; gap: 12px; }
+.funnel-label { font-size: 12px; color: var(--muted); width: 100px; flex-shrink: 0; }
+.funnel-bar   { height: 28px; border-radius: 4px; background: var(--navy); display: flex; align-items: center; padding-left: 10px; transition: width 0.6s ease; }
+.funnel-val   { font-size: 12px; font-weight: 700; color: #fff; }
+.funnel-pct   { font-size: 11px; color: var(--muted); margin-left: 8px; }
+
+/* ── FEATURE CARD ── */
+.feature-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 22px;
+}
+.feature-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: var(--lime-soft); border: 1px solid var(--lime-border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; color: var(--lime-text);
+}
+.feature-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.feature-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── MOBILE NAV TOGGLE (hamburger) — hidden on desktop, shown ≤768px below ── */
+.mobile-nav-toggle {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: 8px; background: transparent;
+  color: var(--navy); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-nav-toggle:hover { background: var(--hover-bg); }
+.mobile-nav-toggle svg { display: block; }
+.top-header-student .mobile-nav-toggle { color: rgba(22, 38, 60, 0.65); }
+
+.sidebar-backdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(15,20,40,0.4);
+  z-index: 48;
+}
+.sidebar-backdrop.open { display: block; }
+
+/* Let flex/grid children shrink below their content's intrinsic width at
+   ANY viewport, instead of forcing the whole page to zoom out or overflow
+   the moment a window narrows (the classic flexbox/grid "min-width: auto"
+   trap). This is a no-op — zero visual effect — whenever content already
+   fits, so it's safe unconditionally rather than only inside a mobile
+   breakpoint; every component-specific breakpoint below relies on it. */
+.main, .content-area, .hs-shell, .hs-split, .hs-list-col, .hs-detail-col,
+.hs-detail-inner, .kb-board-wrap, .kb-col, .ct-list, .cdp-body,
+.settings-layout, .table-container, .data-table, .stat-grid, .stat-card,
+.page-band, .page-header-row, .top-header-inner {
+  min-width: 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 900px)  { .detail-panel { width: 100%; } }
+@media (max-width: 768px)  {
+  .mobile-nav-toggle { display: inline-flex; }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform .24s cubic-bezier(.4,0,.2,1);
+    box-shadow: 8px 0 32px rgba(0,0,0,0.22);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .content-area { padding: 16px; }
+  .page-band { padding: 18px 16px 14px; }
+  .top-header-inner, .top-header-student .top-header-inner { padding: 0 16px; }
+  .stat-grid { grid-template-columns: repeat(2,1fr); }
+  .page-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .page-title { font-size: 24px; }
+  .page-actions { flex-wrap: wrap; width: 100%; }
+
+  /* Search / inputs — full width, ≥16px to stop iOS auto-zoom on focus */
+  .search-wrap { max-width: none; width: 100%; }
+  .search-input, .form-input, .form-select, .form-textarea, .cs-btn {
+    font-size: 16px;
+  }
+
+  /* Comfortable touch targets */
+  .icon-btn { width: 40px; height: 40px; }
+  .sidebar .nav-item { min-height: 44px; }
+  .btn, .panel-action-btn { min-height: 40px; }
+
+  /* Modals / side panels must never exceed the viewport */
+  .modal-box, .add-modal { width: 100%; max-width: 100%; max-height: calc(100vh - 24px); }
+  .detail-panel { width: 100%; max-width: 100%; max-height: 92vh; }
+  .panel-grid-2 { grid-template-columns: 1fr; }
+
+  /* Dropdowns/menus stay inside the viewport */
+  .profile-dropdown, .notif-dropdown, .ws-dropdown, .cs-dropdown {
+    max-width: calc(100vw - 24px);
+  }
+
+  .tc-selection-bar { left: 50%; }
+}
+@media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+
+/* ── SIDEBAR ICONS SVG HELPER ── */
+.nav-svg { display: block; }
+
+/* ── Shared light sidebar ─────────────────────────────────────────────── */
+body .sidebar {
+  background: var(--shell-sidebar-bg) !important;
+  border-right: 1px solid var(--shell-sidebar-border) !important;
+  box-shadow: var(--shell-sidebar-shadow);
+}
+body.sidebar-compact { --sidebar-w: 64px; }
+body .sidebar .sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 14px 20px;
+}
+body .sidebar .sidebar-logo-img {
+  width: 29px; height: 29px;
+  border-radius: 7px;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(24, 55, 93, .08);
+}
+body .sidebar .sidebar-compact-toggle {
+  width: 28px; height: 28px; flex: 0 0 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9px;
+  color: #7D8CA0;
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  transition: background .12s, color .12s;
+}
+body .sidebar .sidebar-compact-toggle:hover {
+  color: #2A3B51;
+  background: rgba(30,58,95,.06);
+  border-color: transparent;
+}
+body .sidebar .sidebar-resize-handle::after {
+  opacity: 0 !important;
+  box-shadow: none !important;
+}
+
+body .sidebar.sidebar-student .sidebar-nav { padding: 6px 12px 8px; }
+/* The gap ABOVE a section label is what makes it a section.
+   At `margin: 12px 0 6px` the distance from the last item of one group to
+   the next group's label (~36px) was indistinguishable from the distance
+   between two items inside a group (~37px, being min-height 35 + 2 margin).
+   So the headings sat in the same vertical rhythm as the links and read as
+   two more rows rather than as a divide — the sidebar looked like one long
+   list with stray grey words in it. The label now binds tightly to the
+   group it introduces (8px below) and is separated from the group above it
+   (26px), which is the whole of the grouping cue: no rules, no boxes. */
+body .sidebar .nav-section-label {
+  color: #94A0AF;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin: 26px 0 8px;
+  padding: 0 10px;
+}
+body .sidebar .nav-item {
+  color: #52565D !important;
+  background: transparent !important;
+}
+body .sidebar.sidebar-student .nav-item {
+  min-height: 35px;
+  gap: 10px;
+  padding: 7px 10px !important;
+  border-radius: 10px !important;
+  font-size: 12.5px !important;
+  font-weight: 620 !important;
+  margin-bottom: 2px;
+}
+body .sidebar .nav-item:hover {
+  color: #33465F !important;
+  background: #EAF0F7 !important;
+}
+body .sidebar .nav-item.active {
+  color: #1F5FB8 !important;
+  background: #DFEBFF !important;
+  box-shadow: inset 0 0 0 1px rgba(50, 113, 203, .08);
+}
+/* No box. The blue outline that briefly lived here spoke the same language as
+   the ACTIVE row (blue fill, blue edge) while meaning something different, so
+   Explore permanently read as though it were the current page — two blue
+   rectangles on one rail, arguing. The emphasis is the coloured icon instead:
+   on a rail where every other glyph is grey, one blue sparkle is the most
+   prominent thing there, and it costs no extra shape. */
+body .sidebar .nav-item-featured {
+  min-height: 36px !important;
+  /* The gap that separates Explore from the first nav group below it. It used
+     to live on the wrapper that also held the Recent chats list; with that
+     wrapper gone the row carries its own spacing. */
+  margin: 0 0 30px !important;
+  background: transparent !important;
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+body .sidebar .nav-item-featured:hover {
+  color: #2C3B4E !important;
+  background: rgba(255,255,255,.56) !important;
+  border-color: rgba(208,218,229,.58);
+}
+body .sidebar .nav-item-featured.active {
+  color: #27384D !important;
+  background: rgba(255,255,255,.72) !important;
+  border-color: rgba(202,213,225,.72);
+  box-shadow: 0 1px 2px rgba(30,53,80,.035);
+}
+body .sidebar:not(.sidebar-student) .nav-item.active { padding-left: 14px !important; }
+body .sidebar .nav-item.active::after,
+body .sidebar .nav-item.active::before {
+  content: none !important;
+  display: none !important;
+}
+body:not(.sidebar-compact) .sidebar .nav-item-featured::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  border-radius: 999px;
+  background: #4E7FCB;
+  box-shadow: 0 0 0 1px rgba(78,127,203,.04);
+}
+/* 18px, not 16px. Paired with the heavier stroke in STUDENT_NAV_ICONS this
+   is what gives the glyphs presence next to 12.5px label text — at 16px and
+   stroke 1.7 they rendered a ~1.1px line and read as faint grey suggestions
+   of icons. Size and weight only: still one-colour line art, no fills. */
+body .sidebar.sidebar-student .nav-item .nav-ic {
+  width: 18px; height: 18px;
+  color: #52565D !important;
+}
+body .sidebar.sidebar-student .nav-item .nav-ic svg { width: 18px; height: 18px; }
+body .sidebar.sidebar-student .nav-item:hover .nav-ic { color: #2A2D31 !important; }
+body .sidebar.sidebar-student .nav-item.active .nav-ic { color: #2563D9 !important; }
+/* The blue sparkle is the whole emphasis — see .nav-item-featured above. It
+   is the only coloured glyph on the rail, which is exactly why it works
+   without a box around it. */
+body:not(.sidebar-compact) .sidebar.sidebar-student .nav-item-featured .nav-ic {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-left: 0;
+  color: #2563D9 !important;
+}
+body:not(.sidebar-compact) .sidebar.sidebar-student .nav-item-featured .nav-ic svg {
+  width: 16px;
+  height: 16px;
+}
+body:not(.sidebar-compact) .sidebar.sidebar-student .nav-item-featured:hover .nav-ic,
+body:not(.sidebar-compact) .sidebar.sidebar-student .nav-item-featured.active .nav-ic {
+  color: #1B4FB0 !important;
+}
+/* Compact rail: the label is gone, so the icon carries the emphasis alone. */
+body.sidebar-compact .sidebar.sidebar-student .nav-item-featured .nav-ic {
+  color: #2563D9 !important;
+}
+body .sidebar .nav-badge {
+  color: #7A899D !important;
+  font-size: 11px;
+  letter-spacing: .02em;
+}
+body .sidebar .nav-item.active .nav-badge { color: #2563D9 !important; }
+/* The counts on this rail are quiet grey numerals, so a word sitting in that
+   slot needs to read as a label rather than a miscounted number: a small blue
+   pill, the same blue the featured row and the active state already use. One
+   row wears it at a time, which is the whole point of it. */
+body .sidebar .nav-badge.is-new {
+  color: #2563D9 !important;
+  background: rgba(37, 99, 217, .10);
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+body .sidebar .nav-item.active .nav-badge.is-new { background: rgba(37, 99, 217, .14); }
+/* A plain blue dot at the row's right edge, for the one row that should
+   stand out without a word (Explore). */
+body .sidebar .nav-badge.is-dot {
+  flex: 0 0 7px; width: 7px; height: 7px; padding: 0; margin: 0 4px 0 auto;
+  border-radius: 50%; background: #2563D9;
+  font-size: 0 !important; line-height: 0; overflow: hidden; color: transparent !important;
+}
+/* A workspace that is in the nav but closed on this deploy (sidebar.js's
+   markComingSoon). The row is blurred and fully inert — that reads as "not
+   ready" on its own, which is why the amber "Soon" pill is gone: the pill was
+   the most colourful object on a grey rail, drawing the most attention to the
+   one row that goes nowhere.
+   pointer-events:none rather than a hover reset, so there is no hover state
+   left to undo and no way to click it. The blur is on the contents, not the
+   row, so it does not smear the row's own edges. */
+/* Quiet, not smudged. The blur that was briefly here made the row the hardest
+   thing on the rail to look at — the eye keeps trying to focus something that
+   will not resolve, so the one row you cannot use pulled the most effort.
+   Weight and colour do the same job silently: the label drops to the same
+   muted grey as the "JOB SEARCH" section headings and loses its bold, so the
+   row sits at the level of a caption rather than a destination. Everything
+   stays perfectly legible, which is the point — the row is a promise about
+   what is coming, and an unreadable promise is worthless. */
+body .sidebar .nav-item.nav-item-soon {
+  cursor: default;
+  pointer-events: none;
+  opacity: 1;
+}
+/* Muted, but still legible. It used to sit at #A8B2C0, which read less as
+   "not yet" than as "this row has gone wrong" — the whole row receding was
+   carrying the entire message on its own. The .nav-soon tag below now says
+   which thing is true, so the label only has to step back, not disappear. */
+body .sidebar .nav-item.nav-item-soon .nav-label {
+  color: #8A94A6 !important;
+  font-weight: 500 !important;
+}
+body .sidebar .nav-item.nav-item-soon .nav-ic {
+  color: #AEB7C4 !important;
+  opacity: 1;
+}
+/* The tasteful half of "coming soon".
+   The previous badge was retired for being the brightest object on the rail:
+   amber (#FDF6EA / #EEDCBC / #8A6D3F) against a cool blue-grey nav, ringed
+   with a border, on the one row that goes nowhere. Everything here is chosen
+   against that: the rail's own neutral hue instead of a warm accent, no
+   border, a background tint at 5% rather than a filled pill, 9px rather than
+   a size that competes with the label, and a grey a step LIGHTER than the
+   label it annotates so it reads as a footnote to the row and never as its
+   headline. */
+body .sidebar .nav-item.nav-item-soon .nav-soon {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(30, 58, 95, 0.05);
+  color: #9AA4B3;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+/* The rail collapses to icons at 64px, where there is no room for a word and
+   the label it annotates is not rendered either. */
+body.sidebar-compact .sidebar .nav-item.nav-item-soon .nav-soon { display: none; }
+body .sidebar .nav-subitem { color: #718096 !important; }
+body .sidebar .nav-subitem::before { background: #B5C0CD; }
+body .sidebar .nav-subitem:hover {
+  color: #344A64 !important;
+  background: #EAF0F7 !important;
+}
+body .sidebar .nav-subitem.active {
+  color: #1F5FB8 !important;
+  background: #DFEBFF !important;
+  box-shadow: inset 0 0 0 1px rgba(50, 113, 203, .08);
+}
+body .sidebar .nav-subitem.active::before { background: #2563D9; }
+
+body .sidebar .onboarding-checklist {
+  padding: 12px 12px 11px;
+  background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(248,251,255,.82));
+  border: 0;
+  border-radius: 14px;
+  color: #24354B;
+  box-shadow: 0 7px 24px rgba(31,61,99,.075), inset 0 0 0 1px rgba(220,228,238,.58);
+}
+body .sidebar .onboarding-checklist-head { min-height: 22px; gap: 3px; }
+body .sidebar .onboarding-checklist-title {
+  font-size: 12px;
+  font-weight: 680;
+  letter-spacing: -.01em;
+}
+body .sidebar .onboarding-checklist-icon-btn {
+  width: 22px; height: 22px; flex-basis: 22px;
+  border-radius: 7px;
+  color: #8996A7;
+}
+body .sidebar .onboarding-checklist-icon-btn svg { width: 11px; height: 11px; }
+body .sidebar .onboarding-checklist-icon-btn:hover {
+  color: #2F5F99;
+  background: #EEF4FB;
+}
+body .sidebar .onboarding-checklist-progress {
+  color: #8491A3;
+  font-size: 10.5px;
+  margin-top: 5px;
+}
+body .sidebar .onboarding-checklist-track {
+  height: 3px;
+  margin-top: 6px;
+  background: #E3E9F1;
+}
+body .sidebar .onboarding-checklist-fill {
+  background: linear-gradient(90deg, #4E83D3, #2F6FD2);
+}
+body .sidebar .onboarding-checklist-steps { gap: 0; margin-top: 7px; }
+body .sidebar .onboarding-checklist-step {
+  min-height: 27px;
+  gap: 8px;
+  padding: 4px 3px;
+  border-radius: 7px;
+  color: #586A80;
+  font-size: 10.5px;
+}
+body .sidebar .onboarding-checklist-step:hover {
+  color: #294F7D;
+  background: rgba(235,241,249,.78);
+}
+body .sidebar .onboarding-checklist-check {
+  width: 14px; height: 14px; flex-basis: 14px;
+  border-color: #B9C5D3;
+}
+body .sidebar .onboarding-checklist-check svg { width: 8px; height: 8px; }
+body .sidebar .onboarding-checklist-step.done { color: #919EAF; }
+body .sidebar .onboarding-checklist-step.done .onboarding-checklist-check {
+  background: #E4EDFA;
+  border-color: #D4E1F4;
+  color: #2F6FCA;
+}
+
+body .sidebar .sidebar-feedback-widget {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 7px 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 11px;
+  box-shadow: none;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+body .sidebar .sidebar-feedback-widget:hover {
+  background: rgba(255,255,255,.68);
+}
+body .sidebar .sidebar-feedback-icon {
+  width: 20px; height: 20px; flex: 0 0 20px;
+  background: transparent;
+  color: #52565D;
+  display: flex; align-items: center; justify-content: center;
+}
+body .sidebar .sidebar-feedback-widget:hover .sidebar-feedback-icon {
+  background: transparent;
+  color: #2A2D31;
+}
+body .sidebar .sidebar-feedback-title,
+body .sidebar .workspace-name {
+  color: #2A3B51;
+}
+body .sidebar .sidebar-feedback-title {
+  font-size: 12px;
+  font-weight: 650;
+  color: #34475E;
+}
+body .sidebar .sidebar-feedback-sub {
+  color: #929EAD;
+  font-size: 10px;
+  margin-top: 1px;
+}
+body .sidebar .workspace-role { color: #8491A2; }
+body .sidebar .workspace-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(207, 218, 232, .82);
+  box-shadow: 0 2px 8px rgba(23, 53, 88, .04);
+}
+body .sidebar .sidebar-bottom-stack {
+  gap: 10px;
+  margin: 0;
+  padding: 16px 14px 14px;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+body .sidebar .onboarding-checklist-slot:not([hidden]) { margin-bottom: 0; }
+
+body .sidebar .workspace-switcher,
+body .sidebar .sidebar-user-footer { border-color: #E2E8F0; }
+body .sidebar .ws-btn { color: #475A72; }
+body .sidebar .ws-btn:hover,
+body .sidebar .sidebar-user-btn:hover,
+body .sidebar .sidebar-user-footer.open .sidebar-user-btn { background: #EAF0F7; }
+body .sidebar .ws-btn-name,
+body .sidebar .sidebar-user-name { color: #2A3B51; }
+body .sidebar .ws-btn-type,
+body .sidebar .sidebar-user-role,
+body .sidebar .sidebar-user-email { color: #8491A2; }
+body .sidebar .ws-chevron,
+body .sidebar .sidebar-user-chevron { color: #8C9AAC; }
+body .sidebar .sidebar-user-av {
+  background: #EAF2FF;
+  color: #2E64AA;
+}
+body .sidebar .ws-dropdown,
+body .sidebar .sidebar-logo-menu {
+  background: #FFFFFF;
+  border-color: #DCE5F0;
+  box-shadow: 0 10px 30px rgba(25, 51, 82, .12);
+}
+body .sidebar .ws-option { border-color: #E8EDF3; }
+body .sidebar .ws-option:hover,
+body .sidebar .ws-option.active,
+body .sidebar .slm-item:hover { background: #EAF0F7; }
+body .sidebar .ws-option-name,
+body .sidebar .slm-user-name,
+body .sidebar .slm-item { color: #34465D; }
+body .sidebar .ws-option-sub,
+body .sidebar .slm-user-email { color: #8794A5; }
+body .sidebar .ws-check { color: #4774AE; }
+body .sidebar .slm-divider { background: #E5EBF2; }
+
+body.sidebar-compact .sidebar {
+  overflow: hidden;
+}
+body.sidebar-compact .sidebar .sidebar-resize-handle { display: none; }
+body.sidebar-compact .sidebar .sidebar-brand {
+  display: grid;
+  place-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 8px 16px;
+  gap: 0;
+}
+body.sidebar-compact .sidebar .sidebar-wordmark-link,
+body.sidebar-compact .sidebar .sidebar-compact-toggle {
+  grid-area: 1 / 1;
+  transition: opacity .14s ease, transform .16s ease, background .12s, color .12s, border-color .12s;
+}
+body.sidebar-compact .sidebar .sidebar-wordmark-link {
+  opacity: 1;
+  transform: scale(1);
+}
+body.sidebar-compact .sidebar .sidebar-logo-img {
+  width: 28px; height: 28px;
+}
+body.sidebar-compact .sidebar .sidebar-compact-toggle {
+  width: 32px; height: 32px;
+  background: #FFFFFF;
+  opacity: 0;
+  transform: scale(.88);
+  pointer-events: none;
+}
+body.sidebar-compact .sidebar .sidebar-brand:hover .sidebar-wordmark-link {
+  opacity: 0;
+  transform: scale(.88);
+}
+body.sidebar-compact .sidebar .sidebar-brand:hover .sidebar-compact-toggle {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+body.sidebar-compact .sidebar .sidebar-compact-toggle svg {
+  transform: scaleX(-1);
+}
+body.sidebar-compact .sidebar.sidebar-student .sidebar-nav {
+  padding: 4px 6px 8px;
+  align-items: center;
+}
+body.sidebar-compact .sidebar .nav-section-label,
+body.sidebar-compact .sidebar .nav-label,
+body.sidebar-compact .sidebar .nav-badge,
+body.sidebar-compact .sidebar .onboarding-checklist,
+body.sidebar-compact .sidebar .sidebar-feedback-title,
+body.sidebar-compact .sidebar .sidebar-feedback-sub {
+  display: none !important;
+}
+body.sidebar-compact .sidebar.sidebar-student .nav-item,
+body.sidebar-compact .sidebar .nav-item-featured {
+  width: 40px;
+  height: 40px;
+  min-height: 40px !important;
+  margin: 0 auto 6px !important;
+  padding: 0 !important;
+  justify-content: center;
+  gap: 0;
+  border-radius: 12px !important;
+}
+body.sidebar-compact .sidebar.sidebar-student .nav-item .nav-ic {
+  width: 18px; height: 18px;
+}
+body.sidebar-compact .sidebar.sidebar-student .nav-item .nav-ic svg {
+  width: 18px; height: 18px;
+}
+body.sidebar-compact .sidebar .nav-item-featured {
+  margin-bottom: 16px !important;
+}
+/* 4px of side padding, not 8px. On a 64px rail the stack's own 8px plus the
+   guest block's 2px plus the CTA's 4px left a 35px content box holding a 40px
+   word, so "Sign up" hung outside its own rounded box on both sides. The rail
+   is the constraint everything else has to give way to. */
+body.sidebar-compact .sidebar .sidebar-bottom-stack {
+  padding: 8px 4px 12px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+body.sidebar-compact .sidebar .onboarding-checklist-slot {
+  display: none !important;
+}
+body.sidebar-compact .sidebar .sidebar-feedback-widget {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  margin: 0 auto 6px;
+  justify-content: center;
+  border-radius: 12px;
+}
+body.sidebar-compact .sidebar .sidebar-feedback-icon {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}
+
+body .sidebar.ops-sidebar .ops-logo { filter: none; opacity: 1; }
+body .sidebar.ops-sidebar .ops-side-top,
+body .sidebar.ops-sidebar .ops-side-foot { border-color: #E2E8F0; }
+body .sidebar.ops-sidebar .ops-ws-name { color: #2A3B51; }
+body .sidebar.ops-sidebar .ops-ws-sub,
+body .sidebar.ops-sidebar .ops-nav-label,
+body .sidebar.ops-sidebar .ops-flow-title,
+body .sidebar.ops-sidebar .ops-side-meta { color: #8A98A9; }
+body .sidebar.ops-sidebar .ops-nav-item { color: #66758A; }
+body .sidebar.ops-sidebar .ops-nav-item:hover {
+  color: #33465F;
+  background: #F3F6FA;
+}
+body .sidebar.ops-sidebar .ops-nav-item.active {
+  color: #1F5FB8;
+  background: #EAF2FF;
+}
+body .sidebar.ops-sidebar .ops-nav-item.active::after { content: none; display: none; }
+body .sidebar.ops-sidebar .ops-nav-count {
+  color: #718198;
+  background: #EEF3F8;
+}
+body .sidebar.ops-sidebar .ops-nav-count.alert {
+  color: #B74747;
+  background: #FCECEC;
+}
+body .sidebar.ops-sidebar .ops-side-flow {
+  background: #FFFFFF;
+  border-color: #DFE7F0;
+  box-shadow: 0 2px 8px rgba(23, 53, 88, .04);
+}
+body .sidebar.ops-sidebar .ops-flow-steps span { color: #687A90; }
+body .sidebar.ops-sidebar .ops-flow-steps span::before { background: #B5C0CD; }
+body .sidebar.ops-sidebar .ops-flow-steps span:not(:last-child)::after { background: #DCE4ED; }
+body .sidebar.ops-sidebar .ops-flow-steps span:first-child::before,
+body .sidebar.ops-sidebar .ops-flow-steps span:last-child::before { background: #3B78D4; }
+body .sidebar.ops-sidebar .ops-side-link { color: #55769D; }
+body .sidebar.ops-sidebar .ops-side-link:hover { color: #245EA9; }
+
+/* Neutral reveal behind the inset AI canvas. */
+body.aisp-page { background: #F8FAFC; }
+
+@media (max-width: 768px) {
+  body .sidebar { box-shadow: 8px 0 28px rgba(18, 48, 82, .16); }
+}
+
+/* ── Email alert opt-in prompt (email-alerts-prompt.js) ──────────────────────
+   A card in the page flow, never an overlay: it must not sit on top of the
+   feed, must not trap focus, and must be scrollable past. Both buttons are
+   real buttons with visible focus rings, and the decline is not styled to
+   disappear — a "Not now" you have to hunt for is the dark pattern this
+   feature is supposed to avoid. */
+.eap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  margin: 0 0 14px; padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--navy-border);
+  border-radius: 12px;
+}
+.eap.is-busy { opacity: .75; }
+/* The STANDING control — a setting, not an interruption.
+
+   Quieter than the one-time ask on purpose: it is always on screen, so it
+   has to be legible for months rather than arresting for one impression.
+   Tinted rather than plain so it reads as a distinct band above the toolbar,
+   and it never gets the ask's heavier border. */
+/* The inline control — a toolbar item, not a banner.
+
+   It began as a full-width tinted band above the toolbar. That band sat on
+   the sticky header's border, scrolled underneath it, and added a third
+   stacked horizontal bar to a page that already had two. Slimming it did not
+   help, because the band was the problem: this is the same control with the
+   card taken away.
+
+   Bordered like the pills beside it so it reads as a control rather than
+   loose text, but not pill-rounded, because it is a setting for the board and
+   not another filter. */
+.eap-inline {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 9px;
+  height: 40px; padding: 0 8px 0 14px;
+  border: 1.5px solid var(--navy-border); border-radius: 12px;
+  background: #fff;
+  font-size: 13px; white-space: nowrap;
+}
+.eap-inline-label { font-weight: 500; color: var(--navy); cursor: pointer; user-select: none; }
+/* Absolutely positioned so a failure message cannot widen the control and
+   shove the toolbar — the same reflow the label and the Manage link used to
+   cause on every toggle. */
+.eap-inline .eap-status {
+  position: absolute; top: calc(100% + 4px); right: 0;
+  margin: 0; font-size: 12px; white-space: nowrap; z-index: 5;
+  background: #fff; padding: 2px 6px; border-radius: 6px;
+}
+.eap-inline .eap-status[hidden] { display: none; }
+.eap-prefs {
+  font-size: 12.5px; font-weight: 600; color: var(--navy); text-decoration: none;
+  border-bottom: 1px solid rgba(22, 38, 60, .28); padding-bottom: 1px;
+}
+.eap-prefs:hover { border-bottom-color: var(--navy); }
+.eap-prefs:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 2px; }
+.eap-prefs[hidden] { display: none; }
+/* A switch, sized to the 44px touch target its hit area needs while the
+   painted track stays small. */
+.eap-switch {
+  position: relative; flex-shrink: 0; cursor: pointer;
+  width: 44px; height: 26px; padding: 0;
+  border: 1px solid var(--navy-border); border-radius: 999px;
+  background: #FFFFFF; transition: background .15s, border-color .15s;
+}
+.eap-switch[aria-checked="true"] { background: var(--navy); border-color: var(--navy); }
+.eap-switch:disabled { cursor: default; opacity: .6; }
+.eap-switch:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
+.eap-switch-knob {
+  position: absolute; top: 50%; left: 3px; transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--navy-border);
+  transition: transform .15s ease, background .15s;
+}
+.eap-switch[aria-checked="true"] .eap-switch-knob {
+  background: #FFFFFF; transform: translateY(-50%) translateX(18px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .eap-switch, .eap-switch-knob { transition: none; }
+}
+.eap-text { min-width: 0; flex: 1 1 260px; }
+.eap-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: -0.01em; }
+.eap-body { margin: 3px 0 0; font-size: 13px; line-height: 1.45; color: var(--navy-muted); }
+.eap-status { margin: 6px 0 0; font-size: 12px; font-weight: 600; color: var(--navy-muted); }
+.eap-status.is-error { color: #B4342B; }
+.eap-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.eap-btn {
+  font: inherit; font-size: 13px; font-weight: 600;
+  padding: 8px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid transparent; transition: background .15s, color .15s, border-color .15s;
+}
+.eap-btn:disabled { cursor: default; opacity: .6; }
+.eap-btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.eap-btn-primary { background: var(--navy); color: #fff; }
+.eap-btn-primary:hover:not(:disabled) { background: var(--navy-hover); }
+.eap-btn-quiet { background: transparent; color: var(--navy-muted); border-color: var(--navy-border); }
+.eap-btn-quiet:hover:not(:disabled) { color: var(--navy); border-color: var(--navy-border-strong); }
+
+@media (max-width: 640px) {
+  /* Stacked rather than squeezed: side by side at this width the decline
+     shrinks to a sliver, which is exactly the shape being avoided. */
+  .eap { flex-direction: column; align-items: stretch; }
+  /* flex-basis is the MAIN axis, which is now the vertical one — the 260px
+     that keeps the text from collapsing in a row became 260px of empty height
+     between the copy and the buttons. */
+  .eap-text { flex: 0 1 auto; }
+  .eap-actions { width: 100%; }
+  .eap-btn { flex: 1 1 0; }
+}
+
+/* ── Page-name tab, one size on every page ───────────────────────────────
+   Search, Resources, Applications, Employers and Settings each styled their
+   own header tab, at four different sizes. One rule for all of them: any
+   tab container sitting directly in the top header. */
+body header.top-header > [class$="-tabs"] > a,
+body header.top-header > [class$="-tabs"] > button,
+body header.top-header > [class$="-tabs"] > span {
+  font-family: 'Plus Jakarta Sans', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.005em; line-height: 1.3;
+  padding: 5px 11px; border-radius: 7px; border: 0;
+  color: rgba(47, 82, 112, 0.5); background: transparent; text-decoration: none;
+}
+body header.top-header > [class$="-tabs"] > .active,
+body header.top-header > [class$="-tabs"] > [aria-current="page"],
+body header.top-header > [class$="-tabs"] > :only-child {
+  color: #2F5270; background: rgba(47, 82, 112, 0.07);
+}
+
+/* ── One hairline between the rail and the page ──────────────────────────
+   The rail wore a #D7E0EA border AND a 22px soft shadow, which drew a blurry
+   double edge down the whole page. One thin line, no shadow. On Explore the
+   white fade painted over the blue field's left edge is gone too. */
+body .sidebar.sidebar-student {
+  border-right: 1px solid rgba(30, 58, 95, .11) !important;
+  box-shadow: none !important;
+}
+body.aisp-page .main::after { display: none !important; }
+body.aisp-page .main { box-shadow: none !important; }
+
+/* ── A white rail ─────────────────────────────────────────────────────────
+   The grey-blue rail next to white pages read as a tinted panel bolted on,
+   and pure white lost the edge entirely. A barely-off-white rail, a firmer
+   hairline, and a clearer tint on the current page. */
+body .sidebar.sidebar-student { background: #FAFBFD !important; }
+body .sidebar.sidebar-student #sidebar-nav .nav-item.active { background: rgba(44, 90, 160, .10) !important; }
+body .sidebar.sidebar-student #sidebar-nav .nav-item:hover { background: rgba(30, 58, 95, .035) !important; }
+
+/* No hover label on the resize edge: dragging still works, the tooltip was
+   clutter. */
+.sidebar-resize-tip { display: none !important; }
+
+/* Every student page's header carries the same hairline under it. Some page
+   stylesheets had dropped it. */
+body header.top-header { border-bottom: 1px solid rgba(30, 58, 95, .10) !important; }
+
+
+/* ── Discover ───────────────────────────────────────────────────────────────── */
+body.hs-discover { background: #FFFFFF; }
+.hs-discover .main { background: #FFFFFF; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+.hs-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+
+/* ══ The club board's design, on the main board ═══════════════════════════
+   Filters, search, the job details panel and the palette, carried over from
+   the club board. Its layout is NOT carried: the club board centres the
+   details in a narrow column, and the main board keeps its own left-aligned
+   panel. Scoped to body.hs-discover so each rule outranks the base rule it
+   replaces wherever that base rule sits in this sheet. */
+/* Search on the left, filters hard right, as on the reference. */
+body.hs-discover .hs-filter-pills { margin-left: auto; }
+body.hs-discover .hs-search-wrap { flex: 0 1 300px; }
+/* The bar is one row at every width. As the space for it shrinks (a narrow
+   window, or the sidebar open), pills leave from the right, least used
+   first; every one of them is also in the Filters panel, which stays. Sized
+   on the toolbar itself, so the sidebar's width counts. */
+body.hs-discover .hs-toolbar { container-type: inline-size; container-name: hsbar; }
+body.hs-discover .hs-toolbar-row { flex-wrap: nowrap; }
+body.hs-discover .hs-search-wrap { min-width: 180px; }
+@container hsbar (max-width: 1120px) { .hs-pill-wrap[data-pill="posted"] { display: none; } }
+@container hsbar (max-width: 960px)  { .hs-pill-wrap[data-pill="timing"] { display: none; } }
+@container hsbar (max-width: 800px)  { .hs-pill-wrap[data-pill="format"] { display: none; } }
+@container hsbar (max-width: 660px)  {
+  .hs-pill-wrap[data-pill="location"] { display: none; }
+  body.hs-discover .hs-allf-long { display: none; } body.hs-discover .hs-allf-short { display: inline; }
+  .hs-search-wrap { flex: 1 1 auto !important; }
+}
+/* ── Job rows, minimal ────────────────────────────────────────────────────
+   No boxed caps tags: pay, type and age are one quiet line of text. Save and
+   remove stay out of the way until the row is hovered or open, and the open
+   row is a tint with a hairline rather than a slab. */
+body.hs-discover .hs-job-row {
+  padding: 20px 20px 20px 34px; gap: 14px;
+  border-left-width: 2px; border-bottom-color: rgba(30,58,95,.07);
+}
+body.hs-discover .hs-job-row:hover { background: rgba(30,58,95,.025); }
+body.hs-discover .hs-job-row.selected { background: rgba(44,90,160,.085); border-left-color: #2C5AA0; }
+body.hs-discover .hs-job-title { font-size: 14.5px; font-weight: 650; margin-bottom: 3px; }
+body.hs-discover .hs-job-company { font-size: 13px; color: #4A5B70; }
+body.hs-discover .hs-job-meta { font-size: 12px; color: #8A97A8; margin-top: 3px; }
+body.hs-discover .hs-job-tags { gap: 0; margin-top: 4px; flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
+body.hs-discover .hs-job-tag {
+  font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none;
+  padding: 0; border: 0; border-radius: 0; color: #8A97A8;
+}
+body.hs-discover .hs-job-tag:first-child:not(:last-child) { color: #4A5B70; font-weight: 600; }
+body.hs-discover .hs-job-tag + .hs-job-tag::before { content: '·'; margin: 0 6px; }
+body.hs-discover .hs-job-tag:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+body.hs-discover .hs-job-tag:first-child:not(:last-child) { flex-shrink: 0; }
+/* The age is a corner stamp, top right. Save and remove take that corner
+   on hover. */
+body.hs-discover .hs-job-age {
+  position: absolute; top: 22px; right: 22px; margin: 0;
+  font-size: 10.5px; font-weight: 500; color: #A3AEBC; transition: opacity .12s;
+}
+body.hs-discover .hs-job-row:hover .hs-job-age { opacity: 0; }
+body.hs-discover .hs-job-main { min-width: 0; }
+body.hs-discover .hs-job-tags + .hs-job-age { margin: 0; }
+body.hs-discover .hs-job-actions { opacity: 0; transition: opacity .12s; }
+body.hs-discover .hs-job-row:hover .hs-job-actions,
+body.hs-discover .hs-job-actions:focus-within { opacity: 1; }
+body.hs-discover .hs-job-dismiss, body.hs-discover .hs-job-save { color: #8A97A8; }
+/* The sort control is a menu, so it carries a caret like every other one. */
+.hs-sort-caret { color: #7D8CA0; flex-shrink: 0; }
+.hs-sort-btn[aria-expanded="true"] .hs-sort-caret, .hs-sort-btn.open .hs-sort-caret { transform: rotate(180deg); }
+/* ── The title on one line ────────────────────────────────────────────────
+   Two things were breaking it. The header reserves 110px on its right for
+   the fit badge, and that badge has no markup left on this page: it is a
+   stylesheet with nothing to style, quietly costing every title a fifth of
+   its width. Reclaiming it, and dropping the ceiling from 34px to 26,
+   fits the roles on one line. Long ones still wrap - a job title has no
+   length limit - so they wrap into even halves instead of leaving one word
+   stranded underneath. */
+body.hs-discover .hs-detail-header { padding-right: 0; }
+/* And the text column has to actually claim what the padding gave back: it
+   is flex: 0 1 auto, so it was shrink-wrapping to a measure narrower than
+   the room beside the logo and wrapping titles that had space to spare. */
+body.hs-discover .hs-detail-hd { flex: 1 1 auto; min-width: 0; }
+body.hs-discover .hs-detail-title {
+  font-size: clamp(19px, 1.9vw, 25px);
+  text-wrap: balance;
+}
+
+/* ── Comp, Location and Type, quieter than the buttons ────────────────────
+   Apply is what this panel is for. These three are the facts you check
+   after deciding to look, so they read at the size of facts: a smaller box
+   with less air in it, and a value that no longer competes with the title
+   for weight. */
+body.hs-discover .hs-glance-grid { gap: 8px; margin-bottom: 22px; }
+body.hs-discover .hs-glance-box { padding: 8px 11px; border-radius: 8px; }
+body.hs-discover .hs-glance-lbl { font-size: 8.5px; margin-bottom: 3px; }
+body.hs-discover .hs-glance-val { font-size: 12.5px; font-weight: 600; }
+/* ── Eligibility, plain ───────────────────────────────────────────────────
+   No green check discs, no grey chip, no brown-grey notes and no caption
+   under the heading. A small navy dot per line (a ring when it is inferred
+   rather than stated), regular-weight text, one navy family. */
+body.hs-discover .hs-elig-sub { display: none; }
+body.hs-discover .hs-elig-row { gap: 12px; margin-bottom: 9px; align-items: baseline; }
+body.hs-discover .hs-elig-ic,
+body.hs-discover .hs-elig-ic.confirmed,
+body.hs-discover .hs-elig-ic.likely,
+body.hs-discover .hs-elig-ic.warn {
+  width: 5px; height: 5px; min-width: 5px; border-radius: 50%; margin-top: 0;
+  background: #2C5AA0; border: 0; color: transparent; font-size: 0; overflow: hidden;
+  transform: translateY(-2px);
+}
+body.hs-discover .hs-elig-ic svg { display: none; }
+body.hs-discover .hs-elig-ic.likely { background: transparent; box-shadow: inset 0 0 0 1.25px #2C5AA0; }
+body.hs-discover .hs-elig-main { font-size: 13.5px; font-weight: 500; color: #2A3B51; line-height: 1.45; }
+body.hs-discover .hs-elig-main .lk { font-weight: 500; color: #2A3B51; }
+body.hs-discover .hs-elig-note { font-size: 12.5px; color: #8A97A8; }
+/* Calmer and plainly a list of requirements: no explanation line under
+   each item, a square marker rather than a bullet so it reads as a checklist,
+   and two columns so five short lines are not a tall stack. */
+body.hs-discover .hs-elig-note { display: none; }
+body.hs-discover .hs-elig-section .hs-elig-rows { display: grid; grid-template-columns: 1fr; gap: 10px; }
+body.hs-discover .hs-elig-row { margin-bottom: 0; align-items: center; gap: 10px; }
+body.hs-discover .hs-elig-ic,
+body.hs-discover .hs-elig-ic.confirmed,
+body.hs-discover .hs-elig-ic.likely,
+body.hs-discover .hs-elig-ic.warn {
+  width: 7px; height: 7px; min-width: 7px; border-radius: 2px; transform: none; background: #2C5AA0;
+}
+body.hs-discover .hs-elig-ic.likely { background: transparent; box-shadow: inset 0 0 0 1.25px #2C5AA0; }
+body.hs-discover .hs-elig-main { font-size: 14px; }
+@media (max-width: 1100px) { body.hs-discover .hs-elig-section .hs-elig-rows { grid-template-columns: 1fr; } }
+
+
+/* ── Share is the third thing you might do, and now looks like it ─────────
+   Apply is solid, Save is outlined, and Share was a second outlined pill
+   beside it: two controls of identical weight for two jobs of very
+   different importance. It becomes three dots in a circle, the shape every
+   overflow control already has, so the row reads primary, secondary, then
+   the quiet one. */
+body.hs-discover .hs-share-wrap > .hs-btn {
+  width: 38px; height: 38px; padding: 0; border-radius: 50%;
+  border-color: transparent; background: transparent; color: #7D8CA0;
+  justify-content: center;
+  transition: background .13s, color .13s;
+}
+body.hs-discover .hs-share-wrap > .hs-btn:hover,
+body.hs-discover .hs-share-wrap > .hs-btn[aria-expanded="true"] {
+  background: rgba(44,90,160,.09); color: #2C5AA0;
+}
+/* The dots are 38px from the left edge of a 38px button, so the menu hangs
+   off it rather than lining up with a label that is no longer there. */
+body.hs-discover .hs-share-wrap .hs-share-dropdown { left: -6px; }
+
+/* ── The description reads as text, not as a control ──────────────────────
+   Eighteen lines before it folds, matching the length the template folds
+   at, and the label above it in the same navy as every other small-caps
+   label on the board rather than the warm grey it inherited. */
+body.hs-discover .hs-desc.collapsed { -webkit-line-clamp: 18; }
+body.hs-discover .hs-desc-lbl { color: #7D8CA0; }
+body.hs-discover .hs-desc { color: #4A5765; }
+body.hs-discover .hs-more-btn { color: #2C5AA0; }
+
+/* ── Why you match, as its own section ────────────────────────────────────
+   It was three loose lines sitting between the glance boxes and the job
+   details with nothing to say where it started, so it read as an
+   afterthought attached to whichever block you looked at first.
+
+   A rule ABOVE it only. Every section below this one already draws its own
+   border-top (.hs-elig-section, .hs-jd-section), so a border-bottom here
+   put a second hairline a few pixels under the first and made three lines
+   out of two sections. One rule per boundary. */
+body.hs-discover .hs-why-block {
+  border-top: 1px solid rgba(30,58,95,.08);
+  margin: 22px 0 0; padding: 22px 0 0;
+}
+body.hs-discover .hs-why-block .hs-why-item:last-child { margin-bottom: 0; }
+
+
+/* ── The filters ──────────────────────────────────────────────────────────
+   Separate controls, as they were. What changes is the shape and the family:
+   8px instead of 12 so they read as buttons rather than lozenges, a 1px edge
+   instead of 1.5, and the navy the rest of the board uses in place of the
+   grey hairline. Joining them into one segmented group was a step too far -
+   they are six independent choices and they should look like it. */
+body.hs-discover .hs-filter-pill {
+  height: 38px; border-radius: 8px; border-width: 1px;
+  border-color: rgba(30,58,95,.16);
+  background: #FFFFFF; color: #2A3B51; font-weight: 550; font-size: 13.5px;
+}
+body.hs-discover .hs-filter-pill:hover { border-color: rgba(30,58,95,.32); background: #FBFCFD; }
+body.hs-discover .hs-filter-pill.active {
+  background: #F4F7FB; border-color: rgba(30,58,95,.34); color: #16263C; font-weight: 650;
+}
+
+/* ── One family of colour ─────────────────────────────────────────────────
+   The detail pane carried three warm greys (#8C877A, #9A958A, #6E6858) left
+   over from an older palette, plus grey-filled chips and boxes. Against the
+   navy the page is actually built from, warm grey reads as washed out rather
+   than quiet. Every one of them becomes the navy the rest of the product
+   uses, at the weight it was already carrying, and the fills come off so the
+   chips are text with an edge instead of grey tablets.
+   First made on the club board, then carried to the main one. */
+body.hs-discover .hs-detail-co-meta,
+body.hs-discover .hs-jd-sub,
+body.hs-discover .hs-glance-lbl { color: #7D8CA0; }
+body.hs-discover .hs-jd-icon { color: #98A6B8; }
+body.hs-discover .hs-jd-chip {
+  background: transparent;
+  border-color: rgba(30,58,95,.16);
+  color: #3D4A54;
+}
+body.hs-discover .hs-jd-more:hover { background: rgba(30,58,95,.07); }
+body.hs-discover .hs-glance-box { border-color: rgba(30,58,95,.14); }
+body.hs-discover .hs-detail-empty { color: #98A6B8; }
+
+/* ── A little more blue ───────────────────────────────────────────────────
+   The same #2C5AA0 the rail uses, on the four places that are already
+   accents rather than surfaces: the search glass, the rail beside the open
+   role, the selected filter, and the checks beside Why you match. */
+body.hs-discover .hs-search-icon-wrap { color: #2C5AA0; }
+body.hs-discover .hs-job-row.selected { border-left-color: #2C5AA0; background: rgba(44,90,160,.055); }
+body.hs-discover .hs-filter-pill.active {
+  background: rgba(44,90,160,.08); border-color: rgba(44,90,160,.42); color: #2C5AA0;
+}
+body.hs-discover .hs-why-lbl, body.hs-discover .hs-why-check { color: #2C5AA0; }
+
+/* ── The last of the warm greys ───────────────────────────────────────────
+   Four greys with a brown cast (#A19C8C, #9A958A, #8C877A, #6E6858) run
+   through the board's secondary text, left from an older palette. Beside
+   navy they read as dirty rather than quiet, which is the 'poop-coloured'
+   thing in the filter panel. Each is replaced by the navy of the same
+   lightness, rule for rule, so nothing changes but the hue. Generated
+   from the stylesheet above rather than hand-listed, so none is missed.
+   */
+body.hs-discover .filter-check-sub { color: #7D8CA0; }
+body.hs-discover .filter-chevron { color: #7D8CA0; }
+body.hs-discover .filter-close-btn { color: #7D8CA0; }
+body.hs-discover .filter-count { color: #7D8CA0; }
+body.hs-discover .filter-loc-search-wrap svg { color: #7D8CA0; }
+body.hs-discover .hs-count { color: #7D8CA0; }
+body.hs-discover .hs-count-fresh { color: #7D8CA0; }
+body.hs-discover .hs-detail-co-meta { color: #7D8CA0; }
+body.hs-discover .hs-detail-col::-webkit-scrollbar-thumb:hover { background: #8FA0B5; }
+body.hs-discover .hs-detail-date-lbl { color: #98A6B8; }
+body.hs-discover .hs-detail-date.deadline-closed .hs-detail-date-val { color: #8FA0B5; }
+body.hs-discover .hs-elig-empty { color: #5A6B80; }
+body.hs-discover .hs-elig-ic.likely { color: #5A6B80; }
+body.hs-discover .hs-elig-sub { color: #8FA0B5; }
+body.hs-discover .hs-employer-industry { color: #7D8CA0; }
+body.hs-discover .hs-explore-chip { color: #5A6B80; }
+body.hs-discover .hs-fb-item svg { color: #7D8CA0; }
+body.hs-discover .hs-for-you-empty { color: #7D8CA0; }
+body.hs-discover .hs-glance-lbl { color: #8FA0B5; }
+body.hs-discover .hs-jd-icon { color: #5A6B80; }
+body.hs-discover .hs-jd-sub { color: #8FA0B5; }
+body.hs-discover .hs-list-body::-webkit-scrollbar-thumb:hover { background: #8FA0B5; }
+body.hs-discover .hs-list-footer { color: #5A6B80; }
+body.hs-discover .hs-lock-loading { color: #98A6B8; }
+body.hs-discover .hs-lock-more-sub { color: #7D8CA0; }
+body.hs-discover .hs-page-ellipsis { color: #8FA0B5; }
+body.hs-discover .hs-search-input::placeholder { color: #98A6B8; }
+body.hs-discover .hs-status-muted { color: #7D8CA0; }
+
+/* ── The club board's details panel, centred ─────────────────────────────
+   By request (12 Sep 2026): the details read exactly like the club board, in
+   a 660px column in the middle of the panel with air above the title. The
+   description still folds under its label. */
+body.hs-discover .hs-detail-inner { max-width: 660px; padding-top: 52px; margin-left: auto; margin-right: auto; }
+body.hs-discover .hs-desc-fold {
+  display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0;
+  font-family: inherit; cursor: pointer; text-align: left;
+}
+body.hs-discover .hs-desc-fold:hover { color: #2C5AA0; }
+body.hs-discover .hs-desc-chev { color: #7D8CA0; transition: transform .15s ease; }
+body.hs-discover .hs-desc-section.is-folded .hs-desc-chev { transform: rotate(-90deg); }
+body.hs-discover .hs-desc-section.is-folded #job-desc-body { display: none; }
+
+/* ── The search field ─────────────────────────────────────────────────────
+   The blue disc behind the magnifier was the loudest thing on a screen whose
+   job is to be quiet, and a 12px pill with a grey hairline is the field every
+   product ships. This one has no disc, a navy glass at the same
+   weight as the type beside it, a squarer corner, and a rule along the
+   bottom that thickens on focus rather than a coloured halo. The placeholder
+   drops its warm grey with the rest of them. */
+body.hs-discover .hs-search-icon-wrap {
+  background: transparent; color: #16263C; width: 20px; height: 20px; left: 14px;
+}
+body.hs-discover .hs-search-wrap:focus-within .hs-search-icon-wrap { background: transparent; }
+body.hs-discover .hs-search-input {
+  height: 42px; padding-left: 42px; border-radius: 10px;
+  border: 1px solid rgba(30,58,95,.14);
+  background: #FDFDFE;
+}
+body.hs-discover .hs-search-input:focus {
+  /* No black rule. A bar that appears under the field on focus is a state
+     change loud enough to read as an error; the edge simply firms up. */
+  border-color: rgba(30,58,95,.34);
+  border-bottom-color: rgba(30,58,95,.34);
+  background: #FFFFFF;
+  box-shadow: none;
+}
+
+body.hs-discover .top-header { display: flex; align-items: center; }
+body.hs-discover .top-header-inner { flex: 1; }
+body.hs-discover .top-header-student .header-actions { gap: 8px; }
+
+/* ── Page tabs in top header ── */
+.hs-tabs { display: flex; align-items: center; gap: 4px; padding-left: 24px; flex-shrink: 0; }
+.hs-tab {
+  font-family: 'Plus Jakarta Sans', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 0;
+  color: rgba(47, 82, 112, 0.42); text-decoration: none;
+  padding: 4px 10px; border-radius: 6px; border: none; background: none; cursor: pointer;
+  transition: color .12s, background .12s;
+}
+.hs-tab:hover { color: #2F5270; background: rgba(47, 82, 112, 0.06); }
+.hs-tab.active { color: #2F5270; background: rgba(47, 82, 112, 0.07); }
+
+/* ── Toolbar ── */
+.hs-feed-hero {
+  display: none;
+  padding: 12px 36px 0;
+  flex-shrink: 0;
+}
+.hs-feed-hero.is-visible { display: block; }
+.hs-feed-title {
+  font-family: 'Plus Jakarta Sans', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 28px; line-height: 1.05; font-weight: 800;
+  letter-spacing: -0.03em; color: #16263C; margin: 0 0 4px;
+}
+.hs-feed-subtitle-row { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 460px; }
+.hs-feed-dynamic { font-size: 13px; font-weight: 600; color: #3D6A9E; }
+
+.hs-feed-hero-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.hs-feed-hero-text { min-width: 0; flex: 1 1 auto; }
+
+/* Quiet preference action (links to onboarding edit mode). */
+.hs-prefs {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 32px; padding: 0 10px; border: 1px solid #D7E3F3; border-radius: 8px;
+  background: #EEF5FF; color: #2F5270; font-size: 11.5px; font-weight: 700;
+  text-decoration: none; transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.hs-prefs:hover { background: #E3EFFB; border-color: #BFD1E8; box-shadow: 0 2px 6px rgba(47, 82, 112, 0.1); }
+.hs-prefs:focus-visible { outline: 3px solid rgba(47, 82, 112, 0.2); outline-offset: 2px; }
+
+/* ── Feedback toast with Undo (For You only) ── */
+.hs-fb-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #16263C; color: #fff; padding: 10px 12px 10px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; opacity: 0; transition: opacity .2s, transform .2s;
+  z-index: 500; display: flex; align-items: center; gap: 14px; max-width: calc(100vw - 32px);
+  pointer-events: none; box-shadow: 0 10px 30px rgba(22,38,60,.28); }
+.hs-fb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.hs-fb-toast-msg { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hs-fb-toast-undo { flex-shrink: 0; background: transparent; border: none; color: #9EC5E8;
+  font-size: 13px; font-weight: 700; cursor: pointer; padding: 2px 4px; font-family: inherit; }
+.hs-fb-toast-undo:hover { color: #fff; text-decoration: underline; }
+.hs-apply-notice a.hs-fb-toast-undo { text-decoration: none; }
+.hs-apply-notice a.hs-fb-toast-undo:hover { text-decoration: underline; }
+.hs-apply-notice-close { flex-shrink: 0; width: 24px; height: 24px; margin-left: -6px; border: 0; border-radius: 6px;
+  background: transparent; color: rgba(255,255,255,.62); cursor: pointer; display: inline-flex;
+  align-items: center; justify-content: center; padding: 0; }
+.hs-apply-notice-close:hover { color: #fff; background: rgba(255,255,255,.1); }
+
+@media (max-width: 640px) {
+  .hs-feed-hero-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hs-fb-toast { left: 16px; right: 16px; transform: translateY(20px); max-width: none; }
+  .hs-fb-toast.show { transform: translateY(0); }
+}
+.hs-toolbar { padding: 10px 36px 12px; flex-shrink: 0; }
+/* The first-save card still uses the old slot above the toolbar, and still
+   needs the toolbar's inset — it is a card, not a toolbar item, so it cannot
+   move inline. The standing alerts control no longer lives here at all; it is
+   .hs-toolbar-alerts, inside the toolbar row. */
+#email-alerts-prompt-slot:not(:empty) { padding: 0 36px; margin-top: 10px; }
+
+/* First control after the search box, not the last one on the row.
+
+   It was margin-left:auto (the far corner), then after the pills (still the
+   end of the row, six controls deep). A toolbar is read left to right; the
+   only genuinely central place in it is next to the search box. */
+.hs-toolbar-alerts { display: flex; align-items: center; margin-right: 2px; }
+.hs-toolbar-alerts.hs-list-alerts { display: none; }
+/* In the sidebar: a quiet row, not a bordered pill. */
+/* Right end of the rail's bottom icon strip: small muted words and a small
+   switch, on the same line as the feedback icons. One word, "Alerts": at three
+   icons the two-word form left the switch pressed against the edge of the rail
+   (the full name is still the group's accessible label and the tooltip). */
+.sidebar .hs-list-alerts.in-rail { display: flex; align-items: center; margin-left: auto; padding: 0; flex-shrink: 0; }
+.sidebar .hs-list-alerts.in-rail:empty { display: none; }
+.sidebar .hs-list-alerts .eap-inline {
+  display: flex; align-items: center; gap: 7px; height: auto; width: auto;
+  padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; position: relative;
+}
+.sidebar .hs-list-alerts .eap-inline-label { font-size: 12px; font-weight: 500; color: #8A97A8; }
+.sidebar .hs-list-alerts .eap-switch { width: 24px; height: 14px; }
+.sidebar .hs-list-alerts .eap-switch-knob { width: 10px; height: 10px; left: 1px; }
+.sidebar .hs-list-alerts .eap-switch[aria-checked="true"] .eap-switch-knob { transform: translateY(-50%) translateX(10px); }
+.sidebar .hs-list-alerts .eap-switch[aria-checked="true"] { background: #2C5AA0; border-color: #2C5AA0; }
+.sidebar .hs-list-alerts .eap-inline .eap-status { top: auto; bottom: calc(100% + 6px); left: auto; right: 0; }
+body.sidebar-compact .sidebar .hs-list-alerts.in-rail { display: none; }
+.hs-toolbar-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.hs-search-wrap { position: relative; flex: 0 1 420px; }
+.hs-search-icon-wrap {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%; border: none; padding: 0;
+  background: rgba(17,85,187,.1);
+  display: flex; align-items: center; justify-content: center;
+  color: #1155BB; cursor: pointer; flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.hs-search-icon-wrap:hover { background: rgba(17,85,187,.17); }
+.hs-search-input {
+  width: 100%; height: 40px; padding: 0 16px 0 48px; box-sizing: border-box;
+  font-size: 14px; color: #1C2B3A; background: #FFFFFF;
+  border: 1.5px solid #E4E6EA; border-radius: 12px; outline: none;
+  font-family: inherit; transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.hs-search-input::placeholder { color: #A19C8C; }
+.hs-search-input:focus {
+  border-color: #1155BB;
+  box-shadow: 0 0 0 4px rgba(17,85,187,.12);
+}
+.hs-search-wrap:focus-within .hs-search-icon-wrap {
+  background: rgba(17,85,187,.17);
+}
+
+.hs-filter-pills { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.hs-filter-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 40px; padding: 0 14px 0 18px;
+  font-size: 14px; font-weight: 500; color: #16263C;
+  background: #fff; border: 1.5px solid #E4E6EA; border-radius: 12px;
+  cursor: pointer; white-space: nowrap; font-family: inherit;
+  transition: border-color .1s, background .1s;
+}
+/* A caret, after all.
+
+   This used to read "No caret — the pill is plainly a button, and a row of
+   six arrows read as noise", and as a matter of visual density that was
+   right. It was wrong about what the pill communicates: a bare rounded
+   rectangle in a row of rounded rectangles reads as a toggle or a segmented
+   control, so people did not know these opened anything. An affordance that
+   has to be discovered by clicking is not an affordance.
+
+   Small and low-contrast so the row still reads as a row, and it turns over
+   when the menu is open so the pill also says whether it is currently the
+   one showing. "All filters" deliberately has none — it opens a modal, not a
+   menu, and should not claim otherwise. */
+/* A solid wedge, not a chevron.
+
+   A hairline chevron is what every dropdown on the internet uses, so it reads
+   as chrome rather than as part of this control. A filled triangle with
+   rounded corners has actual weight, echoes the pill's own 12px rounding, and
+   is legible at 12px where a 1.5px stroke starts to disappear. */
+/* A pill can never grow enough to shove the row.
+
+   pillLabel reads back what is chosen, so picking two start terms turned
+   "Start term" into "Summer 2027, Fall 2026" — the pill roughly doubled and
+   every control after it jumped sideways. The label truncates instead; the
+   full selection is visible in the open menu, which is where someone
+   checking it is already looking. */
+.hs-pill-label {
+  display: block; min-width: 0; max-width: 168px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hs-pill-caret {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; margin-left: -1px;
+  border-radius: 6px;
+  color: #8C93A1;
+  transition: transform .18s cubic-bezier(.34, 1.4, .64, 1), background .12s, color .12s;
+}
+/* A tinted well behind the chevron, so the pill ends in a deliberate little
+   control rather than a stray tick mark. It is the pill's own colour at low
+   alpha, which means it reads as part of the pill on white and on navy
+   without needing a second rule for each state. */
+.hs-filter-pill:hover .hs-pill-caret { background: rgba(22, 38, 60, .06); color: #16263C; }
+.hs-filter-pill.is-open .hs-pill-caret {
+  transform: rotate(180deg);
+  background: rgba(22, 38, 60, .08); color: #16263C;
+}
+.hs-filter-pill.has-value .hs-pill-caret { color: rgba(255, 255, 255, .72); }
+.hs-filter-pill.has-value:hover .hs-pill-caret,
+.hs-filter-pill.has-value.is-open .hs-pill-caret {
+  background: rgba(255, 255, 255, .16); color: #fff;
+}
+/* The overshoot in the easing is what makes the flip feel like a control
+   answering rather than a transform running. Removed for anyone who asked
+   for less motion — they still get the state, just not the flourish. */
+@media (prefers-reduced-motion: reduce) {
+  .hs-pill-caret { transition: background .12s, color .12s; }
+}
+.hs-filter-pill:hover { border-color: #E4E6EA; background: #F5F6F8; }
+/* A pill that holds a value fills navy, the same state the old country
+   chips used when active: the fill says "something is narrowing the list"
+   and the label says what. No caret - the pill is plainly a button, and a
+   row of six arrows read as noise. */
+.hs-filter-pill.has-value { background: #16263C; color: #fff; border-color: #16263C; }
+.hs-filter-pill.has-value:hover { background: #1F3350; border-color: #1F3350; }
+.hs-filter-pill.is-open { border-color: #C9CED6; background: #F5F6F8; }
+.hs-filter-pill.has-value.is-open { background: #1F3350; border-color: #1F3350; }
+.hs-pill-wrap { position: relative; flex-shrink: 0; }
+.hs-pill-menu {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 60;
+  min-width: 210px; background: #fff; border: 1px solid rgba(28,43,58,0.12); border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(28,43,58,.16); padding: 6px;
+}
+.hs-pill-menu.open { display: block; }
+.hs-pill-opt {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; text-align: left; padding: 10px 12px;
+  font-size: 14px; font-weight: 500; color: #1C2B3A; border-radius: 8px;
+  cursor: pointer; border: none; background: none; font-family: inherit;
+  transition: background .1s;
+}
+.hs-pill-opt:hover { background: rgba(28,43,58,0.06); }
+.hs-pill-opt.active { color: #16263C; font-weight: 600; }
+.hs-pill-opt .hs-pill-tick { opacity: 0; font-size: 12px; color: #2F5270; }
+.hs-pill-opt.active .hs-pill-tick { opacity: 1; }
+.hs-pill-menu-clear {
+  display: block; width: 100%; margin-top: 4px; padding: 8px 12px; border: 0; border-top: 1px solid #EEF0F3;
+  background: none; font: inherit; font-size: 13px; color: #6B7785; text-align: left; cursor: pointer; border-radius: 0 0 8px 8px;
+}
+.hs-pill-menu-clear:hover { color: #1C2B3A; background: #F5F6F8; }
+.hs-filter-sep { width: 1px; height: 20px; background: #E4E6EA; margin: 0 3px; flex-shrink: 0; }
+.hs-filter-pill.active { background: #16263C; color: #fff; border-color: #16263C; }
+.hs-filter-pill:focus-visible { outline: 2px solid rgba(22,38,60,.35); outline-offset: 2px; }
+.hs-filter-icon-pill.active { background: #16263C; color: #fff; border-color: #16263C; }
+.hs-filter-icon-pill {
+  height: 40px; padding: 0 14px; border-radius: 12px;
+  background: #fff; border: 1.5px solid #E4E6EA;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  cursor: pointer; color: #16263C; font-size: 14px; font-weight: 500;
+  font-family: inherit; transition: border-color .1s, background .1s;
+  flex-shrink: 0; white-space: nowrap;
+}
+.hs-filter-icon-pill:hover { border-color: #E4E6EA; background: #F5F6F8; }
+.hs-filter-icon-pill:focus-visible { outline: 2px solid rgba(22,38,60,.35); outline-offset: 2px; }
+
+/* ── Split: two full-height scroll columns ── */
+.hs-split {
+  display: grid; grid-template-columns: minmax(360px, 440px) 1fr;
+  flex: 1; min-height: 0;
+  border-top: 1px solid #E4E6EA;
+}
+.hs-list-col {
+  min-width: 0; min-height: 0; height: 100%;
+  display: flex; flex-direction: column;
+  padding: 16px 0 0;
+  overflow-x: hidden;
+  border-right: 1px solid #E4E6EA;
+}
+/* A pill in the sticky header, beside the page tab. Quiet while there are
+   reveals left, amber once there are none — that is the one state worth
+   noticing BEFORE clicking rather than after. */
+.hs-reveal-meter {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-left: 10px; padding: 5px 11px; border-radius: 999px;
+  background: rgba(31,95,184,.08); color: #1F5FB8;
+  font-size: 11.5px; font-weight: 650; letter-spacing: -.005em; white-space: nowrap;
+}
+.hs-reveal-meter::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; opacity: .55;
+}
+.hs-reveal-meter.is-empty { background: rgba(180,83,9,.10); color: #B45309; }
+.hs-reveal-meter[hidden] { display: none; }
+
+.hs-list-header {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 24px 14px 40px;
+  background: #FFFFFF;
+}
+.hs-list-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  margin-right: 2px;
+}
+.hs-list-footer {
+  flex-shrink: 0;
+  padding: 12px 24px 14px 40px;
+  font-size: 13px; color: #6E6858;
+  border-top: 1px solid #E4E6EA;
+  background: #FFFFFF;
+}
+.hs-list-footer a { color: #3D6A9E; font-weight: 500; text-decoration: none; }
+.hs-list-footer a:hover { text-decoration: underline; }
+.hs-list-body::-webkit-scrollbar { width: 10px; }
+.hs-list-body::-webkit-scrollbar-track { background: rgba(228, 230, 234,.35); border-radius: 5px; }
+.hs-list-body::-webkit-scrollbar-thumb { background: #E4E6EA; border-radius: 5px; border: 2px solid #FFFFFF; }
+.hs-list-body::-webkit-scrollbar-thumb:hover { background: #9A958A; }
+.hs-detail-col::-webkit-scrollbar { width: 10px; }
+.hs-detail-col::-webkit-scrollbar-track { background: rgba(228, 230, 234,.25); border-radius: 5px; }
+.hs-detail-col::-webkit-scrollbar-thumb { background: #E4E6EA; border-radius: 5px; border: 2px solid #FFFFFF; }
+.hs-detail-col::-webkit-scrollbar-thumb:hover { background: #9A958A; }
+.hs-list-pagination {
+  position: sticky; bottom: 0; z-index: 3;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px;
+  padding: 14px 8px 18px;
+  margin-top: 4px;
+  background: linear-gradient(to top, #FFFFFF 72%, rgba(255, 255, 255,0));
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity .22s ease, visibility .22s ease, transform .22s ease;
+}
+.hs-list-pagination.is-revealed {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateY(0);
+}
+.hs-page-btn {
+  min-width: 34px; height: 34px; padding: 0 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  color: #4A5560; background: #FFFFFF;
+  border: 1px solid #E4E6EA; border-radius: 8px;
+  cursor: pointer; transition: background .12s, color .12s, border-color .12s;
+}
+.hs-page-btn:hover:not(:disabled):not(.active) { background: #fff; border-color: #E4E6EA; color: #16263C; }
+.hs-page-btn.active { background: #16263C; border-color: #16263C; color: #fff; cursor: default; }
+.hs-page-btn:disabled { opacity: .35; cursor: default; }
+.hs-page-nav { min-width: 34px; padding: 0; }
+.hs-page-ellipsis { padding: 0 4px; font-size: 13px; color: #9A958A; user-select: none; }
+.hs-count { font-size: 12px; font-weight: 400; color: #8C877A; display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1 1 auto; }
+/* Truncates instead of wrapping to a second line. .hs-list-header centers
+   its two children vertically, so a count that wraps (the "· updated every
+   few hours" suffix is the usual culprit on a narrow list column) pushes
+   the sort control to sit centered against the whole two-line block —
+   level with neither line and visually crowding the wrapped text. A single
+   truncated line keeps the sort control level with it at any width. */
+.hs-count-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 auto; }
+/* Deliberately quiet. This was a bold near-black "6,500 active internships"
+   with a pulsing dot, which made the loudest thing on the list column a
+   number nobody came for — and next to it the sort control had to shout to
+   stay visible. One muted line, regular weight, and the rows are the thing
+   the eye lands on again. */
+/* The completeness strip: shown only when results are incomplete, a page
+   failed, or the limiter is holding. Never decorative. */
+.hs-browse-status {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 14px; margin: 8px 0 0; border-radius: 10px;
+  background: #FFF8EC; border: 1px solid #F0E2C6; font-size: 12.5px; line-height: 1.45;
+}
+.hs-browse-status[hidden] { display: none; }
+.hs-status-warn { color: #7A5A12; flex: 1 1 200px; }
+.hs-status-muted { color: #8C877A; flex: 1 1 200px; }
+.hs-status-retry {
+  flex: 0 0 auto; cursor: pointer; border: 1px solid #D8C79E; background: #FFFFFF;
+  color: #16263C; font: inherit; font-weight: 600; padding: 5px 12px; border-radius: 8px;
+}
+.hs-status-retry:hover { background: #FDF6E8; }
+.hs-status-retry:focus-visible { outline: 2px solid #16263C; outline-offset: 2px; }
+/* Never the one that shrinks — it has nowhere useful to truncate to. */
+.hs-sort-wrap { flex-shrink: 0; }
+/* A live indicator, not an alarm. The corpus is republished every few hours
+   and roles close without warning, so "active" is the operative word and the
+   dot is what makes it read as a live number rather than a static total.
+   Slow and low-contrast on purpose — a fast red blink on a job board is a
+   dark pattern, and this has to survive being looked at all day. */
+.hs-live-dot {
+  position: relative; flex-shrink: 0;
+  width: 7px; height: 7px; border-radius: 50%; background: #2F9E63;
+}
+.hs-live-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1.5px solid rgba(47,158,99,.5);
+  animation: hs-live-pulse 2.4s ease-out infinite;
+}
+@keyframes hs-live-pulse {
+  0%   { transform: scale(.6); opacity: .9; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.hs-count-n { font-weight: 800; }
+.hs-count-fresh { color: #8C877A; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .hs-live-dot::after { animation: none; opacity: .55; } }
+/* Sized against the count beside it, which is 12px. This was 14px/600 in a
+   1.5px box 34px tall — half again the type size of everything else in the
+   row, so "Recommended" read as the headline and the count read as its
+   caption. A sort control is a control, not a title. */
+.hs-sort-btn {
+  display: flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px;
+  font-size: 12px; font-weight: 500; color: #4A5768;
+  cursor: pointer; background: #fff; border: 1px solid #E4E6EA; border-radius: 8px; font-family: inherit;
+  position: relative; user-select: none;
+}
+.hs-sort-btn:hover { background: #F5F6F8; }
+.hs-sort-btn:focus { outline: none; }
+.hs-sort-btn:focus-visible { outline: 2px solid rgba(22,38,60,.35); outline-offset: 2px; }
+.hs-sort-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0; z-index: 50;
+  background: #fff; border: 1px solid rgba(28,43,58,0.12); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(28,43,58,.16); padding: 6px; min-width: 160px;
+}
+.hs-sort-dropdown.open { display: block; }
+.hs-sort-opt {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; text-align: left; padding: 10px 12px;
+  font-size: 14px; font-weight: 500; color: #1C2B3A; border-radius: 8px;
+  cursor: pointer; border: none; background: none; font-family: inherit;
+  transition: background .1s;
+}
+.hs-sort-opt:hover { background: rgba(28,43,58,0.06); }
+.hs-sort-opt.active { font-weight: 600; color: #16263C; }
+.hs-sort-opt.active::after { content: '\2713'; color: #2F5270; font-size: 12px; }
+
+/* ── Job cards ── */
+.hs-list-scroll { display: flex; flex-direction: column; gap: 0; }
+.hs-job-row {
+  display: grid; grid-template-columns: 40px 1fr auto;
+  gap: 16px; align-items: start;
+  padding: 21px 20px 21px 37px;
+  background: transparent; border: none; border-left: 3px solid transparent;
+  border-bottom: 1px solid #E4E6EA; border-radius: 0;
+  cursor: pointer; transition: background .1s, border-color .12s; position: relative;
+}
+.hs-job-row:last-child { border-bottom: none; }
+.hs-job-row:hover { background: rgba(22,38,60,.035); }
+.hs-job-row.selected { border-left-color: #16263C; background: rgba(22,38,60,.055); }
+/* Rows are reachable by Tab and open on Enter or Space, signed in and signed
+   out alike, so the one that has focus has to be visible. Inset, so the ring
+   is not clipped by the scrolling list it sits in. */
+.hs-job-row:focus { outline: none; }
+.hs-job-row:focus-visible { outline: 2px solid #2C5AA0; outline-offset: -2px; }
+.hs-job-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.hs-job-dismiss, .hs-job-save {
+  width: 22px; height: 22px; border-radius: 6px; border: none;
+  background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #3A4453; transition: background .1s, color .1s; flex-shrink: 0; padding: 0;
+}
+.hs-job-fb { width: 22px; height: 22px; border-radius: 6px; border: none;
+  background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #3A4453; transition: background .1s, color .1s; flex-shrink: 0; padding: 0; }
+.hs-job-fb:hover { background: rgba(28,43,58,.08); color: #16263C; }
+.hs-job-dismiss:hover { background: rgba(0,0,0,.08); color: #5A5248; }
+.hs-job-save:hover { background: rgba(28,43,58,.08); color: #16263C; }
+.hs-explore-chip { display: inline-flex; align-items: center; margin-left: 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .03em; color: #6E6858;
+  background: #FFFFFF; border: 1px solid #E4E6EA; border-radius: 5px; padding: 1px 6px; }
+.hs-fb-menu { position: fixed; z-index: 1000; min-width: 208px; background: #fff;
+  border: 1px solid rgba(28,43,58,0.12); border-radius: 10px; box-shadow: 0 8px 24px rgba(28,43,58,.16);
+  padding: 6px; display: none; }
+.hs-fb-menu.open { display: block; }
+.hs-fb-item { display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 7px 10px; border: none; background: transparent; border-radius: 7px;
+  font-size: 13px; color: #4A637A; cursor: pointer; text-align: left; font-family: inherit; }
+.hs-fb-item:hover { background: rgba(28,43,58,0.06); }
+.hs-fb-item svg { color: #8C877A; flex-shrink: 0; }
+.hs-fb-item.danger { color: #B0533A; }
+.hs-fb-item.danger svg { color: #B0533A; }
+.hs-fb-sep { height: 1px; background: #ECEDF0; margin: 4px 6px; }
+.hs-job-save.saved { color: #3D6A9E; }
+.hs-job-save.saved:hover { background: rgba(61,106,158,.1); color: #3D6A9E; }
+.hs-job-logo {
+  width: 40px; height: 40px; border-radius: 10px; overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.hs-job-main { min-width: 0; }
+.hs-job-title { font-size: 15px; font-weight: 700; color: #16263C; line-height: 1.3; margin-bottom: 5px; letter-spacing: -0.01em; }
+.hs-job-company { font-size: 13px; color: #16263C; }
+/* ── Locked rows ──
+   The employer is absent, not hidden with CSS: browseCardView never sent it.
+   These styles only make that legible, which is why there is nothing here a
+   devtools inspector could switch off to see a company name. */
+.hs-job-company-locked { display: flex; align-items: center; gap: 5px; color: #7A879A; }
+.hs-job-co-bar {
+  display: inline-block; width: 78px; height: 10px; border-radius: 4px;
+  background: linear-gradient(90deg,#DFE2E7 0%,#EDEEF1 55%,#DFE2E7 100%);
+  filter: blur(2.5px);
+}
+/* The locked logo tile is frosted to match the row's company bar, so the two
+   read as one obscured record rather than an icon beside a blurred field. */
+.hs-job-row.is-locked .hs-job-logo-locked { filter: blur(.4px); }
+.hs-job-sep { opacity: .5; }
+/* Revealed by hover on the row, not by hovering this line itself — the whole
+   row is the click target, so the hint has to follow the row's state. */
+.hs-job-logo-locked {
+  width: 40px; height: 40px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  background: #EEF2F8; color: #8C99AC; border: 1px solid #E2E8F1;
+}
+.hs-job-meta { font-size: 12.5px; color: #16263C; margin-top: 4px; }
+.hs-job-match { font-size: 12px; color: #16263C; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hs-new-badge {
+  display: inline-flex; align-items: center;
+  margin-left: 7px; transform: translateY(-1px);
+  font-size: 9px; font-weight: 800; letter-spacing: .08em;
+  color: #fff; background: #B0533A; border-radius: 4px; padding: 2px 5px;
+}
+.hs-job-tags { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+.hs-job-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 5px; border: 1px solid rgba(22,38,60,.4);
+  color: rgba(22,38,60,.82);
+}
+
+/* ── Detail pane (right column) ── */
+.hs-detail-col {
+  min-width: 0; height: 100%;
+  overflow-y: auto;
+  background: #FFFFFF;
+  position: relative;
+}
+.hs-detail-inner {
+  padding: 28px 36px 64px;
+  max-width: 760px;
+  position: relative;
+}
+.hs-detail-empty { display: flex; align-items: center; justify-content: center; min-height: 50vh; color: #A19C8C; font-size: 14px; }
+/* The empty state is a flex ROW built for one centred line. A multi-paragraph
+   panel dropped into it becomes one column per child — four stacked headings
+   and sentences rendered side by side, each squeezed to a few characters
+   wide. This modifier is for panels that are prose: normal block flow, left
+   aligned, top of the pane rather than vertically centred. */
+.hs-detail-empty.is-panel {
+  display: block;
+  align-items: initial;
+  justify-content: initial;
+  min-height: 0;
+  text-align: left;
+  max-width: 460px;
+  padding-top: 8vh;
+}
+
+/* ── Locked (Free) Discover ───────────────────────────────────────────────
+   The list column keeps its real shape so the page reads as a repository
+   behind a paywall rather than an empty blocked screen, and the detail
+   column — already the right-hand pane — carries the upgrade panel.
+
+   WHAT IS IN THESE ROWS: nothing. They are grey bars, not blurred job data.
+   A locked Free browser never fetches the corpus (discoverAllowed() stops
+   the request, and the server 403s anyway), so there is no listing here to
+   obscure. The blur is therefore decoration on placeholders — it is NOT the
+   thing keeping job details private, and it must never become that. Blur is
+   a CSS property; anyone can remove it in devtools. If real rows are ever
+   rendered here, this stops being a visual treatment and starts being a
+   fake control. */
+/* A locked row: the ROLE is readable and the EMPLOYER is not. The blur sits
+   on the company chip only — and it is decoration, because the company name
+   is never sent to a locked browser in the first place (lockedPreviewRoute
+   omits it). Blurring a field that is genuinely absent is honest; blurring
+   one that is present in the DOM would not be. */
+.hs-lock-row { cursor: default; }
+.hs-lock-row:hover { background: transparent; }
+.hs-lock-logo { width: 40px; height: 40px; border-radius: 10px; background: #E4E6EA; }
+.hs-lock-role { color: #16263C; }
+.hs-lock-meta { display: flex; align-items: center; gap: 7px; margin-top: 5px; flex-wrap: wrap; }
+/* The blurred employer bar and its "Company hidden" note are gone with the
+   thing they described. A guest sees the employer now; what they do not get
+   is the apply link, and that is enforced by the response not carrying one
+   rather than by CSS covering it up. */
+.hs-lock-sub { font-size: 13px; color: #16263C; }
+.hs-lock-row { cursor: pointer; transition: background .1s; }
+.hs-lock-row:hover { background: rgba(22,38,60,.035); }
+.hs-lock-row.selected { background: rgba(22,38,60,.055); box-shadow: inset 3px 0 0 #16263C; }
+.hs-guest-facts { display: flex; flex-direction: column; gap: 10px; margin: 22px 0 24px; }
+.hs-guest-facts > div { display: flex; align-items: baseline; gap: 16px; }
+.hs-guest-facts span:first-child { flex: 0 0 88px; font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #7A8FA6; }
+.hs-guest-facts span:last-child { font-size: 14px; color: #16263C; }
+/* The full posting, for a signed-out reader. Same shape as the one
+   internship.html paints, and rendered by the same module. */
+.hs-guest-desc { border-top: 1px solid rgba(30,58,95,.12); margin-top: 24px; padding-top: 20px; }
+.hs-guest-desc-loading { margin-top: 24px; font-size: 13.5px; color: rgba(30,58,95,.55); }
+.hs-guest-body { font-size: 14.5px; line-height: 1.68; color: #2C3E52; }
+.hs-guest-body p { margin: 0 0 14px; }
+.hs-guest-body h3 { margin: 22px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: -.01em; color: #16263C; }
+.hs-guest-body ul { margin: 0 0 14px; padding-left: 20px; }
+.hs-guest-body li { margin: 0 0 6px; }
+.hs-guest-abridged { margin: 18px 0 0; font-size: 12.5px; color: rgba(30,58,95,.55); }
+.hs-guest-apply { display: inline-flex; align-items: center; justify-content: center; background: #16263C; color: #fff; font-size: 14px; font-weight: 700; padding: 12px 22px; border-radius: 999px; }
+.hs-guest-apply:hover { background: #243b5c; }
+.hs-guest-note { margin-top: 12px; font-size: 12.5px; color: #7A8FA6; line-height: 1.55; max-width: 420px; }
+.hs-lock-cta--quiet { background: #16263C; }
+.hs-lock-dot { color: #C9C4B8; }
+.hs-lock-fresh { font-size: 12.5px; font-weight: 600; color: #5C6B7E; }
+.hs-lock-loading { padding: 40px 22px; text-align: center; color: #A19C8C; font-size: 13.5px; }
+
+/* End of the teaser. Sits inline at the bottom of the scrollable list, so
+   reaching it is the result of scrolling through real roles rather than a
+   banner shown before anything has been seen. */
+.hs-lock-more {
+  margin: 6px 14px 22px; padding: 20px 18px; text-align: center;
+  background: #FFFFFF; border: 1px solid #ECEDF0; border-radius: 14px;
+}
+.hs-lock-more-title { font-size: 15px; font-weight: 800; color: #16263C; margin-bottom: 6px; letter-spacing: -0.01em; }
+.hs-lock-more-sub { font-size: 12.5px; color: #8C877A; line-height: 1.5; margin-bottom: 14px; }
+
+.hs-lock-panel { padding: 30px 0 8px; max-width: 380px; }
+/* Placed at the upper third of the pane, not pinned to its top and not dead
+   centre. Top-aligned it read as a page that had failed to finish loading —
+   ~200px of content over several hundred pixels of white. Dead centre put it
+   level with nothing: the list beside it starts at the top, so the eye had to
+   travel down and back up. A third of the way down is where a reader's
+   attention already is.
+   Done with two flex spacers at a 1:2 ratio rather than a percentage or a
+   fixed offset, so it stays a third at any pane height. Both shrink to zero
+   before the panel does, so a short viewport clips white space rather than
+   pushing the heading off the top. Scoped to the panel's own presence: the
+   normal detail pane really does scroll and is untouched. */
+.hs-detail-col:has(.hs-lock-panel) { display: flex; flex-direction: column; }
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner {
+  flex: 1; display: flex; flex-direction: column; padding-bottom: 28px;
+}
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::before,
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::after {
+  content: ''; flex-basis: 0; flex-shrink: 1;
+}
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::before { flex-grow: 1; }
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::after { flex-grow: 2; }
+.hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner > .hs-lock-panel { flex: 0 0 auto; }
+@media (max-width: 980px) {
+  /* Stacked above the list, the pane is content-height, so a proportional
+     position means nothing and the spacers are just a gap. */
+  .hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner { display: block; }
+  .hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::before,
+  .hs-detail-col:has(.hs-lock-panel) > .hs-detail-inner::after { display: none; }
+}
+/* Kept for the ONE panel that still earns it: "No reveals left", which is a
+   real limit a student has reached. The signed-out panel no longer wears it -
+   see renderLocked. */
+.hs-lock-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase;
+  color: #6E6A5E; background: #F3F1EC; border-radius: 999px; padding: 5px 10px; margin-bottom: 14px;
+}
+.hs-lock-title { font-size: 20px; font-weight: 800; color: #16263C; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 10px; }
+.hs-lock-body { font-size: 13.5px; line-height: 1.55; color: #6E6A5E; margin-bottom: 18px; }
+.hs-lock-list { list-style: none; padding: 0; margin: 0 0 22px; }
+.hs-lock-list li { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; color: #16263C; margin-bottom: 9px; }
+.hs-lock-list svg { flex-shrink: 0; margin-top: 2px; color: #16263C; }
+/* Softened off the near-black #16263C it used to be. At 22px of padding that
+   value read as a slab rather than a button, and against this page's warm
+   greys it was the highest-contrast thing on screen by a wide margin. */
+.hs-lock-cta {
+  display: inline-block; padding: 11px 22px; border-radius: 10px;
+  background: #2C4260; color: #FFFFFF; font-weight: 650; font-size: 13.5px;
+  text-decoration: none; transition: background .12s, transform .12s;
+}
+.hs-lock-cta:hover { background: #3A5478; transform: translateY(-1px); }
+.hs-lock-cta:focus-visible { outline: 2px solid #1F6CE1; outline-offset: 3px; }
+/* The free tier, under the Pro button. A sentence, not a panel: it is the
+   fallback for someone who has decided against the button above it, and
+   anything with a border or a fill competes with the offer instead of
+   following it. */
+.hs-lock-free {
+  margin-top: 14px; font-size: 13px; line-height: 1.55; color: #6E6A5E;
+}
+.hs-lock-signin { color: #16263C; font-weight: 650; text-decoration: underline; text-underline-offset: 2px; }
+.hs-lock-signin:hover { color: #2C4260; }
+.hs-lock-free a {
+  color: #2C4260; font-weight: 650; text-decoration: underline;
+  text-underline-offset: 2px; text-decoration-color: rgba(44,66,96,.35);
+}
+.hs-lock-free a:hover { text-decoration-color: currentColor; }
+
+/* ── Locked job: the frosted state ──
+   .hs-lk-blur holds PLACEHOLDER bars and the (real) role title. Removing the
+   filter in devtools shows grey rectangles — the employer, posting, comp and
+   apply link are not in this DOM at all, because browseCardView never sent
+   them. The blur communicates "there is something here"; browseCardView is
+   what makes that true. */
+/* min-height 100%, not a fixed 420px. The veil is inset:0 of THIS element, so
+   the card centres on whatever this box is — and at 420px that box was the
+   height of the blurred content, not of the pane. The card therefore sat high
+   and slightly left of the panel's real centre, which looked arbitrary because
+   it was: it was centred on something invisible. Filling the pane makes
+   "centre" mean the centre of what you can see. */
+.hs-lk-wrap { position: relative; min-height: 100%; box-sizing: border-box; }
+.hs-lk-blur {
+  filter: blur(5px); opacity: .55; user-select: none; pointer-events: none;
+  /* Keeps the blur from bleeding past the panel edge into the list column. */
+  overflow: hidden;
+}
+.hs-lk-logo {
+  width: 56px; height: 56px; border-radius: 12px;
+  background: linear-gradient(90deg,#DFE2E7 0%,#EDEEF1 55%,#DFE2E7 100%);
+}
+.hs-lk-bar {
+  height: 11px; border-radius: 4px; margin: 7px 0;
+  background: linear-gradient(90deg,#DFE2E7 0%,#EDEEF1 55%,#DFE2E7 100%);
+}
+.hs-lk-meta-row { display: flex; gap: 10px; align-items: center; }
+.hs-lk-meta-row .hs-lk-bar { margin: 5px 0; }
+.hs-lk-body { margin-top: 22px; }
+
+/* The unlock control. Always readable — the blur is behind it, never on it —
+   and it lifts on hover so the panel reads as one clickable surface. */
+.hs-lk-veil {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center; padding: 24px;
+}
+/* Gives .hs-lk-wrap's min-height:100% something to resolve against. Scoped to
+   the locked state so the normal pane's scrolling is untouched. */
+.hs-detail-col:has(.hs-lk-wrap) { display: flex; flex-direction: column; }
+.hs-detail-col:has(.hs-lk-wrap) .hs-lk-wrap { flex: 1; }
+.hs-lk-cta-wrap {
+  max-width: 340px; text-align: center;
+  background: rgba(255,255,255,.93);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  border: 1px solid #E2E8F1; border-radius: 16px; padding: 22px 22px 20px;
+  box-shadow: 0 8px 30px rgba(22,38,60,.12);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.hs-lk-wrap:hover .hs-lk-cta-wrap {
+  transform: translateY(-2px); box-shadow: 0 12px 38px rgba(22,38,60,.16);
+}
+.hs-lk-lock {
+  width: 34px; height: 34px; margin: 0 auto 10px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: #EEF2F8; color: #5B7290;
+}
+.hs-lk-title { font-size: 15px; font-weight: 750; color: #16263C; letter-spacing: -.01em; }
+.hs-lk-sub { font-size: 12.5px; line-height: 1.5; color: #6E819B; margin: 6px 0 14px; }
+.hs-lk-btn {
+  display: inline-block; padding: 10px 18px; border: none; border-radius: 10px;
+  background: #1F5FB8; color: #fff; font-family: inherit;
+  font-size: 13px; font-weight: 650; cursor: pointer; text-decoration: none;
+}
+.hs-lk-btn:hover:not(:disabled) { background: #1A4F9B; }
+.hs-lk-btn:disabled { opacity: .65; cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  .hs-lk-wrap:hover .hs-lk-cta-wrap { transform: none; }
+}
+
+.hs-btn-reveal { background: #1F5FB8; border-color: #1F5FB8; color: #fff; }
+.hs-btn-reveal:hover:not(:disabled) { background: #1A4F9B; }
+.hs-btn-reveal:disabled { opacity: .65; cursor: default; }
+
+/* Below 980px .hs-split collapses to one column, and without help that means
+   list-then-detail: the selected role sits below the ENTIRE job list, which
+   for any real result count is off-screen by a scroll of several thousand
+   pixels. Reported plainly: "you can only see the list, you have to expand
+   the window to even see the listing." A role IS auto-selected on load, so
+   this was not a rare edge case — it was the default mobile experience.
+   Unconditional now: it used to be scoped to body.discover-locked, whose
+   author had already solved this exact problem for the signed-out lock
+   panel and simply never carried the fix to the normal signed-in case. */
+.hs-mobile-back { display: none; }
+@media (max-width: 980px) {
+  .hs-detail-col { order: -1; }
+  .hs-mobile-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    order: -2; margin: 14px 20px 0;
+    font-size: 12.5px; font-weight: 700; color: #3D6A9E; text-decoration: none;
+  }
+  .hs-mobile-back:hover { color: #16263C; text-decoration: underline; }
+  /* A phone shows one thing at a time: the list, or the role that was tapped
+     (body.hs-m-detail), never a role stacked on top of the whole list. */
+  body.hs-discover:not(.hs-m-detail):not(.discover-locked) .hs-detail-col,
+  body.hs-discover:not(.hs-m-detail) .hs-mobile-back { display: none !important; }
+  body.hs-discover.hs-m-detail .hs-list-col,
+  body.hs-discover.hs-m-detail .hs-toolbar { display: none !important; }
+  /* Too narrow for pay and type on one line: the pay stays, the type (almost
+     always "Internship") goes rather than being cut off mid-word. */
+  body.hs-discover .hs-job-tag:last-child:not(:first-child) { display: none; }
+  body.hs-discover .hs-detail-inner { padding-top: 18px !important; }
+  body.hs-discover:not(.hs-m-detail) .hs-job-row.selected { background: transparent; box-shadow: none; border-left-color: transparent; }
+  .hs-lock-panel { padding: 18px 0 8px; max-width: none; }
+  /* The list stays scrollable on narrow screens; the panel simply sits
+     above it so the reason for the locked rows is read first. */
+}
+.hs-for-you-empty { padding: 52px 22px; text-align: center; color: #8C877A; }
+.hs-for-you-empty-title {
+  font-family: 'Plus Jakarta Sans', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 16px; font-weight: 800; color: #16263C; margin-bottom: 6px;
+}
+.hs-for-you-empty-copy { font-size: 13px; line-height: 1.45; margin-bottom: 16px; }
+.hs-empty-actions { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.hs-empty-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 34px; padding: 0 13px; border-radius: 8px;
+  border: 1px solid #E4E6EA; background: #fff;
+  color: #16263C; font-size: 13px; font-weight: 600;
+  text-decoration: none; cursor: pointer; font-family: inherit;
+}
+.hs-empty-btn.primary { background: #16263C; border-color: #16263C; color: #fff; }
+
+.hs-detail-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-right: 110px; }
+.hs-detail-logo { width: 56px; height: 56px; border-radius: 14px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.hs-detail-hd { min-width: 0; }
+.hs-detail-co-meta { font-size: 13px; color: #8C877A; margin-bottom: 5px; }
+.hs-detail-title { font-size: clamp(22px, 2.6vw, 34px); font-weight: 800; color: #16263C; letter-spacing: -.025em; line-height: 1.1; margin: 0; }
+.hs-detail-dates {
+  display: flex; flex-wrap: wrap; gap: 8px 18px;
+  margin-top: 10px;
+}
+.hs-detail-date {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  font-size: 12.5px;
+}
+.hs-detail-date-lbl {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: #A19C8C;
+}
+.hs-detail-date-val { color: #5A5248; font-weight: 500; }
+.hs-detail-date.deadline-soon .hs-detail-date-val { color: #3D6A9E; font-weight: 600; }
+.hs-detail-date.deadline-closed .hs-detail-date-val { color: #9A958A; }
+
+.hs-fit-badge {
+  position: absolute; top: 26px; right: 28px;
+  text-align: center; border: 1.5px solid #3D6A9E; border-radius: 10px; padding: 10px 14px;
+}
+.hs-fit-pct { font-size: 20px; font-weight: 800; color: #3D6A9E; letter-spacing: -0.02em; line-height: 1; }
+.hs-fit-tag { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #3D6A9E; margin-top: 2px; }
+
+.hs-detail-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+.hs-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 14px; font-weight: 600; padding: 9px 18px;
+  border-radius: 9px; cursor: pointer; transition: background .12s, border-color .12s;
+  border: 1.5px solid rgba(28,43,58,.18); background: transparent; color: #1C2B3A;
+  font-family: inherit; text-decoration: none; white-space: nowrap;
+}
+.hs-btn:hover { background: rgba(28,43,58,.05); }
+.hs-btn svg { opacity: .75; flex-shrink: 0; }
+.hs-btn-apply { background: #16263C; color: #fff; border-color: #16263C; padding: 9px 24px; }
+.hs-btn-apply:hover { background: #25364C; }
+.hs-share-wrap { position: relative; }
+.hs-share-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 50;
+  background: #fff; border: 1px solid rgba(28,43,58,0.12); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(28,43,58,.16); padding: 6px; min-width: 190px;
+}
+.hs-share-dropdown.open { display: block; }
+.hs-share-opt {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 7px 10px;
+  font-size: 13px; font-weight: 500; color: #4A637A; border-radius: 7px;
+  cursor: pointer; border: none; background: none; font-family: inherit;
+  transition: background .1s;
+}
+.hs-share-opt:hover { background: rgba(28,43,58,0.06); }
+.hs-share-opt svg { flex-shrink: 0; color: #8A9BB0; opacity: 1; }
+
+/* 3-col at a glance */
+.hs-glance-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; margin-bottom: 24px; }
+.hs-glance-box { background: #FFFFFF; border: 1px solid rgba(28,43,58,.14); border-radius: 10px; padding: 11px 13px; }
+.hs-glance-lbl { font-size: 9.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: #9A958A; margin-bottom: 5px; }
+.hs-glance-val { font-size: 14px; font-weight: 700; color: #16263C; overflow-wrap: anywhere; }
+
+/* Why you match */
+.hs-why-lbl { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #3D6A9E; margin-bottom: 11px; }
+.hs-why-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #3D4A54; margin-bottom: 9px; line-height: 1.35; }
+.hs-why-check { flex-shrink: 0; color: #3D6A9E; }
+.hs-why-circle { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #E4E6EA; flex-shrink: 0; }
+
+.hs-match-section {
+  background: #FFFFFF; border: 1px solid #E4E6EA; border-radius: 14px;
+  padding: 16px 18px; margin: 18px 0 20px;
+}
+.hs-match-title {
+  font-family: 'Plus Jakarta Sans', var(--sidebar-f), system-ui, sans-serif;
+  font-size: 15px; font-weight: 800; color: #16263C; margin-bottom: 10px;
+}
+.hs-match-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.hs-match-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: #3A4751; background: #FFFFFF;
+  border: 1px solid #E4E6EA; border-radius: 999px;
+  padding: 5px 10px;
+}
+.hs-match-pill::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #B0533A; flex-shrink: 0;
+}
+
+/* Student-fit chips (card) */
+.hs-fitchips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.hs-fitchip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 650; line-height: 1;
+  border-radius: 6px; padding: 4px 7px; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.hs-fitchip.confirmed { color: #256B4A; background: #EAF3ED; border-color: #CBE3D5; }
+.hs-fitchip.likely    { color: #8A5E1B; background: #FFFFFF; border-color: #E7D8BA; }
+.hs-fitchip.term      { color: #2C3E50; background: #EEF1F5; border-color: #D5DEE7; }
+.hs-fitchip.plus      { color: #3D4A54; background: rgba(28,43,58,.055); border-color: rgba(28,43,58,.1); }
+.hs-fitchip.warn      { color: #9A4128; background: #FFFFFF; border-color: #E4E6EA; }
+.hs-fitchip svg { flex-shrink: 0; }
+
+/* Eligibility at a glance (detail) */
+.hs-elig-section { margin: 22px 0; padding-top: 20px; border-top: 1px solid rgba(28,43,58,.08); }
+.hs-elig-title { font-size: 17px; font-weight: 800; color: #16263C; letter-spacing: -.02em; margin-bottom: 3px; }
+.hs-elig-sub { font-size: 13px; color: #9A958A; margin-bottom: 16px; }
+.hs-elig-row { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 13px; }
+.hs-elig-ic {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.hs-elig-ic.confirmed { color: #256B4A; background: #E4F1E9; }
+.hs-elig-ic.likely    { color: #6E6858; background: #F5F6F8; border: 1px solid #E4E6EA; }
+.hs-elig-ic.warn      { color: #9A4128; background: #FFFFFF; border: 1px solid #E4E6EA; }
+.hs-elig-empty { font-size: 13.5px; color: #6E6858; line-height: 1.5; margin-top: 8px; }
+.hs-elig-body { flex: 1; min-width: 0; }
+.hs-elig-main { font-size: 14px; font-weight: 650; color: #223140; line-height: 1.3; }
+.hs-elig-main .lk { font-weight: 650; color: #8A5E1B; }
+.hs-elig-note { font-size: 12.5px; color: #857F71; line-height: 1.4; margin-top: 2px; }
+
+/* Job details section */
+.hs-jd-section { margin: 12px 0 0; padding-top: 14px; border-top: 1px solid rgba(28,43,58,.08); }
+.hs-jd-title { font-size: 17px; font-weight: 800; color: #16263C; letter-spacing: -.02em; margin-bottom: 14px; }
+.hs-jd-sub { font-size: 13px; color: #9A958A; margin-bottom: 18px; }
+.hs-jd-group { margin-bottom: 16px; }
+.hs-jd-group:last-child { margin-bottom: 0; }
+.hs-jd-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #6E6858; }
+.hs-jd-group-body { flex: 1; min-width: 0; }
+.hs-jd-group-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #16263C; margin-bottom: 8px; letter-spacing: -.01em; }
+.hs-jd-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.hs-jd-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 500; color: #3D4A54; background: rgba(28,43,58,.06); border: 1px solid rgba(28,43,58,.1); border-radius: 8px; padding: 6px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+/* The class selector outranks the browser's own [hidden] rule, so a hidden
+   chip needs saying twice or it stays on screen. */
+.hs-jd-chip[hidden] { display: none; }
+.hs-jd-more { cursor: pointer; font-weight: 700; color: #16263C; font-family: inherit; }
+.hs-jd-more:hover { background: rgba(28,43,58,.11); }
+
+/* About the employer */
+.hs-employer-section { margin: 22px 0; padding-top: 20px; border-top: 1px solid rgba(28,43,58,.08); }
+.hs-employer-title { font-size: 17px; font-weight: 800; color: #16263C; letter-spacing: -.02em; margin-bottom: 14px; }
+.hs-employer-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.hs-employer-logo { width: 52px; height: 52px; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+.hs-employer-info { flex: 1; min-width: 0; }
+.hs-employer-name { font-size: 15px; font-weight: 700; color: #16263C; letter-spacing: -.01em; }
+.hs-employer-industry { font-size: 13px; color: #8C877A; margin-top: 2px; }
+.hs-employer-follow { flex-shrink: 0; font-size: 13px; font-weight: 600; color: #16263C; background: transparent; border: 1.5px solid rgba(28,43,58,.2); border-radius: 8px; padding: 6px 16px; cursor: pointer; font-family: inherit; transition: background .12s, border-color .12s; }
+.hs-employer-follow:hover { background: rgba(28,43,58,.05); border-color: rgba(28,43,58,.35); }
+.hs-employer-desc { font-size: 13.5px; color: #59636C; line-height: 1.65; margin-bottom: 10px; }
+.hs-employer-link { font-size: 13px; font-weight: 600; color: #3D6A9E; text-decoration: none; }
+.hs-employer-link:hover { text-decoration: underline; }
+
+
+/* Description */
+.hs-desc-lbl { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9A958A; margin: 22px 0 10px; }
+.hs-desc { font-size: 14px; color: #59636C; line-height: 1.7; }
+.hs-desc.collapsed { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.hs-desc-h { font-size: 14px; font-weight: 700; color: #16263C; margin: 16px 0 6px; }
+.hs-desc-h:first-child { margin-top: 0; }
+.hs-desc-p { margin: 0 0 12px; }
+.hs-desc-p:last-child { margin-bottom: 0; }
+.hs-desc-list { margin: 0 0 12px; padding-left: 20px; }
+.hs-desc-list li { margin-bottom: 6px; }
+.hs-desc-list li:last-child { margin-bottom: 0; }
+.hs-more-btn { font-size: 13.5px; font-weight: 600; color: #16263C; margin-top: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; background: none; border: none; font-family: inherit; padding: 0; }
+.hs-more-btn:hover { text-decoration: underline; }
+
+/* Filter sidebar */
+.filter-backdrop { display:none; position:fixed; inset:0; background:rgba(28,43,58,0.18); z-index:290; }
+.filter-backdrop.open { display:block; }
+.filter-sidebar { position:fixed; top:0; right:0; bottom:0; width:min(560px, calc(100vw - 40px)); background:#FFFFFF; box-shadow:-8px 0 36px rgba(28,43,58,0.14); z-index:300; display:flex; flex-direction:column; transform:translateX(100%); transition:transform .22s cubic-bezier(.4,0,.2,1); }
+.filter-sidebar.open { transform:translateX(0); }
+/* Closed, the panel sits just off the right edge; its shadow must not. */
+.filter-sidebar:not(.open) { box-shadow: none; visibility: hidden; transition: transform .22s cubic-bezier(.4,0,.2,1), visibility 0s .22s; }
+.filter-sidebar-head { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #ECEDF0; flex-shrink:0; }
+.filter-sidebar-title { font-size:17px; font-weight:800; color:#16263C; letter-spacing:-.01em; }
+.filter-close-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; cursor:pointer; color:#8C877A; transition:background .1s; border:1px solid #E4E6EA; background:transparent; padding:0; font:inherit; }
+.filter-close-btn:focus-visible { outline: 2px solid rgba(22,38,60,.35); outline-offset: 2px; }
+.filter-close-btn:hover { background:#F5F6F8; }
+.filter-body { flex:1; overflow-y:auto; }
+.filter-section { border-bottom:1px solid #ECEDF0; }
+.filter-section-head { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; cursor:pointer; user-select:none; }
+.filter-section-head:hover { background:#F5F6F8; }
+.filter-section-label { font-size:13.5px; font-weight:700; color:#16263C; letter-spacing:-.005em; }
+.filter-chevron { color:#8C877A; transition:transform .15s; }
+.filter-section.collapsed .filter-chevron { transform:rotate(-90deg); }
+.filter-section-body { padding:0 22px 16px; display:flex; flex-direction:column; gap:2px; }
+.filter-section.collapsed .filter-section-body { display:none; }
+.filter-check-row { display:flex; align-items:flex-start; gap:10px; padding:7px 8px; border-radius:7px; cursor:pointer; transition:background .08s; }
+.filter-check-row:hover { background:#F5F6F8; }
+/* ── Pro-gated filters ──
+   Marked by colour alone: a tinted field and an accent edge, no padlock and
+   no "Pro" pill. The badge that used to sit here named the price of every
+   row it touched, which turned a filter list into a sales list — five
+   little tags in one section, each interrupting the label you were trying
+   to read. The tint says "these are a set apart" without asserting why;
+   clicking one still opens the real upgrade prompt, which is where the
+   explanation belongs. Applied to the section head too, so a whole gated
+   section (Salary) reads as one block rather than a lone tinted row. */
+.filter-check-row.useno-pro-locked {
+  background:#F3F7FD;
+  box-shadow:inset 2px 0 0 #9DBFEA;
+}
+.filter-check-row.useno-pro-locked:hover { background:#E8F0FB; }
+.filter-check-row.useno-pro-locked .filter-check-label { color:#2F5270; }
+.filter-section-head.is-pro-gated .filter-section-label {
+  color:#2F5270;
+}
+.filter-section-head.is-pro-gated .filter-section-label::after {
+  content:''; display:inline-block; vertical-align:middle;
+  width:6px; height:6px; margin-left:7px; border-radius:50%;
+  background:#9DBFEA;
+}
+.filter-checkbox { width:17px; height:17px; border:1.5px solid #E4E6EA; border-radius:5px; flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:1px; transition:background .1s,border-color .1s; }
+.filter-checkbox.checked { background:#16263C; border-color:#16263C; }
+.filter-checkbox.checked::after { content:''; display:block; width:6px; height:3.5px; border-left:1.6px solid #fff; border-bottom:1.6px solid #fff; transform:rotate(-45deg) translateY(-1px); }
+.filter-check-label { font-size:13.5px; font-weight:500; color:#16263C; line-height:1.35; }
+.filter-check-sub { font-size:11.5px; color:#8C877A; margin-top:2px; line-height:1.35; }
+
+/* Radio rows (Location) */
+.filter-radio-row { display:flex; align-items:center; gap:10px; padding:7px 8px; border-radius:7px; cursor:pointer; transition:background .08s; }
+.filter-radio-row:hover { background:#F5F6F8; }
+.filter-radio { width:17px; height:17px; border:1.5px solid #E4E6EA; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:border-color .1s; }
+.filter-radio.checked { border-color:#16263C; }
+.filter-radio.checked::after { content:''; width:8px; height:8px; border-radius:50%; background:#16263C; }
+
+/* Location search */
+.filter-loc-search-wrap { position:relative; display:flex; align-items:center; margin:2px 0 10px; }
+.filter-loc-search-wrap svg { position:absolute; left:13px; color:#8C877A; pointer-events:none; }
+.filter-loc-search { width:100%; height:38px; padding:0 14px 0 38px; box-sizing:border-box; font-size:13.5px; font-family:inherit; color:#16263C; background:#fff; border:1px solid #E4E6EA; border-radius:9px; outline:none; }
+.filter-loc-search::placeholder { color:#A8A290; }
+.filter-loc-search:focus { border-color:#16263C; }
+.filter-more-locations { display:flex; align-items:center; gap:6px; margin-top:4px; padding:6px; font-size:12.5px; font-weight:700; color:#1155BB; background:none; border:none; cursor:pointer; font-family:inherit; }
+.filter-more-locations:hover { text-decoration:underline; }
+
+/* Salary range slider */
+.filter-salary-slider-wrap { position:relative; height:20px; margin:16px 6px 6px; }
+.filter-salary-track { position:absolute; top:50%; left:0; right:0; height:4px; background:#E4E6EA; border-radius:2px; transform:translateY(-50%); }
+.filter-salary-range-fill { position:absolute; top:0; height:100%; background:#16263C; border-radius:2px; }
+.filter-range-input { position:absolute; top:0; left:0; width:100%; height:20px; margin:0; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; }
+.filter-range-input::-webkit-slider-runnable-track { -webkit-appearance:none; background:transparent; height:20px; }
+.filter-range-input::-webkit-slider-thumb { -webkit-appearance:none; pointer-events:all; width:20px; height:20px; border-radius:50%; background:#fff; border:2.5px solid #16263C; cursor:pointer; box-shadow:0 1px 3px rgba(28,43,58,0.25); margin-top:0; }
+.filter-range-input::-moz-range-track { background:transparent; height:20px; border:none; }
+.filter-range-input::-moz-range-thumb { pointer-events:all; width:16px; height:16px; border-radius:50%; background:#fff; border:2.5px solid #16263C; cursor:pointer; }
+.filter-salary-labels { display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:700; color:#16263C; margin-top:4px; }
+
+.filter-footer { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-top:1px solid #ECEDF0; background:#FFFFFF; flex-shrink:0; }
+.filter-count { font-size:13px; color:#8C877A; font-weight:600; }
+.filter-footer-btns { display:flex; gap:10px; }
+.filter-footer .btn { min-height:38px; padding:0 18px; font-size:13.5px; font-weight:700; border-radius:8px; }
+
+@media(max-width:980px) {
+  .hs-discover .main { height: auto; overflow: visible; }
+  .hs-shell { overflow: visible; }
+  .hs-split { grid-template-columns: 1fr; min-height: 0; }
+  .hs-list-col { border-right: none; height: auto; }
+  .hs-list-body { overflow-y: visible; }
+  .hs-detail-col { height: auto; overflow-y: visible; }
+  .hs-list-pagination { position: static; background: #FFFFFF; opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+}
+.hs-allf-short { display: none; }
+@media(max-width:768px) { .hs-allf-long { display: none; } .hs-allf-short { display: inline; } }
+/* ── What is filtered, once the pills are gone ────────────────────────────
+   A phone hides the pill row by design, and the pills were the only place a
+   choice was read back, so after closing the panel nothing on screen said
+   the board was narrowed to Canada or to Winter 2027. Two read-backs, both
+   only where the pills are not: a count on the Filters button, and one line
+   under the search naming the choices, which opens the panel on tap. */
+.hs-active-filters { display: none; }
+.hs-allf-count {
+  display: none; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+  background: #16263C; color: #fff; font-size: 11px; font-weight: 700; line-height: 1;
+}
+.hs-filter-icon-pill.active .hs-allf-count { background: #fff; color: #16263C; }
+.hs-active-filters-text {
+  flex: 1 1 auto; min-width: 0; text-align: left; background: none; border: 0; padding: 0;
+  font: inherit; font-size: 13px; font-weight: 600; color: #16263C; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hs-active-filters-clear {
+  flex-shrink: 0; background: none; border: 0; padding: 0; font: inherit;
+  font-size: 13px; font-weight: 600; color: #2C5AA0; cursor: pointer;
+}
+.hs-active-filters-text:focus-visible, .hs-active-filters-clear:focus-visible { outline: 2px solid rgba(22,38,60,.35); outline-offset: 2px; }
+@container hsbar (max-width: 660px) { .hs-allf-count:not([hidden]) { display: inline-flex; } }
+@media(max-width:768px) {
+  .hs-allf-count:not([hidden]) { display: inline-flex; }
+  .hs-active-filters:not([hidden]) { display: flex; align-items: center; gap: 12px; margin-top: 8px; min-width: 0; }
+}
+@media(max-width:640px) {
+  .filter-sidebar { width:100vw; }
+  .filter-sidebar-head { padding:16px 20px; }
+  .filter-section-head { padding:14px 20px; }
+  .filter-section-body { padding:0 20px 16px; }
+  .filter-footer { padding:14px 20px; }
+}
+@media(max-width:768px) {
+  .hs-toolbar { padding: 10px 16px 12px; }
+  .hs-toolbar-row { flex-wrap: nowrap; }
+  .hs-search-wrap { flex: 1 1 100%; order: 1; }
+  .hs-filter-pills {
+    order: 2; flex-basis: 100%; flex-shrink: 1;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px; scrollbar-width: none;
+  }
+  .hs-filter-pills::-webkit-scrollbar { display: none; }
+  .hs-filter-pill, .hs-filter-icon-pill, .hs-pill-wrap { flex-shrink: 0; }
+  /* A phone gets the search and one Filters button, not a scrolling row of
+     pills: every pill's choice is also in the Filters panel. */
+  .hs-toolbar-row { gap: 8px; }
+  .hs-search-wrap { flex: 1 1 auto; min-width: 0; }
+  .hs-filter-pills { flex: 0 0 auto; flex-basis: auto; overflow: visible; padding-bottom: 0; }
+  .hs-pill-wrap { display: none !important; }
+  .hs-search-input, .filter-loc-search { font-size: 16px; }
+  .hs-list-col { padding: 14px 0 0; }
+  .hs-list-header { padding: 4px 18px 12px 18px; }
+  .hs-list-footer { padding: 12px 18px 12px 18px; }
+  .hs-detail-inner { padding: 20px 14px 48px; }
+  .hs-detail-header { padding-right: 0; flex-wrap: wrap; }
+  .hs-fit-badge { position: static; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; margin-bottom: 10px; }
+  /* One tidy stack on a phone: label left, value right, no orphan box. */
+  .hs-glance-grid { grid-template-columns: 1fr; gap: 6px; }
+  body.hs-discover .hs-glance-box { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 12px; }
+  body.hs-discover .hs-glance-lbl { margin: 0; flex-shrink: 0; }
+  body.hs-discover .hs-glance-val { text-align: right; }
+  .hs-job-row { grid-template-columns: 44px 1fr auto; padding: 12px 18px 12px 15px; gap: 12px; }
+  .hs-job-title { font-size: 14.5px; }
+  .hs-feed-hero-row, .hs-feed-hero-text, .hs-feed-subtitle-row, .hs-fb-toast, .hs-prefs { min-width: 0; max-width: none; }
+}
+
+
+/* ── Sidebar skeleton ──
+   The rail is painted before auth resolves, but it was painted EMPTY: a
+   coloured column with nothing in it until sidebar.js (~119KB) parsed and
+   built the nav. That gap is what reads as the sidebar loading slowly.
+   These rows live in the markup, so they are on screen with the first byte
+   and need no JavaScript. sidebar.js assigns innerHTML when it renders, which
+   removes them outright, so there is nothing to tear down and no way for a
+   skeleton to survive next to the real nav. */
+.sk-side { padding: 18px 14px; display: flex; flex-direction: column; gap: 7px; }
+.sk-side-mark { width: 30px; height: 30px; border-radius: 9px; margin-bottom: 16px; }
+.sk-side-lbl { width: 62px; height: 8px; border-radius: 4px; margin: 14px 0 6px 8px; }
+.sk-side-row { height: 34px; border-radius: 9px; }
+.sk-side-row.w1 { width: 84%; } .sk-side-row.w2 { width: 72%; } .sk-side-row.w3 { width: 90%; }
+.sk-side-mark, .sk-side-lbl, .sk-side-row {
+  background: linear-gradient(90deg, rgba(22,38,60,.055) 25%, rgba(22,38,60,.10) 37%, rgba(22,38,60,.055) 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes sk-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+@media (prefers-reduced-motion: reduce) {
+  .sk-side-mark, .sk-side-lbl, .sk-side-row { animation: none; background: rgba(22,38,60,.07); }
+}
+  </style><style>html,body{margin:0}:root{--sidebar-w:0px}.sidebar,.mobile-nav-toggle,.top-header,.aisp-topbar{display:none!important}*{scroll-behavior:auto!important}</style></head><body class="hs-discover"><main class="main"><div class="hs-split" style="display:block;border-top:0"><div class="hs-list-col" style="width:440px;border-right:0"><div class="hs-list-header"><div class="hs-count" id="jobs-count-label"><span class="hs-count-text">Showing 1–25 of 18,000</span></div><div class="hs-sort-wrap" style="position:relative"><button class="hs-sort-btn" id="sort-btn"><span id="sort-label">Recommended</span><svg class="hs-sort-caret" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2.5 3.5L5 6.5L7.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div></div><div class="hs-list-body"><div class="hs-list-scroll" id="intel-feed"><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#202A22;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://1password.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Data Intern - Product Analytics - Winter 2027</div><div class="hs-job-company">1Password · Remote</div><div class="hs-job-tags"><span class="hs-job-tag">$83,200 CAD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">1d ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#23302A;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://manulife.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Summer Intern 2027 - Product Management &amp; Risk Technology</div><div class="hs-job-company">Manulife · Toronto, Ontario</div><div class="hs-job-tags"><span class="hs-job-tag">$46,800 CAD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">5d ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#1B1B1B;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://npx.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Software Developer Intern</div><div class="hs-job-company">NPX · Remote</div><div class="hs-job-tags"><span class="hs-job-tag">$54,080–$64,480 CAD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">3w ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#202A22;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://amgen.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Grad Intern – Digital Product – Technology, AI &amp; Data (Summer 2027)</div><div class="hs-job-company">Amgen · Remote</div><div class="hs-job-tags"><span class="hs-job-tag">$73,507–$85,696 USD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">4w ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#2F8B4D;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://prizepicks.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Product Analytics Internship - Spring 2027</div><div class="hs-job-company">PrizePicks · Atlanta, Georgia</div><div class="hs-job-tags"><span class="hs-job-tag">$62,400 USD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">1w ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#1B1B1B;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://khanacademy.org&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Software Engineer Intern (Summer 2027)</div><div class="hs-job-company">Khan Academy · Remote</div><div class="hs-job-tags"><span class="hs-job-tag">$95,992 CAD</span><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">1w ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div><div class="hs-job-row"><div class="hs-job-logo"><div style="width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#2F8B4D;border:1px solid #E4E6EA;box-sizing:border-box;display:flex;align-items:center;justify-content:center;"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&amp;url=https://eqbank.com&amp;size=256" width="40" height="40" style="object-fit:cover;display:block;"></div></div><div class="hs-job-main"><div class="hs-job-title">Intern - Product Marketing Winter 2027</div><div class="hs-job-company">EQ Bank · Toronto</div><div class="hs-job-tags"><span class="hs-job-tag">Internship</span></div><div class="hs-job-meta hs-job-age">1w ago</div></div><div class="hs-job-actions"><button class="hs-job-save"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 2.5h8a.5.5 0 01.5.5v10.2a.4.4 0 01-.63.33L8 10.3l-3.87 3.23a.4.4 0 01-.63-.33V3a.5.5 0 01.5-.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></button><button class="hs-job-dismiss"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg></button></div></div></div></div></div></div></main></body></html></script>
+<script>
+
+const STAGE_W = 680, STAGE_H = 510, CW = 632, CH = 462;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const card = document.getElementById('card');
+function fit() { const s = Math.min(innerWidth / STAGE_W, innerHeight / STAGE_H); document.getElementById('stage').style.transform = 'translate(-50%,-50%) scale(' + s + ')'; }
+addEventListener('resize', fit); fit();
+
+async function makeWorld(id, w, h) {
+  const f = document.createElement('iframe');
+  f.style.width = w + 'px'; f.style.height = h + 'px';
+  f.srcdoc = document.getElementById(id).textContent;
+  card.appendChild(f);
+  await new Promise(r => f.onload = r);
+  const d = f.contentDocument;
+  await Promise.race([d.fonts.ready, sleep(2500)]);
+  await Promise.all([...d.images].map(i => i.decode().catch(() => {})));
+  f.cam = {x: 0, y: 0, s: 1};
+  return f;
+}
+function rectOf(f, el) { if (typeof el === 'string') el = f.contentDocument.querySelector(el); const r = el.getBoundingClientRect(); return {x: r.left, y: r.top, w: r.width, h: r.height}; }
+function union(...rs) { const x = Math.min(...rs.map(r => r.x)), y = Math.min(...rs.map(r => r.y)); return {x, y, w: Math.max(...rs.map(r => r.x + r.w)) - x, h: Math.max(...rs.map(r => r.y + r.h)) - y}; }
+/* Frames a rectangle of the page in the card: centred, with padding, never above maxScale. */
+function frame(f, r, o = {}) {
+  const pad = o.pad ?? 28, max = o.max ?? 1.6;
+  const s = Math.min((CW - pad * 2) / r.w, (CH - pad * 2) / r.h, max);
+  let x = CW / 2 - (r.x + r.w / 2) * s, y = o.top ? pad - r.y * s : CH / 2 - (r.y + r.h / 2) * s;
+  f.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+  f.cam = {x, y, s};
+}
+/* A list, cropped just inside the gap beside it so no sliver of the next column shows. */
+const inset = r => ({x: r.x + 2, y: r.y - 14, w: r.w - 4, h: r.h + 14});
+function instant(f, fn) { f.style.transition = 'none'; fn(); void f.offsetWidth; f.style.transition = ''; }
+
+/* A pointer drawn inside the page, so it moves with the camera. */
+function cursor(f) {
+  const d = f.contentDocument, c = d.createElement('div');
+  c.innerHTML = '<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M3 2l13.5 9.2-6.2 1.3 3.4 6.7-2.6 1.3-3.4-6.8L3 18.4z" fill="#16263C" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+  c.style.cssText = 'position:fixed;left:0;top:0;z-index:99999;pointer-events:none;transition:left .75s cubic-bezier(.65,0,.35,1),top .75s cubic-bezier(.65,0,.35,1),transform .15s ease,opacity .3s;opacity:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,.18))';
+  d.body.appendChild(c);
+  return {
+    async to(el, dx = 0.5, dy = 0.5) { const r = rectOf(f, el); c.style.opacity = 1; c.style.left = (r.x + r.w * dx) + 'px'; c.style.top = (r.y + r.h * dy) + 'px'; await sleep(800); },
+    async click() { c.style.transform = 'scale(.82)'; await sleep(140); c.style.transform = ''; await sleep(160); },
+    hide() { c.style.opacity = 0; },
+    place(el, dx = 0.5, dy = 0.5) { const r = rectOf(f, el); c.style.transition = 'none'; c.style.left = (r.x + r.w * dx) + 'px'; c.style.top = (r.y + r.h * dy) + 'px'; void c.offsetWidth; c.style.transition = ''; }
+  };
+}
+/* Hover states come from the page's own :hover rules, copied onto a class. */
+function hoverable(f) {
+  const d = f.contentDocument, extra = [];
+  for (const sh of d.styleSheets) { let rules; try { rules = sh.cssRules; } catch (e) { continue; } for (const r of rules) if (r.selectorText && r.selectorText.includes(':hover')) extra.push(r.cssText.replace(/:hover/g, '.is-hover')); }
+  const st = d.createElement('style'); st.textContent = extra.join('\n'); d.head.appendChild(st);
+}
+async function loop(play) { for (;;) { card.classList.remove('fade'); await play(); card.classList.add('fade'); await sleep(600); card.innerHTML = ''; } }
+
+
+loop(async () => {
+  const f = await makeWorld('w-board', 440, 1100);
+  hoverable(f);
+  const rows = [...f.contentDocument.querySelectorAll('.hs-job-row')];
+  const view = r => frame(f, r, {pad: 0, max: 10, top: true});
+  /* Same reading size as the other three: the 440px list at 1:1, centred. */
+  const W = 632, H = 462, X = 220 - W / 2;
+  instant(f, () => view({x: X, y: 0, w: W, h: H}));
+  const cur = cursor(f); cur.place(rows[0], .62, 1.6);
+  await sleep(500);
+  for (let i = 0; i < 5; i++) {
+    const top = Math.max(0, rows[i].offsetTop - 120);
+    view({x: X, y: top, w: W, h: H});
+    await cur.to(rows[i], .62, .5);
+    rows.forEach(r => r.classList.remove('is-hover')); rows[i].classList.add('is-hover');
+    await sleep(650);
+  }
+  rows.forEach(r => r.classList.remove('is-hover')); cur.hide();
+  await sleep(900);
+});
+
+</script>
+</body>
+</html>

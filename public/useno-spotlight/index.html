@@ -27,6 +27,8 @@
 html,body{height:100%}
 body{background:var(--letterbox);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow:hidden}
 #viewport{position:fixed;inset:0;overflow:hidden}
+/* The portfolio shows only the hero, so the menu bar is hidden. */
+.navw{display:none!important}
 #stage{position:absolute;left:50%;top:50%;width:1440px;height:810px;overflow:hidden;background:var(--page);transform-origin:center center;isolation:isolate}
 
 .scene{position:absolute;inset:0;transition:opacity .7s var(--ease)}
@@ -187,12 +189,13 @@ const vSpotlight = {
     bootPage(tl,D);
     const cam=camera(1440,810);
     //        t      cx    cy    zoom
-    // A slow push-in on the headline and search box; the menu bar stays just out of frame.
+    // A gentle push-in, centred on the headline and search box (their middle sits at y≈362), close to the real
+    // page's scale. The menu bar is hidden above, so the light top of the page fills the frame cleanly.
     const p=path([
-      [0,     720,  402,  1.22],
-      [1.0,   720,  402,  1.22],
-      [11.6,  720,  386,  1.36],
-      [12.2,  720,  386,  1.36]
+      [0,     720,  362,  1.12],
+      [1.0,   720,  362,  1.12],
+      [11.6,  720,  362,  1.17],
+      [12.2,  720,  362,  1.17]
     ]);
     tl.track(s=>{const [cx,cy,z]=p(s);cam(cx,cy,z)});
     outAt(tl,12.3);

@@ -14,6 +14,8 @@ import {
   Courier_Prime,
   Archivo,
   Fredoka,
+  Dancing_Script,
+  Baloo_2,
 } from "next/font/google";
 import "./globals.css";
 
@@ -112,6 +114,21 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
+// Handwriting, for the chat bubble on the sponty map.
+const dancingScript = Dancing_Script({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: "600",
+  display: "swap",
+});
+
+const baloo = Baloo_2({
+  variable: "--font-baloo",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://lucasxie.me"),
   title: "Lucas Xie",
@@ -135,7 +152,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${cormorant.variable} ${fraunces.variable} ${nunito.variable} ${archivoBlack.variable} ${bungee.variable} ${dmMono.variable} ${dmSans.variable} ${instrumentSerif.variable} ${courierPrime.variable} ${archivoVar.variable} ${fredoka.variable} h-full`}
+      className={`${inter.variable} ${cormorant.variable} ${fraunces.variable} ${nunito.variable} ${archivoBlack.variable} ${bungee.variable} ${dmMono.variable} ${dmSans.variable} ${instrumentSerif.variable} ${courierPrime.variable} ${archivoVar.variable} ${fredoka.variable} ${dancingScript.variable} ${baloo.variable} h-full`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
